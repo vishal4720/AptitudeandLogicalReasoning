@@ -16,14 +16,23 @@ import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
     private EditText email,pass;
     private Button login;
 
@@ -68,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            uploadData("Vishal","Patole","04/07/2000",user);
 //                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -77,6 +87,33 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
 //                        hideProgressBar();
+                    }
+                });
+    }
+
+    private void uploadData(String first,String last,String dob,FirebaseUser user){
+        boolean failed = false;
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        Map<String, Object> u = new HashMap<>();
+        u.put("first", first);
+        u.put("last", last);
+        u.put("dob", dob);
+
+        // Creating New Collection in Firestore
+        firebaseFirestore.collection("users")
+                .document(user.getUid())
+                .set(u)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
