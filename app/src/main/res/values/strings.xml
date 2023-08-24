@@ -12,4 +12,11 @@
     <string name="login">Login</string>
     <string name="enter_email">Enter Email</string>
     <string name="enter_password">Enter Password</string>
+    <string name="reenter_password">Re Enter Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="new_user_register">New User !! Register</string>
+    <string name="select_dob">Select Date of Birth</string>
+    <string name="register">Register</string>
+    <string name="happy_to_welcome_you">Happy to Welcome You !!</string>
 </resources>

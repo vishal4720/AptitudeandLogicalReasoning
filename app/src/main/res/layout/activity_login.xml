@@ -15,10 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/welcome"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="30sp" />
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -64,15 +61,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <TextView
+        android:id="@+id/signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginHorizontal="@dimen/login_margin_horizontal"
+        android:text="@string/new_user_register" />
 
     <Button
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/login"
-        app:layout_constraintEnd_toEndOf="@+id/password"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        android:layout_marginTop="@dimen/login_margin_vertical"
+        android:text="@string/login" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
