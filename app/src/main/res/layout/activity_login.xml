@@ -48,7 +48,7 @@
         app:startIconDrawable="@drawable/ic_password"
         app:endIconDrawable="@drawable/ic_check_mark"
         app:errorIconDrawable="@drawable/ic_check_mark_error"
-
+        android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
