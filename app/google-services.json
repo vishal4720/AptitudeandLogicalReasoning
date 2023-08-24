@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1014008822276",
+    "project_id": "aptitude-and-logical-rea-d025b",
+    "storage_bucket": "aptitude-and-logical-rea-d025b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014008822276:android:a11508962f8400dd159351",
+        "android_client_info": {
+          "package_name": "com.developingmind.aptitudeandlogicalreasoning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014008822276-56jfob2k480vi47j3e9c4aegbc0gvlm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnoVtZj5HQzogeXHz7UEl94hQnrFJSVUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014008822276-043k03g8bd8mmvnmos0uhnsmhp0lmd8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
