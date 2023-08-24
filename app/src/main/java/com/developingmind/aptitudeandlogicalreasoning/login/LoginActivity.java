@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private EditText email,pass;
-    private TextInputLayout emailLayout;
+    private TextInputLayout emailLayout,passLayout;
     private Button login;
 
 
@@ -52,12 +52,13 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         emailLayout = findViewById(R.id.email_layout);
         pass = findViewById(R.id.password);
+        passLayout = findViewById(R.id.password_layout);
         login = findViewById(R.id.login);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEmailPasswordValid(email,pass)) {
+                if(isEmailPasswordValid(email,pass,emailLayout,passLayout)) {
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getText().toString().trim(), pass.getText().toString());
                 }
@@ -154,23 +155,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public static boolean isEmailPasswordValid(EditText email,EditText password) {
+    public static boolean isEmailPasswordValid(EditText email,EditText password,TextInputLayout emailLayout,TextInputLayout passwordLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(email.getText())) {
-
-//            email.setError("Enter Email");
+            emailLayout.setError("Enter Email");
             isValid = false;
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
-//            email.setError("Enter Valid Email");
-
+            emailLayout.setError("Enter Valid Email");
             isValid = false;
         }
         if(TextUtils.isEmpty(password.getText())){
-            password.setError("Enter Password");
+            passwordLayout.setError("Enter Password");
             isValid=false;
         } else if (password.getText().toString().length()<=6) {
-            password.setError("Password should be minimum of 6 digits");
+            passwordLayout.setError("Password should be minimum of 6 digits");
             isValid=false;
         }
         return isValid;
