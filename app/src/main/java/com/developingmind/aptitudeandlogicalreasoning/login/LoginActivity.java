@@ -1,13 +1,13 @@
 package com.developingmind.aptitudeandlogicalreasoning.login;
 
-import static java.security.AccessController.getContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -20,11 +20,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -55,10 +53,44 @@ public class LoginActivity extends AppCompatActivity {
         passLayout = findViewById(R.id.password_layout);
         login = findViewById(R.id.login);
 
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isEmailValid(email,emailLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        pass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isPasswordValid(pass,passLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEmailPasswordValid(email,pass,emailLayout,passLayout)) {
+                if(isEmailValid(email,emailLayout) && isPasswordValid(pass,passLayout)) {
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getText().toString().trim(), pass.getText().toString());
                 }
@@ -155,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public static boolean isEmailPasswordValid(EditText email,EditText password,TextInputLayout emailLayout,TextInputLayout passwordLayout) {
+    public static boolean isEmailValid(EditText email,TextInputLayout emailLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(email.getText())) {
             emailLayout.setError("Enter Email");
@@ -164,13 +196,22 @@ public class LoginActivity extends AppCompatActivity {
         else if(!Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
             emailLayout.setError("Enter Valid Email");
             isValid = false;
+        }else{
+            emailLayout.setError(null);
         }
+        return isValid;
+    }
+
+    public static boolean isPasswordValid(EditText password,TextInputLayout passwordLayout){
+        Boolean isValid = true;
         if(TextUtils.isEmpty(password.getText())){
             passwordLayout.setError("Enter Password");
             isValid=false;
-        } else if (password.getText().toString().length()<=6) {
+        } else if (password.getText().toString().length()<6) {
             passwordLayout.setError("Password should be minimum of 6 digits");
             isValid=false;
+        }else{
+            passwordLayout.setError(null);
         }
         return isValid;
     }
