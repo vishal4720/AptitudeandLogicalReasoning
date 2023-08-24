@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private EditText email,pass;
+    private TextInputLayout emailLayout;
     private Button login;
 
 
@@ -48,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         email = findViewById(R.id.email);
+        emailLayout = findViewById(R.id.email_layout);
         pass = findViewById(R.id.password);
         login = findViewById(R.id.login);
 
@@ -154,11 +157,13 @@ public class LoginActivity extends AppCompatActivity {
     public static boolean isEmailPasswordValid(EditText email,EditText password) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(email.getText())) {
-            email.setError("Enter Email");
+
+//            email.setError("Enter Email");
             isValid = false;
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
-            email.setError("Enter Valid Email");
+//            email.setError("Enter Valid Email");
+
             isValid = false;
         }
         if(TextUtils.isEmpty(password.getText())){

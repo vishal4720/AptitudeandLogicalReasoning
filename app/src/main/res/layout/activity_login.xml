@@ -22,8 +22,15 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/ic_email"
+        app:endIconDrawable="@drawable/ic_check_mark"
+        app:errorIconDrawable="@drawable/ic_check_mark_error"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -34,8 +41,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/ic_password"
+        app:endIconDrawable="@drawable/ic_check_mark"
+        app:errorIconDrawable="@drawable/ic_check_mark_error"
+
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
