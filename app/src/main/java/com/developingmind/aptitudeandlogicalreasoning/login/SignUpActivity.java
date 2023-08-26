@@ -98,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
                     startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+                    finish();
                 }
             }
 
