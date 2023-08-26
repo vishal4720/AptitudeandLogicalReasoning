@@ -19,4 +19,7 @@
     <string name="select_dob">Select Date of Birth</string>
     <string name="register">Register</string>
     <string name="happy_to_welcome_you">Happy to Welcome You !!</string>
+
+    <string name="navigation_drawer_open">Open Navigation Drawer</string>
+    <string name="navigation_drawer_close">Close Navigation Drawer</string>
 </resources>
