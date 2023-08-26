@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +43,6 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
         fname = findViewById(R.id.fname_layout_signup);
         lname = findViewById(R.id.lname_layout_signup);
         email = findViewById(R.id.email_layout_signup);
@@ -89,18 +90,22 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isEmailValid(email) && isPasswordValid(pass) && !fname.getEditText().getText().toString().isEmpty()
-                && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty()){
+                && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty()) {
                     Map<String, Object> u = new HashMap<>();
                     u.put("first", fname.getEditText().getText().toString().trim());
                     u.put("last", lname.getEditText().getText().toString().trim());
                     u.put("dob", date.getEditText().getText().toString().trim());
                     firebaseAuth = FirebaseAuth.getInstance();
-                    createAccount(email.getEditText().getText().toString().trim(),pass.getEditText().getText().toString().trim(),u);
+                    createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
+                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                 }
             }
+
         });
 
     }
+
+
 
 
     private void createAccount(String email, String password, Map<String, Object> u) {
@@ -189,3 +194,4 @@ public class SignUpActivity extends AppCompatActivity {
         return isValid;
     }
 }
+
