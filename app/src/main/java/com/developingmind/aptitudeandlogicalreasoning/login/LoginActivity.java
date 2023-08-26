@@ -3,7 +3,14 @@ package com.developingmind.aptitudeandlogicalreasoning.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialog;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.DialogCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.widget.ContentLoadingProgressBar;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
@@ -12,9 +19,15 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +47,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUp;
     private TextInputLayout emailLayout,passLayout;
     private Button login;
+    private DialogMaker dialogMaker;
+
+    ContentLoadingProgressBar contentLoadingProgressBar;
 
 
     @Override
@@ -52,6 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         passLayout = findViewById(R.id.password_layout);
         login = findViewById(R.id.login);
         signUp = findViewById(R.id.signup);
+
+
+        dialogMaker = new DialogMaker(LoginActivity.this);
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialogMaker.getDialog().show();
                 if(isEmailValid(email,emailLayout) && isPasswordValid(pass,passLayout)) {
                     firebaseAuth = FirebaseAuth.getInstance();
                     signIn(email.getText().toString().trim(), pass.getText().toString());
@@ -106,12 +126,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn(String email, String password) {
-//        Log.d(TAG, "signIn:" + email);
-//        if (!validateForm()) {
-//            return;
-//        }
-//
-//        showProgressBar();
+
+        showProgressBar();
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
@@ -120,23 +136,25 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-//                            updateUI(user);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Incorrect Email / Password",
                                     Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
-//                            checkForMultiFactorFailure(task.getException());
                         }
 
-//                        if (!task.isSuccessful()) {
-//                            mBinding.status.setText(R.string.auth_failed);
-//                        }
-//                        hideProgressBar();
+                        hideProgressBar();
                     }
                 });
+    }
+
+    public void showProgressBar(){
+        dialogMaker.getDialog().show();
+    }
+
+    public void hideProgressBar(){
+        dialogMaker.getDialog().hide();
     }
 
 

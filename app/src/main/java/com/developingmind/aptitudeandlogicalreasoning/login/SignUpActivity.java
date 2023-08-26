@@ -98,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
                     startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                    finish();
                 }
             }
 
@@ -162,8 +163,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 
-
-    public static boolean isEmailValid(TextInputLayout emailLayout) {
+    private boolean isEmailValid(TextInputLayout emailLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(emailLayout.getEditText().getText())) {
             emailLayout.setError("Enter Email");
@@ -179,7 +179,7 @@ public class SignUpActivity extends AppCompatActivity {
         return isValid;
     }
 
-    public static boolean isPasswordValid(TextInputLayout passwordLayout){
+    private boolean isPasswordValid(TextInputLayout passwordLayout) {
         Boolean isValid = true;
         if(TextUtils.isEmpty(passwordLayout.getEditText().getText())){
             passwordLayout.setError("Enter Password");

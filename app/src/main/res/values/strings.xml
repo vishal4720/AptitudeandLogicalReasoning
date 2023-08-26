@@ -22,4 +22,5 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    <string name="getting_you_back">Getting you back.......</string>
 </resources>
