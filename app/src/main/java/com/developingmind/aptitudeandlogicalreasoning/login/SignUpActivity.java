@@ -97,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                     u.put("dob", date.getEditText().getText().toString().trim());
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
-                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                    startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
                 }
             }
 
