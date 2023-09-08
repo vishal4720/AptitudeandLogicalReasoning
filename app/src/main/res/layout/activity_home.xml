@@ -5,24 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
     android:id="@+id/drawer_layout"
     tools:context=".HomeActivity">
-
-
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:headerLayout="@layout/header"
-        app:menu="@menu/main_menu"
-        android:id="@+id/navigationView"
-        android:layout_gravity="start"/>
 
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background2"
         android:orientation="vertical">
 
 
@@ -35,12 +26,32 @@
             android:theme="?attr/actionBarTheme"
             app:navigationIcon="@drawable/ic_menu"/>
 
-        <ImageView
-            android:id="@+id/imageView"
+
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_date" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
     </LinearLayout>
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/main_menu"
+        android:id="@+id/navigationView"
+        android:layout_gravity="start"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
