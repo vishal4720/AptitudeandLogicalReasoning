@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
+import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -43,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new LeaderboardFragment()).commit();
         }
 
     }
