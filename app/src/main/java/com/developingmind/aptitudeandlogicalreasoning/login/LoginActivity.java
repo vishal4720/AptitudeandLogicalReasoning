@@ -183,7 +183,8 @@ public class LoginActivity extends AppCompatActivity {
         } else if (password.getText().toString().length()<6) {
             passwordLayout.setError("Password should be minimum of 6 digits");
             isValid=false;
-        }else{
+        }
+        else{
             passwordLayout.getEndIconDrawable().setColorFilter(new LightingColorFilter(Color.GREEN,Color.GREEN));
             passwordLayout.setError(null);
         }

@@ -89,8 +89,8 @@ public class SignUpActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEmailValid(email) && isPasswordValid(pass) && !fname.getEditText().getText().toString().isEmpty()
-                && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty()) {
+                if(isEmailValid(email) && isPasswordValid(pass,repass) && !fname.getEditText().getText().toString().isEmpty()
+                && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty() ) {
                     Map<String, Object> u = new HashMap<>();
                     u.put("first", fname.getEditText().getText().toString().trim());
                     u.put("last", lname.getEditText().getText().toString().trim());
@@ -164,7 +164,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 
-    public static boolean isEmailValid(TextInputLayout emailLayout) {
+    public boolean isEmailValid(TextInputLayout emailLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(emailLayout.getEditText().getText())) {
             emailLayout.setError("Enter Email");
@@ -180,7 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
         return isValid;
     }
 
-    public static boolean isPasswordValid(TextInputLayout passwordLayout){
+    public boolean isPasswordValid(TextInputLayout passwordLayout ,TextInputLayout repassLayout ){
         Boolean isValid = true;
         if(TextUtils.isEmpty(passwordLayout.getEditText().getText())){
             passwordLayout.setError("Enter Password");
@@ -188,7 +188,11 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (passwordLayout.getEditText().getText().toString().length()<6) {
             passwordLayout.setError("Password should be minimum of 6 digits");
             isValid=false;
-        }else{
+        } else if (!repassLayout.getEditText().getText().toString().equals(passwordLayout.getEditText().getText().toString())) {
+            repassLayout.setError("Password does not match");
+            isValid=false;
+
+        } else{
             passwordLayout.getEndIconDrawable().setColorFilter(new LightingColorFilter(Color.GREEN,Color.GREEN));
             passwordLayout.setError(null);
         }
