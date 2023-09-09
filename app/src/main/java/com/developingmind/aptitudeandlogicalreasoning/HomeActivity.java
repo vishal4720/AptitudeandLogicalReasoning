@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new LeaderboardFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
         }
 
     }
