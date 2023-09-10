@@ -1,4 +1,4 @@
-package com.developingmind.aptitudeandlogicalreasoning.login;
+package com.developingmind.aptitudeandlogicalreasoning;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 

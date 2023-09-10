@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -68,7 +70,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_profile) {
             frag = new ProfileFragment();
         } else if (itemId == R.id.nav_quiz) {
-            frag = new QuizFragment();
+//            frag = new QuizFragment();
+            startActivity(new Intent(HomeActivity.this, QuizCategoryActivity.class));
         }
         if (frag != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

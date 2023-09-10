@@ -7,4 +7,6 @@
     <color name="dark_green">#108603</color>
     <color name="cyan">#00E2FF</color>
     <color name="off_black">#09071E</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="pop">#FFED33BD</color>
 </resources>
