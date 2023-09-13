@@ -16,10 +16,12 @@ import android.view.MenuItem;
 
 import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
+import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -72,6 +74,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             frag = new ProfileFragment();
         } else if (itemId == R.id.nav_leaderboard) {
             frag = new LeaderboardFragment();
+        } else if (itemId == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
         }
         if (frag != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

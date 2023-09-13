@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#8A000000</color>
     <color name="red">#FF0000</color>
     <color name="purple_50e">#E551FF</color>
     <color name="dark_green">#108603</color>
@@ -11,6 +11,6 @@
     <color name="pop">#FFED33BD</color>
 
     <!--  Background Colors  -->
-    <color name="background_c1">#E0FDF6</color>
-    <color name="background_c2">#71EFC4</color>
+    <color name="background_c1">#5C8178</color>
+    <color name="background_c2">#225C48</color>
 </resources>
