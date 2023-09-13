@@ -2,15 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-
-        <item
-            android:id="@+id/nav_aptitude"
-            android:title="Aptitude"
-            android:icon="@drawable/ic_aptitude"/>
-        <item
-            android:id="@+id/nav_logical"
-            android:title="Logical Reasoning"
-            android:icon="@drawable/ic_logical"/>
+        <item android:title="Let's Learn">
+            <menu >
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_aptitude"
+                        android:title="Aptitude"
+                        android:icon="@drawable/ic_aptitude"/>
+                    <item
+                        android:id="@+id/nav_logical"
+                        android:title="Logical Reasoning"
+                        android:icon="@drawable/ic_logical"/>
+                </group>
+            </menu>
+        </item>
         <item
             android:id="@+id/nav_profile"
             android:title="Profile"

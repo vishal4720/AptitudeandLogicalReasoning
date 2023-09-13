@@ -3,15 +3,19 @@ package com.developingmind.aptitudeandlogicalreasoning.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.ContentLoadingProgressBar;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -105,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogMaker.getDialog().show();
                 if(isEmailValid(email,emailLayout) && isPasswordValid(pass,passLayout)) {
                     firebaseAuth = FirebaseAuth.getInstance();
                     signIn(email.getText().toString().trim(), pass.getText().toString());
@@ -174,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
             isValid=false;
         }
         else{
-            passwordLayout.getEndIconDrawable().setColorFilter(new LightingColorFilter(Color.GREEN,Color.GREEN));
+//            passwordLayout.getEndIconDrawable().setColorFilter(new LightingColorFilter(Color.GREEN,Color.GREEN));
             passwordLayout.setError(null);
         }
         return isValid;

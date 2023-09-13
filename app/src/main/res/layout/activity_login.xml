@@ -45,9 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_password"
-        app:endIconDrawable="@drawable/ic_check_mark"
-        app:errorIconDrawable="@drawable/ic_check_mark_error"
-        app:endIconMode="custom"
+        app:passwordToggleEnabled="true"
         app:errorEnabled="true"
         android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
@@ -55,6 +53,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
+            android:inputType="textPassword"
             android:layout_height="wrap_content"
             android:hint="@string/enter_password" />
 
