@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         navigationView.bringToFront();
+        navigationView.setItemIconTintList(null);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -65,13 +66,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Fragment frag = null; // create a Fragment Object
         int itemId = item.getItemId(); // get selected menu item's id
 // check selected menu item's id and replace a Fragment Accordingly
-        if (itemId == R.id.nav_home) {
+        if (itemId == R.id.nav_aptitude) {
             frag = new HomeFragment();
         } else if (itemId == R.id.nav_profile) {
             frag = new ProfileFragment();
-        } else if (itemId == R.id.nav_quiz) {
-//            frag = new QuizFragment();
-            startActivity(new Intent(HomeActivity.this, QuizCategoryActivity.class));
+        } else if (itemId == R.id.nav_leaderboard) {
+            frag = new LeaderboardFragment();
         }
         if (frag != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

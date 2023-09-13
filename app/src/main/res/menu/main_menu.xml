@@ -4,17 +4,39 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_home"
-            android:title="Home"
-            android:icon="@drawable/ic_nav_home"/>
+            android:id="@+id/nav_aptitude"
+            android:title="Aptitude"
+            android:icon="@drawable/ic_aptitude"/>
+        <item
+            android:id="@+id/nav_logical"
+            android:title="Logical Reasoning"
+            android:icon="@drawable/ic_logical"/>
         <item
             android:id="@+id/nav_profile"
             android:title="Profile"
-            android:icon="@drawable/ic_nav_profile"/>
+            android:icon="@drawable/ic_profile"/>
         <item
-            android:id="@+id/nav_quiz"
-            android:title="Quiz"
-            android:icon="@drawable/ic_nav_quiz"/>
+            android:id="@+id/nav_leaderboard"
+            android:title="Leaderboard"
+            android:icon="@drawable/trophy_icon"/>
+        <item
+            android:id="@+id/nav_rate"
+            android:title="Rate Us"
+            android:icon="@drawable/ic_rating"/>
+        <item
+            android:id="@+id/nav_feedback"
+            android:title="Feedback"
+            android:icon="@drawable/ic_feedback"/>
+        <item
+            android:id="@+id/nav_privacy"
+            android:title="Privacy Policy"
+            android:icon="@drawable/ic_privacy"/>
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Log Out"
+            android:icon="@drawable/trophy_icon"/>
 
     </group>
 
