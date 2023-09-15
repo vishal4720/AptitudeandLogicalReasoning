@@ -11,15 +11,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 

@@ -57,17 +57,17 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
 
         }
         private void setData(final String title, final int position){
-            if (position>=0 && position<=2){
-                cardView.setCardBackgroundColor(itemView.getResources().getColor(R.color.pop));
-            }
+//            if (position>=0 && position<=2){
+//                cardView.setCardBackgroundColor(itemView.getResources().getColor(R.color.pop));
+//            }
             this.title.setText(title);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(itemView.getContext(), SetsActivity.class);
-//                    intent.putExtra("title",title);
-//                    intent.putExtra("position",position);
-//                    itemView.getContext().startActivity(intent);
+                    Intent intent = new Intent(itemView.getContext(), QuestionsActivity.class);
+                    intent.putExtra("title",title);
+                    intent.putExtra("position",position);
+                    itemView.getContext().startActivity(intent);
                 }
             });
         }
