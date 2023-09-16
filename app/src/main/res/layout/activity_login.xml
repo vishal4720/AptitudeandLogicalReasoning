@@ -68,6 +68,7 @@
         android:layout_marginHorizontal="@dimen/login_margin_horizontal"
         android:text="@string/new_user_register" />
 
+
     <Button
         android:id="@+id/login"
         android:layout_width="wrap_content"
