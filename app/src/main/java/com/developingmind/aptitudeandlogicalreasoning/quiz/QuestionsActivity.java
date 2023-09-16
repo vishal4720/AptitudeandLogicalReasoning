@@ -2,6 +2,7 @@ package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.animation.Animator;
 import android.app.Dialog;
@@ -12,6 +13,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -29,13 +33,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -60,9 +62,10 @@ public class QuestionsActivity extends AppCompatActivity {
     List<QuestionModal> bookmarklist = new ArrayList<QuestionModal>();
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    Gson gson;
 
     private int limitQuestions = 10;
+
+    Toolbar toolbar;
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -77,6 +80,9 @@ public class QuestionsActivity extends AppCompatActivity {
         options = findViewById(R.id.options_container);
         share = findViewById(R.id.share_btn);
         next = findViewById(R.id.next_btn);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         sharedialog = new Dialog(this);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -86,7 +92,6 @@ public class QuestionsActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        gson = new Gson();
 //        getBookmark();
 
         bookmark.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +109,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
 
         list = new ArrayList<>();
-
+        showDialog();
         firebaseFirestore.collection(getResources().getString(R.string.collection_name))
                 .document(categoryId)
                 .get()
@@ -152,7 +157,7 @@ public class QuestionsActivity extends AppCompatActivity {
                             next.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    next.setEnabled(false);
+//                                    next.setEnabled(false);
                                     next.setAlpha((float) 0.7);
                                     enabledoption(true); 
                                     position++;
@@ -174,6 +179,7 @@ public class QuestionsActivity extends AppCompatActivity {
                                     playanim(question,0,list.get(position).getQuestion());
                                 }
                             });
+                            dismissLoader();
 
                         }else {
                             dismissLoader();
@@ -193,6 +199,17 @@ public class QuestionsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.questions_menu,menu);
+        return true;
+    }
 
     private void showDialog(){
         progressdialog.getDialog().show();
@@ -279,7 +296,8 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private void checkAnswer(Button selectedoption){
         enabledoption(false);
-        next.setEnabled(true);
+//        next.setEnabled(true);
+        next.setText("Next");
         next.setAlpha(1);
         if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())){
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));

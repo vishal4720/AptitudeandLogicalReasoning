@@ -51,11 +51,13 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     //FireStore
     implementation("com.google.firebase:firebase-firestore")
+    // Firebase Messaging
+    implementation("com.google.firebase:firebase-messaging")
 
 
-    implementation('com.google.code.gson:gson')
+//    implementation('com.google.code.gson:gson')
 
 //     Pie Chart
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation('com.github.PhilJay:MPAndroidChart:v3.1.0')
 
 }

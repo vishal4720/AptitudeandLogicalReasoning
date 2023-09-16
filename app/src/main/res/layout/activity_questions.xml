@@ -12,21 +12,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="serif"
-                android:text="Question"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:background="#00008577"
+                app:title="Question"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -158,7 +156,6 @@
                 android:background="@drawable/button"
                 android:backgroundTint="#FA7074"
                 android:text="Share"
-                android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/next_btn"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -174,9 +171,7 @@
                 android:alpha="0.7"
                 android:background="@drawable/button"
                 android:backgroundTint="#848484"
-                android:enabled="false"
-                android:text="Next"
-                android:textColor="@android:color/white"
+                android:text="Skip"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
