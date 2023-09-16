@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +40,9 @@ public class SignUpActivity extends AppCompatActivity {
     private Button register;
 
 
+    private DialogMaker dialogMaker;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,8 @@ public class SignUpActivity extends AppCompatActivity {
         repass = findViewById(R.id.repassword_layout_signup);
         date = findViewById(R.id.date_layout_signup);
         register = findViewById(R.id.signup_btn);
+
+        dialogMaker = new DialogMaker(SignUpActivity.this);
 
         date.setStartIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,14 +97,13 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(isEmailValid(email) && isPasswordValid(pass,repass) && !fname.getEditText().getText().toString().isEmpty()
                 && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty() ) {
+                    showProgressBar();
                     Map<String, Object> u = new HashMap<>();
                     u.put("first", fname.getEditText().getText().toString().trim());
                     u.put("last", lname.getEditText().getText().toString().trim());
                     u.put("dob", date.getEditText().getText().toString().trim());
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
-                    startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
-                    finish();
                 }
             }
 
@@ -125,15 +130,12 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             uploadData(u,user);
-//                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(SignUpActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
+                            hideProgressBar();
                         }
-
-//                        hideProgressBar();
                     }
                 });
     }
@@ -150,17 +152,29 @@ public class SignUpActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        hideProgressBar();
                         Toast.makeText(SignUpActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        hideProgressBar();
                     }
                 });
     }
 
+
+    public void showProgressBar(){
+        dialogMaker.getDialog().show();
+    }
+
+    public void hideProgressBar(){
+        dialogMaker.getDialog().hide();
+    }
 
 
 
