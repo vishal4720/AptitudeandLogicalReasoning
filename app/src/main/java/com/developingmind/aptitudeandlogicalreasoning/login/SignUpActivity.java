@@ -153,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         hideProgressBar();
-                        Toast.makeText(SignUpActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Welcome " + u.get("first"), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
                         finish();
                     }
