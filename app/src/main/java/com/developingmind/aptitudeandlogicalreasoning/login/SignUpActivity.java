@@ -15,9 +15,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -99,9 +101,10 @@ public class SignUpActivity extends AppCompatActivity {
                 && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty() ) {
                     showProgressBar();
                     Map<String, Object> u = new HashMap<>();
-                    u.put("first", fname.getEditText().getText().toString().trim());
-                    u.put("last", lname.getEditText().getText().toString().trim());
-                    u.put("dob", date.getEditText().getText().toString().trim());
+                    u.put(ProfileEnum.fname.toString(), fname.getEditText().getText().toString().trim());
+                    u.put(ProfileEnum.lname.toString(), lname.getEditText().getText().toString().trim());
+                    u.put(ProfileEnum.dob.toString(), date.getEditText().getText().toString().trim());
+                    u.put(ProfileEnum.gender.toString(), "M");
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
                 }
@@ -146,14 +149,14 @@ public class SignUpActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         // Creating New Collection in Firestore
-        firebaseFirestore.collection("users")
+        firebaseFirestore.collection(DatabaseEnum.users.toString())
                 .document(user.getUid())
                 .set(u)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         hideProgressBar();
-                        Toast.makeText(SignUpActivity.this, "Welcome " + u.get("first"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Welcome " + u.get(ProfileEnum.fname.toString()), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
                         finish();
                     }

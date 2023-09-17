@@ -5,17 +5,14 @@ import androidx.constraintlayout.utils.widget.ImageFilterView;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.ScoreInterface;
+import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
@@ -27,10 +24,8 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.google.android.material.color.utilities.Score;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ScoreActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
@@ -57,11 +52,11 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         skipped = findViewById(R.id.score_skip);
         pieChart = findViewById(R.id.pieChart);
 
-        totalQuestions = getIntent().getIntExtra(ScoreInterface.totalQuestions.toString(),0);
-        correctQuestions = getIntent().getIntExtra(ScoreInterface.correctQuestions.toString(),6);
-        attemptedQuestions = getIntent().getIntExtra(ScoreInterface.totalAttempted.toString(),0);
-        wrongQuestions = getIntent().getIntExtra(ScoreInterface.totalWrong.toString(),0);
-        skippedQuestions = getIntent().getIntExtra(ScoreInterface.totalSkipped.toString(),0);
+        totalQuestions = getIntent().getIntExtra(ScoreEnum.totalQuestions.toString(),0);
+        correctQuestions = getIntent().getIntExtra(ScoreEnum.correctQuestions.toString(),6);
+        attemptedQuestions = getIntent().getIntExtra(ScoreEnum.totalAttempted.toString(),0);
+        wrongQuestions = getIntent().getIntExtra(ScoreEnum.totalWrong.toString(),0);
+        skippedQuestions = getIntent().getIntExtra(ScoreEnum.totalSkipped.toString(),0);
 
         s.add(correctQuestions);
         s.add(attemptedQuestions);

@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.ScoreInterface;
+import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -166,11 +166,11 @@ public class QuestionsActivity extends AppCompatActivity {
 //                                            interstitial.show(getParent());
 //                                        }
                                         Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                                        intent.putExtra(ScoreInterface.correctQuestions.toString(),score);
-                                        intent.putExtra(ScoreInterface.totalQuestions.toString(),limitQuestions);
-                                        intent.putExtra(ScoreInterface.totalAttempted.toString(),totalAttempted);
-                                        intent.putExtra(ScoreInterface.totalWrong.toString(),totalAttempted-score);
-                                        intent.putExtra(ScoreInterface.totalSkipped.toString(),limitQuestions-totalAttempted);
+                                        intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
+                                        intent.putExtra(ScoreEnum.totalQuestions.toString(),limitQuestions);
+                                        intent.putExtra(ScoreEnum.totalAttempted.toString(),totalAttempted);
+                                        intent.putExtra(ScoreEnum.totalWrong.toString(),totalAttempted-score);
+                                        intent.putExtra(ScoreEnum.totalSkipped.toString(),limitQuestions-totalAttempted);
                                         startActivity(intent);
                                         finish();
                                         return;

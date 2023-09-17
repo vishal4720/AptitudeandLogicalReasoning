@@ -2,13 +2,28 @@ package com.developingmind.aptitudeandlogicalreasoning.profile;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
+import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +40,9 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ShapeableImageView profileIcon;
+    private TextInputLayout fname,lname,email,dob,gender;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -61,6 +79,43 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        profileIcon = view.findViewById(R.id.profile_icon);
+        fname = view.findViewById(R.id.fname_layout_profile);
+        lname = view.findViewById(R.id.lname_layout_profile);
+        email = view.findViewById(R.id.email_layout_profile);
+        dob = view.findViewById(R.id.date_layout_profile);
+        gender = view.findViewById(R.id.gender_profile);
+
+        FirebaseFirestore.getInstance().collection(DatabaseEnum.users.toString())
+                .document(((HomeActivity)getActivity()).getFirebaseUser().getUid().toString())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            Map<String,Object> map = documentSnapshot.getData();
+
+                        }else{
+
+                            backToHome();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        backToHome();
+                    }
+                });
+
+        return view;
+    }
+    private void backToHome(){
+        Toast.makeText(getContext(), "Something went wrong !!", Toast.LENGTH_SHORT).show();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame, new HomeFragment()); // replace a Fragment with Frame Layout
+        transaction.commit();
     }
 }

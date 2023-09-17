@@ -24,9 +24,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -134,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            FirebaseFirestore.getInstance().collection("users")
+                            FirebaseFirestore.getInstance().collection(DatabaseEnum.users.toString())
                                             .document(user.getUid().toString())
                                                     .get()
                                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -143,8 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                                                                     if(task.isSuccessful()){
                                                                         DocumentSnapshot documentSnapshot = task.getResult();
                                                                         Map<String,Object> map = documentSnapshot.getData();
-                                                                        Log.d("Map",map.get("first").toString());
-                                                                        Toast.makeText(LoginActivity.this, "Welcome Back "+ map.get("first").toString(), Toast.LENGTH_SHORT).show();
+                                                                        Log.d("Map",map.get(ProfileEnum.fname.toString()).toString());
+                                                                        Toast.makeText(LoginActivity.this, "Welcome Back "+ map.get(ProfileEnum.fname.toString()).toString(), Toast.LENGTH_SHORT).show();
                                                                         hideProgressBar();
                                                                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                                                         finish();

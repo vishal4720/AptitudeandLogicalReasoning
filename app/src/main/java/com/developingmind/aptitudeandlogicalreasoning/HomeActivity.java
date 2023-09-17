@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
+import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Toolbar toolbar;
     TextView headerTitle;
+    FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (permissionState == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
@@ -79,9 +83,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setHeaderTitle(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore.getInstance().collection("users")
-                .document(user.getUid().toString())
+        FirebaseFirestore.getInstance().collection(DatabaseEnum.users.toString())
+                .document(firebaseUser.getUid().toString())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -91,8 +94,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
                         DocumentSnapshot documentSnapshot = task.getResult();
                         Map<String,Object> map = documentSnapshot.getData();
-                        String title = map.get("first").toString() + " " + map.get("last").toString()
-                                + "\n" + user.getEmail().toString();
+                        String title = map.get(ProfileEnum.fname.toString()).toString() + " " + map.get(ProfileEnum.lname.toString()).toString()
+                                + "\n" + firebaseUser.getEmail().toString();
                         headerTitle.setText(title);
                         Log.d("Email",title);
                     }
@@ -148,6 +151,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         return false;
+    }
+
+    public FirebaseUser getFirebaseUser() {
+        return firebaseUser;
     }
 
     private void logOut(){
