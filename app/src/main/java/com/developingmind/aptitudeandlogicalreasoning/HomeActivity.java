@@ -82,6 +82,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public void setHeaderTitle(String name){
+        String title = name
+                + "\n" + firebaseUser.getEmail().toString();
+        headerTitle.setText(title);
+    }
+
     private void setHeaderTitle(){
         FirebaseFirestore.getInstance().collection(DatabaseEnum.users.toString())
                 .document(firebaseUser.getUid().toString())

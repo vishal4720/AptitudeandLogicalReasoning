@@ -19,6 +19,7 @@ import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -104,7 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
                     u.put(ProfileEnum.fname.toString(), fname.getEditText().getText().toString().trim());
                     u.put(ProfileEnum.lname.toString(), lname.getEditText().getText().toString().trim());
                     u.put(ProfileEnum.dob.toString(), date.getEditText().getText().toString().trim());
-                    u.put(ProfileEnum.gender.toString(), "M");
+                    u.put(ProfileEnum.gender.toString(), Gender.Female.toString());
                     firebaseAuth = FirebaseAuth.getInstance();
                     createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
                 }
