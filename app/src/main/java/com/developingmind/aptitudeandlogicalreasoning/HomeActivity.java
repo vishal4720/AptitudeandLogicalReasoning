@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
+import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
@@ -147,7 +148,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (itemId == R.id.nav_aptitude) {
             setTitle("Aptitude");
             frag = new AptitudeFragment();
-        } else if (itemId == R.id.nav_profile) {
+        }else if(itemId == R.id.nav_logical){
+            setTitle("Logical Reasoning");
+            frag = new LogicalFragment();
+        }else if (itemId == R.id.nav_profile) {
             setTitle("Profile");
             frag = new ProfileFragment();
         } else if (itemId == R.id.nav_leaderboard) {

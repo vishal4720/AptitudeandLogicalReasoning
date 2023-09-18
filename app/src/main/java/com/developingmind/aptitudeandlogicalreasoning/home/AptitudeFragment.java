@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
+import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +75,7 @@ public class AptitudeFragment extends Fragment {
         solvedProblems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getActivity(), SolvedProblemActivity.class));
             }
         });
 
