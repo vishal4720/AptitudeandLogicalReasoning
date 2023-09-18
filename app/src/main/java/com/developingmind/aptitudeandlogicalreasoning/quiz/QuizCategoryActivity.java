@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +36,8 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private int chooser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,8 @@ public class QuizCategoryActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+
+        chooser = getIntent().getIntExtra("index",0);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -58,7 +63,9 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         showDialog();
 
-        firebaseFirestore.collection("categories")
+        String databaseKey = (chooser==0)?DatabaseEnum.categories.toString():DatabaseEnum.categories.toString();
+
+        firebaseFirestore.collection(databaseKey)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

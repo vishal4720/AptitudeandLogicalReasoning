@@ -17,7 +17,7 @@ import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
+import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -200,7 +200,7 @@ public class ProfileFragment extends Fragment {
         Toast.makeText(getContext(), "Something went wrong !!", Toast.LENGTH_SHORT).show();
         hideDialog();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, new HomeFragment()); // replace a Fragment with Frame Layout
+        transaction.replace(R.id.frame, new AptitudeFragment()); // replace a Fragment with Frame Layout
         transaction.commit();
     }
 }

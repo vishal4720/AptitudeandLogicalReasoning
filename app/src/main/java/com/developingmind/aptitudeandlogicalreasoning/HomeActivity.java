@@ -21,7 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.developingmind.aptitudeandlogicalreasoning.home.HomeFragment;
+import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setHeaderTitle();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
 
     }
@@ -86,6 +86,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String title = name
                 + "\n" + firebaseUser.getEmail().toString();
         headerTitle.setText(title);
+    }
+
+    private void setTitle(String s){
+        toolbar.setTitle(s);
     }
 
     private void setHeaderTitle(){
@@ -141,10 +145,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int itemId = item.getItemId(); // get selected menu item's id
 // check selected menu item's id and replace a Fragment Accordingly
         if (itemId == R.id.nav_aptitude) {
-            frag = new HomeFragment();
+            setTitle("Aptitude");
+            frag = new AptitudeFragment();
         } else if (itemId == R.id.nav_profile) {
+            setTitle("Profile");
             frag = new ProfileFragment();
         } else if (itemId == R.id.nav_leaderboard) {
+            setTitle("Leaderboard");
             frag = new LeaderboardFragment();
         } else if (itemId == R.id.nav_logout) {
             logOut();

@@ -12,14 +12,13 @@ import android.view.ViewGroup;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
-import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link AptitudeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class AptitudeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,14 +29,14 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private LinearLayoutCompat practice;
+    private LinearLayoutCompat study,solvedProblems,practice,test,tip;
 
-    public HomeFragment() {
+    public AptitudeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static AptitudeFragment newInstance(String param1, String param2) {
+        AptitudeFragment fragment = new AptitudeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,11 +59,45 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         practice = view.findViewById(R.id.practice);
+        study = view.findViewById(R.id.study);
+        solvedProblems = view.findViewById(R.id.solved_problems);
+        test = view.findViewById(R.id.test);
+        tip = view.findViewById(R.id.tips);
+
+        study.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        solvedProblems.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         practice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), QuizCategoryActivity.class));
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra("index",0);
+                startActivity(intent);
+            }
+        });
+
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        tip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
