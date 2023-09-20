@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,11 +26,13 @@ import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
+import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Toolbar toolbar;
     TextView headerTitle;
+    ShapeableImageView headerIcon;
     FirebaseUser firebaseUser;
 
     @Override
@@ -66,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View headerView = navigationView.getHeaderView(0);
         headerTitle = headerView.findViewById(R.id.header_title);
+        headerIcon = headerView.findViewById(R.id.header_icon);
 
         navigationView.bringToFront();
         navigationView.setItemIconTintList(null);
@@ -81,6 +86,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
 
+    }
+
+    public void setHeaderIcon(int drawable) {
+        headerIcon.setImageDrawable(getDrawable(drawable));
     }
 
     public void setHeaderTitle(String name){
@@ -108,6 +117,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         String title = map.get(ProfileEnum.fname.toString()).toString() + " " + map.get(ProfileEnum.lname.toString()).toString()
                                 + "\n" + firebaseUser.getEmail().toString();
                         headerTitle.setText(title);
+                        if (map.get("gender").toString().equals(Gender.Male.toString())){
+                            setHeaderIcon(R.drawable.male_avatar);
+                        }else{
+                            setHeaderIcon(R.drawable.female_avatar);
+                        }
                         Log.d("Email",title);
                     }
                 })

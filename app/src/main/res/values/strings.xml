@@ -25,7 +25,4 @@
     <string name="getting_you_back">Getting you back.......</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <!-- Collection Id -->
-    <string name="collection_name">categories</string>
 </resources>

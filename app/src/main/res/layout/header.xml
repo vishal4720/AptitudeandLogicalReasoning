@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/cyan">
+    android:background="@color/background_c2">
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/header_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:shapeAppearance="@style/Circular"
         android:layout_weight="1"
-        android:layout_marginVertical="10dp"
+        android:layout_marginTop="26dp"
         android:layout_marginHorizontal="5dp"
-        android:src="@drawable/ic_practice"/>
+        android:src="@drawable/male_avatar"/>
 
     <TextView
         android:id="@+id/header_title"
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="5dp"
+        android:textSize="16sp"
         android:text="Vishal Patole\nvishal@gmail.com"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

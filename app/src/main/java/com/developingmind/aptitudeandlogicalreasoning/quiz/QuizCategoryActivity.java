@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
@@ -36,7 +37,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private int chooser;
+    private boolean isAptitude,isPractice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,9 @@ public class QuizCategoryActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
+        isPractice = getIntent().getBooleanExtra(Constants.isPractice,true);
 
-        chooser = getIntent().getIntExtra("index",0);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -58,14 +60,13 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        final QuizzesCategoryAdapter quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this);
+        final QuizzesCategoryAdapter quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice);
         recyclerView.setAdapter(quizzesCategoryAdapter);
 
         showDialog();
 
-        String databaseKey = (chooser==0)?DatabaseEnum.categories.toString():DatabaseEnum.categories.toString();
 
-        firebaseFirestore.collection(databaseKey)
+        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

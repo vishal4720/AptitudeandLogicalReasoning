@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
 import java.util.List;
 
@@ -19,10 +20,13 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     private List<String> quizzesModalList;
     Context context;
     CardView cardView;
+    Boolean isAptitude,isPractice;
 
-    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context){
+    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice){
         this.quizzesModalList = quizzesModalList;
         this.context = context;
+        this.isAptitude = isAptitude;
+        this.isPractice = isPractice;
     }
 
 
@@ -64,9 +68,18 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), QuestionsActivity.class);
-                    intent.putExtra("title",title);
-                    intent.putExtra("position",position);
+                    Intent intent = null;
+                    if(isAptitude){
+                        if(isPractice){
+                            intent = new Intent(itemView.getContext(), QuestionsActivity.class);
+                            intent.putExtra("title",title);
+                            intent.putExtra("position",position);
+                        }else{
+                            intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                            intent.putExtra("title",title);
+                            intent.putExtra("position",position);
+                        }
+                    }
                     itemView.getContext().startActivity(intent);
                 }
             });

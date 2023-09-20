@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
@@ -75,7 +76,10 @@ public class AptitudeFragment extends Fragment {
         solvedProblems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SolvedProblemActivity.class));
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra(Constants.isAptitude,true);
+                intent.putExtra(Constants.isPractice,false);
+                startActivity(intent);
             }
         });
 
@@ -83,7 +87,8 @@ public class AptitudeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
-                intent.putExtra("index",0);
+                intent.putExtra(Constants.isAptitude,true);
+                intent.putExtra(Constants.isPractice,true);
                 startActivity(intent);
             }
         });

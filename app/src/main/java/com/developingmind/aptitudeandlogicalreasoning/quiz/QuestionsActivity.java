@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
@@ -110,7 +111,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
         showDialog();
-        firebaseFirestore.collection(getResources().getString(R.string.collection_name))
+        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
                 .document(categoryId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -201,6 +202,10 @@ public class QuestionsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_info){
+            DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getQuestion());
+            dialogMaker.getDialog().show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
