@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AptitudeAndLogicalReasoning"
         tools:targetApi="31">
         <activity
+            android:name=".notification.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".solvedProblems.SolvedProblemActivity"
             android:exported="false" />
         <activity

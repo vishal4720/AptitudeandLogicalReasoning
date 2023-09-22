@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private DialogMaker dialogMaker;
 
-    ContentLoadingProgressBar contentLoadingProgressBar;
 
 
     @Override
@@ -70,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         signUp = findViewById(R.id.signup);
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
         dialogMaker = new DialogMaker(LoginActivity.this);
 
@@ -118,7 +118,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isEmailValid(email,emailLayout) && isPasswordValid(pass,passLayout)) {
-                    firebaseAuth = FirebaseAuth.getInstance();
                     signIn(email.getText().toString().trim(), pass.getText().toString());
                 }
             }

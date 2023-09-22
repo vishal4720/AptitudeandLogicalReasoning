@@ -3,5 +3,8 @@ package com.developingmind.aptitudeandlogicalreasoning;
 public enum DatabaseEnum {
     users,
     aptitude,
-    logical
+    logical,
+    feedback,
+    system,
+    maintenance
 }

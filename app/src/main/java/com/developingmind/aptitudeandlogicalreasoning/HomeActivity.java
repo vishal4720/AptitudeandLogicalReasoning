@@ -11,9 +11,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
+import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
@@ -34,11 +36,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.DateTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,6 +57,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     TextView headerTitle;
     ShapeableImageView headerIcon;
     FirebaseUser firebaseUser;
+    FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
@@ -77,14 +87,48 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
+        navigationView.setCheckedItem(R.id.nav_aptitude);
         navigationView.setNavigationItemSelectedListener(this);
 
+        setVersionCode();
         setHeaderTitle();
+        getMaintenanceStatus(this);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
+
+    }
+
+    public void getMaintenanceStatus(@NonNull Context context){
+        firebaseFirestore.collection(DatabaseEnum.system.toString())
+                .document(DatabaseEnum.maintenance.toString())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            MaintenanceModal maintenanceModal = documentSnapshot.toObject(MaintenanceModal.class);
+                            Date date = maintenanceModal.getTill().toDate();
+                            if(maintenanceModal.getStatus() && maintenanceModal.getTill().toDate().compareTo(Calendar.getInstance().getTime())>0) {
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm");
+                                DialogMaker dialogMaker = new DialogMaker(maintenanceModal.getMessage(), dateFormat.format(date).toString(),context);
+                                dialogMaker.getDialog().show();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void setVersionCode(){
+        String version = "";
+        try {
+            version = getPackageManager().getPackageInfo(getPackageName(),0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setTitle("Version Code : "+version).setEnabled(false);
 
     }
 
@@ -135,6 +179,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.nav_notification){
+            startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -171,21 +219,40 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_leaderboard) {
             setTitle("Leaderboard");
             frag = new LeaderboardFragment();
+        } else if (itemId == R.id.nav_rate) {
+            String url = getResources().getString(R.string.play_store_link);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        } else if (itemId == R.id.nav_feedback) {
+            DialogMaker dialogMaker = new DialogMaker(this,firebaseFirestore,firebaseUser);
+            dialogMaker.getDialog().show();
+            drawerLayout.closeDrawers();
+        } else if (itemId == R.id.nav_privacy) {
+
         } else if (itemId == R.id.nav_logout) {
             logOut();
         }
         if (frag != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame, frag); // replace a Fragment with Frame Layout
-            transaction.commit(); // commit the changes
-            drawerLayout.closeDrawers(); // close the all open Drawer Views
+            changeFragment(frag);
             return true;
         }
         return false;
     }
 
+    private void changeFragment(Fragment frag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame, frag); // replace a Fragment with Frame Layout
+        transaction.commit(); // commit the changes
+        drawerLayout.closeDrawers(); // close the all open Drawer Views
+    }
+
     public FirebaseUser getFirebaseUser() {
         return firebaseUser;
+    }
+
+    public FirebaseFirestore getFirebaseFirestore() {
+        return firebaseFirestore;
     }
 
     private void logOut(){
