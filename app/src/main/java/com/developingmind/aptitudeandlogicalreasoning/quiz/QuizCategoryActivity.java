@@ -52,6 +52,12 @@ public class QuizCategoryActivity extends AppCompatActivity {
         isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
         isPractice = getIntent().getBooleanExtra(Constants.isPractice,true);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);

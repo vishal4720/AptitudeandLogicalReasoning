@@ -2,13 +2,28 @@ package com.developingmind.aptitudeandlogicalreasoning.leaderboard;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
+import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +72,52 @@ public class LeaderboardFragment extends Fragment {
         }
     }
 
+    private RecyclerView recyclerView;
+    private List<LeaderboardModal> list = new ArrayList<LeaderboardModal>();
+    private LeaderboardAdapter leaderboardAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_leaderboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_leaderboard, container, false);
+
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        ((HomeActivity)getActivity()).getFirebaseFirestore().collection(DatabaseEnum.leaderboard.toString())
+                .whereGreaterThan("total_score",0)
+                .orderBy("total_score", Query.Direction.DESCENDING)
+                .limit(20)
+                        .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                                            list.clear();
+                                            for (DocumentSnapshot d:
+                                                 documentSnapshots) {
+                                                Map<String,Object> map = d.getData();
+                                                list.add(new LeaderboardModal(map.get("name").toString(),map.get("total_score").toString()));
+                                            }
+
+                                            leaderboardAdapter = new LeaderboardAdapter(getContext(),list);
+                                            recyclerView.setAdapter(leaderboardAdapter);
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+        return view;
     }
 }

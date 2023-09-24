@@ -1,11 +1,14 @@
 package com.developingmind.aptitudeandlogicalreasoning.solvedProblems;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,10 +37,16 @@ public class SolvedProblemAdapter extends RecyclerView.Adapter<SolvedProblemAdap
 
         return new SolvedProblemAdapter.ViewHolder(view);
     }
+
+    private int lastPosition = -1;
     @Override
     public void onBindViewHolder(@NonNull SolvedProblemAdapter.ViewHolder holder, int position) {
         ScoreModal scoreModal = list.get(position);
         holder.setData(scoreModal.getQuestion(),scoreModal.getAnswer(),scoreModal.getExplanation(),position);
+
+        Animation animation = AnimationUtils.loadAnimation(context, (holder.getAdapterPosition() > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        holder.itemView.startAnimation(animation);
+        lastPosition = holder.getAdapterPosition();
     }
 
 

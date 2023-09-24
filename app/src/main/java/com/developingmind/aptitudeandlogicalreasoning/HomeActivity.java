@@ -1,8 +1,10 @@
 package com.developingmind.aptitudeandlogicalreasoning;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -14,7 +16,14 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,8 +52,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.type.DateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -69,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (permissionState == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
+        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -94,10 +107,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setHeaderTitle();
         getMaintenanceStatus(this);
 
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
 
+    }
+
+    public static String icons;
+
+    private Bitmap getBitmapFromVectorDrawable(Context context, int d){
+        Log.d("Bitmap","Bitmap Start");
+        Drawable drawable = ContextCompat.getDrawable(context, d);
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888
+        );
+        Canvas canvas = new Canvas(bitmap);
+
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+            byte[] byteArray = byteStream.toByteArray();
+            icons = Base64.getEncoder().encodeToString(byteArray);
+            Log.d("Bitmap",icons);
+
+        }
+        Log.d("Bitmap",bitmap.toString());
+        return bitmap;
     }
 
     public void getMaintenanceStatus(@NonNull Context context){
@@ -120,6 +159,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
     }
+
+
 
     private void setVersionCode(){
         String version = "";
@@ -198,7 +239,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }else{
-            super.onBackPressed();
+            if(navigationView.getCheckedItem().getItemId() != R.id.nav_aptitude && navigationView.getCheckedItem().getItemId() != R.id.nav_logical){
+                 navigationView.setCheckedItem(R.id.nav_aptitude);
+                setTitle("Aptitude");
+                changeFragment(new AptitudeFragment());
+            }else {
+                super.onBackPressed();
+            }
         }
     }
 

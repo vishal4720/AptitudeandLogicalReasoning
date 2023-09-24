@@ -1,10 +1,17 @@
 package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
+import static com.developingmind.aptitudeandlogicalreasoning.HomeActivity.icons;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
+import java.util.Base64;
 import java.util.List;
 
 public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategoryAdapter.ViewHolder> {
@@ -21,6 +29,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     Context context;
     CardView cardView;
     Boolean isAptitude,isPractice;
+    ImageView icon;
 
     public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice){
         this.quizzesModalList = quizzesModalList;
@@ -29,6 +38,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
         this.isPractice = isPractice;
     }
 
+    private int lastPosition = -1;
 
     @NonNull
     @Override
@@ -42,6 +52,11 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setData(quizzesModalList.get(position),position);
+
+
+        Animation animation = AnimationUtils.loadAnimation(context, (holder.getAdapterPosition() > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        holder.itemView.startAnimation(animation);
+        lastPosition = holder.getAdapterPosition();
     }
 
     @Override
@@ -52,15 +67,22 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView title;
+        ImageView icon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.quizzes_title);
             cardView = itemView.findViewById(R.id.card_quizzes_category);
+            icon = itemView.findViewById(R.id.category_icon);
 
         }
         private void setData(final String title, final int position){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                byte[] decodedBytes = Base64.getDecoder().decode(icons);
+                icon.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+            }
+
 //            if (position>=0 && position<=2){
 //                cardView.setCardBackgroundColor(itemView.getResources().getColor(R.color.pop));
 //            }
