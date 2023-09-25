@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.bookmark.BookmarkActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
@@ -31,7 +32,7 @@ public class AptitudeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private LinearLayoutCompat study,solvedProblems,practice,test,tip;
+    private LinearLayoutCompat study,solvedProblems,practice,test,tip,bookmark;
 
     public AptitudeFragment() {
         // Required empty public constructor
@@ -65,11 +66,21 @@ public class AptitudeFragment extends Fragment {
         solvedProblems = view.findViewById(R.id.solved_problems);
         test = view.findViewById(R.id.test);
         tip = view.findViewById(R.id.tips);
+        bookmark = view.findViewById(R.id.bookmark);
 
         study.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BookmarkActivity.class);
+                intent.putExtra(Constants.isAptitude,true);
+                startActivity(intent);
             }
         });
 

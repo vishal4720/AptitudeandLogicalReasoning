@@ -13,6 +13,8 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
@@ -42,6 +44,9 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private Button register;
 
+    RadioGroup genderGroup;
+    RadioButton gender;
+
 
     private DialogMaker dialogMaker;
 
@@ -57,8 +62,10 @@ public class SignUpActivity extends AppCompatActivity {
         repass = findViewById(R.id.repassword_layout_signup);
         date = findViewById(R.id.date_layout_signup);
         register = findViewById(R.id.signup_btn);
+        genderGroup = findViewById(R.id.genderRadioGroup);
 
         dialogMaker = new DialogMaker(SignUpActivity.this);
+
 
         date.setStartIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,14 +107,24 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(isEmailValid(email) && isPasswordValid(pass,repass) && !fname.getEditText().getText().toString().isEmpty()
                 && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty() ) {
-                    showProgressBar();
-                    Map<String, Object> u = new HashMap<>();
-                    u.put(ProfileEnum.fname.toString(), fname.getEditText().getText().toString().trim());
-                    u.put(ProfileEnum.lname.toString(), lname.getEditText().getText().toString().trim());
-                    u.put(ProfileEnum.dob.toString(), date.getEditText().getText().toString().trim());
-                    u.put(ProfileEnum.gender.toString(), Gender.Female.toString());
-                    firebaseAuth = FirebaseAuth.getInstance();
-                    createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
+                    if(genderGroup.getCheckedRadioButtonId() != R.id.radioButtonFemale && genderGroup.getCheckedRadioButtonId() != R.id.radioButtonMale) {
+                        showProgressBar();
+                        Map<String, Object> u = new HashMap<>();
+                        u.put(ProfileEnum.fname.toString(), fname.getEditText().getText().toString().trim());
+                        u.put(ProfileEnum.lname.toString(), lname.getEditText().getText().toString().trim());
+                        u.put(ProfileEnum.dob.toString(), date.getEditText().getText().toString().trim());
+                        if(genderGroup.getCheckedRadioButtonId() == R.id.radioButtonMale){
+                            u.put(ProfileEnum.gender.toString(), Gender.Male.toString());
+                        }else{
+                            u.put(ProfileEnum.gender.toString(), Gender.Female.toString());
+                        }
+                        firebaseAuth = FirebaseAuth.getInstance();
+                        createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
+                    }else{
+                        Toast.makeText(SignUpActivity.this, "Select gender", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(SignUpActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -34,10 +34,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -68,6 +71,8 @@ public class QuestionsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
 
+    Gson gson;
+
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     @Override
@@ -93,7 +98,9 @@ public class QuestionsActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-//        getBookmark();
+        gson = new Gson();
+        getBookmark();
+
 
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +118,18 @@ public class QuestionsActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
         showDialog();
+
+        getData();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storeBookmarks();
+    }
+
+    private void getData(){
         firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
                 .document(categoryId)
                 .get()
@@ -137,7 +156,9 @@ public class QuestionsActivity extends AppCompatActivity {
                                             object.getString("optionC"),
                                             object.getString("optionD"),
                                             object.getString("correctAns"),
-                                            "ID"));
+                                            object.getString("explanation"),
+                                            categoryId,
+                                            documentSnapshot.getId()));
                                 } catch (JSONException e) {
                                     Log.d("", e.getMessage());
                                 }
@@ -158,14 +179,10 @@ public class QuestionsActivity extends AppCompatActivity {
                             next.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-//                                    next.setEnabled(false);
                                     next.setAlpha((float) 0.7);
-                                    enabledoption(true); 
+                                    enabledoption(true);
                                     position++;
                                     if (position == limitQuestions){
-//                                        if (interstitial!=null){
-//                                            interstitial.show(getParent());
-//                                        }
                                         Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
                                         intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
                                         intent.putExtra(ScoreEnum.totalQuestions.toString(),limitQuestions);
@@ -196,14 +213,29 @@ public class QuestionsActivity extends AppCompatActivity {
                         dismissLoader();
                     }
                 });
+    }
 
+    private void getBookmark(){
+        String json = sharedPreferences.getString("bookmark","");
 
+        Type type = new TypeToken<List<QuestionModal>>(){}.getType();
+
+        bookmarklist = gson.fromJson(json,type);
+        if (bookmarklist == null){
+            bookmarklist = new ArrayList<>();
+        }
+    }
+
+    private void storeBookmarks(){
+        String json = gson.toJson(bookmarklist);
+        editor.putString("bookmark",json);
+        editor.apply();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_info){
-            DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getQuestion());
+            DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getExplanation());
             dialogMaker.getDialog().show();
         }
         return super.onOptionsItemSelected(item);

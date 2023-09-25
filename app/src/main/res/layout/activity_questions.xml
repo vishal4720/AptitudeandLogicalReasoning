@@ -46,7 +46,7 @@
                 android:fontFamily="serif"
                 android:padding="20dp"
                 android:text="Question"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/question_no"
@@ -57,7 +57,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="5/10"
-                android:textColor="@android:color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -87,13 +87,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/options"
-                    android:backgroundTint="#989898"
                     android:fontFamily="serif"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Option A"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/black" />
 
                 <Button
                     android:id="@+id/button2"
@@ -101,13 +100,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/options"
-                    android:backgroundTint="#989898"
                     android:fontFamily="serif"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Option B"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/black"  />
 
                 <Button
                     android:id="@+id/button3"
@@ -115,13 +113,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/options"
-                    android:backgroundTint="#989898"
                     android:fontFamily="serif"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Option C"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/black"  />
 
                 <Button
                     android:id="@+id/button4"
@@ -129,13 +126,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/options"
-                    android:backgroundTint="#989898"
                     android:fontFamily="serif"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="Option D"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/black"  />
             </LinearLayout>
         </ScrollView>
 
@@ -154,7 +150,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/button"
-                android:backgroundTint="#FA7074"
                 android:text="Share"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/next_btn"
@@ -168,9 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:alpha="0.7"
                 android:background="@drawable/button"
-                android:backgroundTint="#848484"
                 android:text="Skip"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -189,7 +182,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="15dp"
             android:src="@drawable/bookmark_border"
-            app:backgroundTint="@android:color/white"
+            app:backgroundTint="@color/white"
             android:translationY="24dp" />
 
 

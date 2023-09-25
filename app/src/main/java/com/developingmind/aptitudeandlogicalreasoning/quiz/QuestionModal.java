@@ -2,18 +2,20 @@ package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
 public class QuestionModal {
 
-    private String question,optionA,optionB,optionC,optionD,correctAns,id,setNo;
+    private String question,optionA,optionB,optionC,optionD,correctAns,id,explanation,categoryId;
     public QuestionModal(){
 
     }
 
-    public QuestionModal(String question, String optionA, String optionB, String optionC, String optionD, String correctAns, String id) {
+    public QuestionModal(String question, String optionA, String optionB, String optionC, String optionD, String correctAns,String explanation,String categoryId, String id) {
         this.question = question;
         this.optionA = optionA;
         this.optionB = optionB;
         this.optionC = optionC;
         this.optionD = optionD;
         this.correctAns = correctAns;
+        this.explanation = explanation;
+        this.categoryId = categoryId;
         this.id = id;
     }
 
@@ -71,5 +73,13 @@ public class QuestionModal {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 }

@@ -70,11 +70,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     ShapeableImageView headerIcon;
     FirebaseUser firebaseUser;
     FirebaseFirestore firebaseFirestore;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+         firebaseAuth = FirebaseAuth.getInstance();
+
+         if(firebaseAuth.getCurrentUser() == null){
+             startActivity(new Intent(this,LoginActivity.class));
+             finish();
+         }
 
         int permissionState = ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS);
         // If the permission is not granted, request it.
@@ -83,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         getBitmapFromVectorDrawable(this,R.drawable.ic_train);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         drawerLayout = findViewById(R.id.drawer_layout);
