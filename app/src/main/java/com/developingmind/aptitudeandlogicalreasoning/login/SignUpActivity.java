@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -17,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
@@ -50,6 +52,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     private DialogMaker dialogMaker;
 
+    Boolean isLogin = false;
+    String profilrUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +68,22 @@ public class SignUpActivity extends AppCompatActivity {
         date = findViewById(R.id.date_layout_signup);
         register = findViewById(R.id.signup_btn);
         genderGroup = findViewById(R.id.genderRadioGroup);
+        isLogin = getIntent().getBooleanExtra(Constants.isLogin,false);
+        try {
+            profilrUri = getIntent().getStringExtra(Constants.profile);
+        }catch(Exception e){
+            profilrUri = null;
+        }
 
         dialogMaker = new DialogMaker(SignUpActivity.this);
+        firebaseAuth = FirebaseAuth.getInstance();
 
+        if(isLogin && firebaseAuth.getCurrentUser()!=null){
+            email.setEnabled(false);
+            pass.setVisibility(View.GONE);
+            repass.setVisibility(View.GONE);
+            email.getEditText().setText(firebaseAuth.getCurrentUser().getEmail());
+        }
 
         date.setStartIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,21 +123,27 @@ public class SignUpActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEmailValid(email) && isPasswordValid(pass,repass) && !fname.getEditText().getText().toString().isEmpty()
+                if(isEmailValid(email) && (isPasswordValid(pass,repass) || isLogin ) && !fname.getEditText().getText().toString().isEmpty()
                 && !lname.getEditText().getText().toString().isEmpty() && !date.getEditText().getText().toString().isEmpty() ) {
-                    if(genderGroup.getCheckedRadioButtonId() != R.id.radioButtonFemale && genderGroup.getCheckedRadioButtonId() != R.id.radioButtonMale) {
+                    if(genderGroup.getCheckedRadioButtonId() == R.id.radioButtonFemale || genderGroup.getCheckedRadioButtonId() == R.id.radioButtonMale) {
                         showProgressBar();
                         Map<String, Object> u = new HashMap<>();
                         u.put(ProfileEnum.fname.toString(), fname.getEditText().getText().toString().trim());
                         u.put(ProfileEnum.lname.toString(), lname.getEditText().getText().toString().trim());
                         u.put(ProfileEnum.dob.toString(), date.getEditText().getText().toString().trim());
+                        if(profilrUri != null){
+                            u.put(ProfileEnum.profile.toString(),profilrUri);
+                        }
                         if(genderGroup.getCheckedRadioButtonId() == R.id.radioButtonMale){
                             u.put(ProfileEnum.gender.toString(), Gender.Male.toString());
                         }else{
                             u.put(ProfileEnum.gender.toString(), Gender.Female.toString());
                         }
-                        firebaseAuth = FirebaseAuth.getInstance();
-                        createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
+                        if(isLogin){
+                            uploadData(u,firebaseAuth.getCurrentUser());
+                        }else {
+                            createAccount(email.getEditText().getText().toString().trim(), pass.getEditText().getText().toString().trim(), u);
+                        }
                     }else{
                         Toast.makeText(SignUpActivity.this, "Select gender", Toast.LENGTH_SHORT).show();
                     }

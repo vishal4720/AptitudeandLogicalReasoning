@@ -77,5 +77,13 @@
         android:layout_marginTop="@dimen/login_margin_vertical"
         android:text="@string/login" />
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

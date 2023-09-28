@@ -115,13 +115,9 @@ public class ProfileFragment extends Fragment {
                             setText(email,getEmail());
                             setText(dob,map.get(ProfileEnum.dob.toString()).toString());
                             setText(gender,map.get(ProfileEnum.gender.toString()).toString());
-                            if(map.get(ProfileEnum.gender.toString()).toString().equals(Gender.Male.toString())){
-                                profileIcon.setImageDrawable(getContext().getDrawable(R.drawable.male_avatar));
-                            }else if(map.get(ProfileEnum.gender.toString()).toString().equals(Gender.Female.toString())){
-                                profileIcon.setImageDrawable(getContext().getDrawable(R.drawable.female_avatar));
-                            }else{
 
-                            }
+                            ((HomeActivity)getActivity()).updateProfile(map,profileIcon);
+
                             Log.d("Gender",map.get(ProfileEnum.dob.toString()).toString());
                             hideDialog();
                         }else{

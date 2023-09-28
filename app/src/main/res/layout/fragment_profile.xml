@@ -16,8 +16,9 @@
 
        <com.google.android.material.imageview.ShapeableImageView
            android:id="@+id/profile_icon"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:layout_width="90dp"
+           app:shapeAppearance="@style/Circular"
+           android:layout_height="90dp"
            android:src="@drawable/male_avatar"
            />
 

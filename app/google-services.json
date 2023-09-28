@@ -14,6 +14,43 @@
       },
       "oauth_client": [
         {
+          "client_id": "1014008822276-50n2l5v7vil1bf2ohrhe6d7mel6alsic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.developingmind.aptitudeandlogicalreasoning",
+            "certificate_hash": "f9ad1cf2368492debb30eeae069f6d3aafda98a3"
+          }
+        },
+        {
+          "client_id": "1014008822276-56jfob2k480vi47j3e9c4aegbc0gvlm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnoVtZj5HQzogeXHz7UEl94hQnrFJSVUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014008822276-043k03g8bd8mmvnmos0uhnsmhp0lmd8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014008822276:android:fbd2457ea58a2881159351",
+        "android_client_info": {
+          "package_name": "com.developingmind.aptitudeandlogicalreasoning.admin"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "1014008822276-56jfob2k480vi47j3e9c4aegbc0gvlm8.apps.googleusercontent.com",
           "client_type": 3
         }

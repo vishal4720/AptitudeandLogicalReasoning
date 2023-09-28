@@ -1,11 +1,16 @@
 package com.developingmind.aptitudeandlogicalreasoning.leaderboard;
 
-public class LeaderboardModal {
-    private String name,score;
+import android.net.Uri;
 
-    public LeaderboardModal(String name, String score) {
+public class LeaderboardModal {
+    private String name,score,gender;
+    Uri profile;
+
+    public LeaderboardModal(String name, String score,Uri profile,String gender) {
         this.name = name;
         this.score = score;
+        this.profile = profile;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -22,5 +27,21 @@ public class LeaderboardModal {
 
     public void setScore(String score) {
         this.score = score;
+    }
+
+    public Uri getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Uri profile) {
+        this.profile = profile;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

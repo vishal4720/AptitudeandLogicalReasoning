@@ -6,6 +6,5 @@ public enum DatabaseEnum {
     logical,
     feedback,
     system,
-    maintenance,
-    leaderboard,
+    maintenance
 }

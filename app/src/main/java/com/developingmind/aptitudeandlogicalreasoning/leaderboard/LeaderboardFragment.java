@@ -1,5 +1,6 @@
 package com.developingmind.aptitudeandlogicalreasoning.leaderboard;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -90,7 +92,7 @@ public class LeaderboardFragment extends Fragment {
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        ((HomeActivity)getActivity()).getFirebaseFirestore().collection(DatabaseEnum.leaderboard.toString())
+        ((HomeActivity)getActivity()).getFirebaseFirestore().collection(DatabaseEnum.users.toString())
                 .whereGreaterThan("total_score",0)
                 .orderBy("total_score", Query.Direction.DESCENDING)
                 .limit(20)
@@ -104,7 +106,13 @@ public class LeaderboardFragment extends Fragment {
                                             for (DocumentSnapshot d:
                                                  documentSnapshots) {
                                                 Map<String,Object> map = d.getData();
-                                                list.add(new LeaderboardModal(map.get("name").toString(),map.get("total_score").toString()));
+                                                String name = map.get("fname").toString() + " " + map.get("lname").toString();
+                                                Uri temp = ((HomeActivity) getActivity()).getProfileStatus(map);
+                                                if(temp != null){
+                                                    list.add(new LeaderboardModal(name,map.get("total_score").toString(),temp,null));
+                                                }else{
+                                                    list.add(new LeaderboardModal(name,map.get("total_score").toString(),null,map.get(ProfileEnum.gender.toString()).toString()));
+                                                }
                                             }
 
                                             leaderboardAdapter = new LeaderboardAdapter(getContext(),list);

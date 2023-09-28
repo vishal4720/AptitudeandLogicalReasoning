@@ -5,5 +5,6 @@ public enum ProfileEnum {
     lname,
     gender,
     dob,
+    profile,
     email
 }

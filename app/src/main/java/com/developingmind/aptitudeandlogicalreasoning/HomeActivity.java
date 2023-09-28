@@ -25,17 +25,20 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
+import com.developingmind.aptitudeandlogicalreasoning.login.SignUpActivity;
 import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationActivity;
 import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
@@ -51,8 +54,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.type.DateTime;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -71,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     FirebaseUser firebaseUser;
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
+    Uri profileUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,14 +142,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-            byte[] byteArray = byteStream.toByteArray();
-            icons = Base64.getEncoder().encodeToString(byteArray);
-            Log.d("Bitmap",icons);
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+        byte[] byteArray = byteStream.toByteArray();
+        icons = Base64.getEncoder().encodeToString(byteArray);
+        Log.d("Bitmap",icons);
 
-        }
         Log.d("Bitmap",bitmap.toString());
         return bitmap;
     }
@@ -206,16 +211,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             headerTitle.setText("Name\nEmail");
                         }
                         DocumentSnapshot documentSnapshot = task.getResult();
-                        Map<String,Object> map = documentSnapshot.getData();
-                        String title = map.get(ProfileEnum.fname.toString()).toString() + " " + map.get(ProfileEnum.lname.toString()).toString()
-                                + "\n" + firebaseUser.getEmail().toString();
-                        headerTitle.setText(title);
-                        if (map.get("gender").toString().equals(Gender.Male.toString())){
-                            setHeaderIcon(R.drawable.male_avatar);
-                        }else{
-                            setHeaderIcon(R.drawable.female_avatar);
+                        try {
+                            Map<String, Object> map = documentSnapshot.getData();
+                            String title = map.get(ProfileEnum.fname.toString()).toString() + " " + map.get(ProfileEnum.lname.toString()).toString()
+                                    + "\n" + firebaseUser.getEmail().toString();
+                            headerTitle.setText(title);
+                            updateProfile(map,headerIcon);
+
+//                            Log.d("Email", title);
+                        }catch(Exception e){
+                            Log.d("Exceptions",e.getMessage());
+                            Toast.makeText(HomeActivity.this, "Please complete Sign Up", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(HomeActivity.this, SignUpActivity.class);
+                            intent.putExtra(Constants.isLogin,true);
+                            startActivity(intent);
+                            finish();
                         }
-                        Log.d("Email",title);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -224,6 +235,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         headerTitle.setText("Name\nEmail");
                     }
                 });
+    }
+
+    public void updateProfile(Map<String,Object> map,ShapeableImageView image){
+        try{
+            profileUrl = Uri.parse(map.get(ProfileEnum.profile.toString()).toString());
+            Picasso.get()
+                    .load(profileUrl)
+                    .into(image);
+
+        }catch (Exception e){
+            Log.d("Profile Exc",e.getMessage());
+            if (map.get(ProfileEnum.gender.toString()).toString().equals(Gender.Male.toString())) {
+                setHeaderIcon(R.drawable.male_avatar);
+            } else {
+                setHeaderIcon(R.drawable.female_avatar);
+            }
+        }
+    }
+
+    public Uri getProfileStatus(Map<String,Object> map){
+        try{
+            return Uri.parse(map.get(ProfileEnum.profile.toString()).toString());
+
+        }catch (Exception e){
+            return null;
+        }
     }
 
     @Override

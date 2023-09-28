@@ -6,6 +6,8 @@ public interface Constants {
     String isStudy = "isStudy";
     String isSolvedProblems = "isSolvedProblems";
     String isPractice = "isPractice";
+    String isLogin = "isLogin";
+    String profile = "profile";
     String isTest = "isTest";
     String isTips = "isTips";
     int study = 0;

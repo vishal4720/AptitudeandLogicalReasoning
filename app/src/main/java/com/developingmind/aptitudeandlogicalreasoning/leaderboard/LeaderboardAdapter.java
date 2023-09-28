@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationAdapter;
+import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -35,22 +38,36 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {
-        holder.setData(list.get(holder.getAdapterPosition()).getName(),list.get(holder.getAdapterPosition()).getScore(),holder.getAdapterPosition());
+        holder.setData(list.get(position),position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView name,score;
         ImageView medal;
+        ShapeableImageView profileIcon;
+
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             name = itemView.findViewById(R.id.leaderboard_name);
             score = itemView.findViewById(R.id.leaderboard_Score);
             medal = itemView.findViewById(R.id.leaderboard_medal);
+            profileIcon = itemView.findViewById(R.id.profile_icon);
         }
 
-        private void setData(String n,String s,int pos){
-            name.setText(n);
-            score.setText(s);
+        private void setData(LeaderboardModal leaderboardModal,int pos){
+            name.setText(leaderboardModal.getName());
+            score.setText(leaderboardModal.getScore());
+
+            if(leaderboardModal.getProfile() != null){
+                Picasso.get().load(leaderboardModal.getProfile()).into(profileIcon);
+            }else{
+                if(leaderboardModal.getGender().equals(Gender.Male.toString())){
+                    profileIcon.setImageDrawable(context.getDrawable(R.drawable.male_avatar));
+                }else{
+                    profileIcon.setImageDrawable(context.getDrawable(R.drawable.female_avatar));
+                }
+            }
+
             if((pos+1) == 1){
                 medal.setImageDrawable(context.getDrawable(R.drawable.ic_gold_medal));
             }else if((pos+1) == 2){
