@@ -74,6 +74,8 @@ public class QuestionsActivity extends AppCompatActivity {
 
     Gson gson;
 
+    DialogMaker exitDialog;
+
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     @Override
@@ -91,6 +93,8 @@ public class QuestionsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         question.setMovementMethod(new ScrollingMovementMethod());
+
+        exitDialog = new DialogMaker(this,"Are you sure you want to Quit ?");
 
         sharedialog = new Dialog(this);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -127,9 +131,16 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        exitDialog.getDialog().show();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         storeBookmarks();
+        progressdialog.getDialog().dismiss();
+        exitDialog.getDialog().dismiss();
     }
 
     private void getData(){
@@ -197,6 +208,9 @@ public class QuestionsActivity extends AppCompatActivity {
                                         finish();
                                         return;
                                     }
+                                    if(!list.get(position).getAnswered()){
+                                        next.setText("Skip");
+                                    }
                                     count = 0;
                                     playanim(question,0,list.get(position).getQuestion());
                                 }
@@ -237,12 +251,6 @@ public class QuestionsActivity extends AppCompatActivity {
                 });
     }
 
-//    private void clearOptions(){
-//        for (int i = 0; i < 4; i++) {
-//            options.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(options.getChildAt(i).getBackgroundTintList().getDefaultColor()));
-//        }
-//    }
-
     private void getBookmark(){
         String json = sharedPreferences.getString("bookmark","");
 
@@ -262,9 +270,11 @@ public class QuestionsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_info){
+        if(item.getItemId() == R.id.menu_info && list.get(position).getAnswered()){
             DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getExplanation());
             dialogMaker.getDialog().show();
+        }else{
+            Toast.makeText(this, "Question not answered !!", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -277,7 +287,8 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void showDialog(){
-        progressdialog.getDialog().show();
+        if(!progressdialog.getDialog().isShowing())
+            progressdialog.getDialog().show();
     }
 
     private void dismissLoader(){
@@ -384,9 +395,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private void checkAnswer(Button selectedoption){
         Log.d("Button",selectedoption.getText().toString());
         enabledoption(false);
-//      next.setEnabled(true);
         next.setText("Next");
-//      next.setAlpha(1);
         list.get(position).setGivenAns(selectedoption);
         list.get(position).setAnswered(true);
         if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {

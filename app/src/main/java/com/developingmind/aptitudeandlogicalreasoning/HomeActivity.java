@@ -1,5 +1,7 @@
 package com.developingmind.aptitudeandlogicalreasoning;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -13,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +35,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +85,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth firebaseAuth;
     Uri profileUrl;
 
+    Dialog logOutDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +104,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (permissionState == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
-        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
+//        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
 
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -131,26 +139,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public static String icons;
 
-    private Bitmap getBitmapFromVectorDrawable(Context context, int d){
-        Log.d("Bitmap","Bitmap Start");
-        Drawable drawable = ContextCompat.getDrawable(context, d);
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-        byte[] byteArray = byteStream.toByteArray();
-        icons = Base64.getEncoder().encodeToString(byteArray);
-        Log.d("Bitmap",icons);
-
-        Log.d("Bitmap",bitmap.toString());
-        return bitmap;
-    }
+//    private Bitmap getBitmapFromVectorDrawable(Context context, int d){
+//        Log.d("Bitmap","Bitmap Start");
+//        Drawable drawable = ContextCompat.getDrawable(context, d);
+//        Bitmap bitmap = Bitmap.createBitmap(
+//                drawable.getIntrinsicWidth(),
+//                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888
+//        );
+//        Canvas canvas = new Canvas(bitmap);
+//
+//        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+//        drawable.draw(canvas);
+//        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+//        byte[] byteArray = byteStream.toByteArray();
+//        icons = Base64.getEncoder().encodeToString(byteArray);
+//        Log.d("Bitmap",icons);
+//
+//        Log.d("Bitmap",bitmap.toString());
+//        return bitmap;
+//    }
 
     public void getMaintenanceStatus(@NonNull Context context){
         firebaseFirestore.collection(DatabaseEnum.system.toString())
@@ -323,13 +331,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_privacy) {
 
         } else if (itemId == R.id.nav_logout) {
-            logOut();
+            createDialog();
         }
         if (frag != null) {
             changeFragment(frag);
             return true;
         }
         return false;
+    }
+
+    private void createDialog(){
+        logOutDialog = new Dialog(this);
+        logOutDialog.setContentView(R.layout.dialog_quit);
+        logOutDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        logOutDialog.setCancelable(true);
+        logOutDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.category_bg));
+        ((TextView) logOutDialog.findViewById(R.id.quit_title)).setText("LogOut");
+        TextView desc = ((TextView) logOutDialog.findViewById(R.id.quit_desc));
+        desc.setText("Are you Sure ?");
+        desc.setVisibility(View.VISIBLE);
+        ((Button) logOutDialog.findViewById(R.id.no)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOutDialog.dismiss();
+            }
+        });
+        ((Button) logOutDialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOut();
+            }
+        });
+        logOutDialog.show();
     }
 
     private void changeFragment(Fragment frag){
@@ -347,10 +380,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return firebaseFirestore;
     }
 
-    private void logOut(){
-        FirebaseAuth.getInstance().signOut();
+    public void logOut(){
+        firebaseAuth.signOut();
+        logOutDialog.dismiss();
         Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public FirebaseAuth getFirebaseAuth(){
+        return firebaseAuth;
     }
 }

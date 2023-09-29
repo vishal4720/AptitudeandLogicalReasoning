@@ -2,6 +2,7 @@ package com.developingmind.aptitudeandlogicalreasoning;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -151,6 +152,29 @@ public class DialogMaker extends Dialog {
         });
     }
 
+    // Exit Dialog used in Quiz Back Pressed
+    public DialogMaker(@NonNull Context context,String title){
+        super(context);
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_quit);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(true);
+        ((TextView) dialog.findViewById(R.id.quit_title)).setText(title);
+        ((Button) dialog.findViewById(R.id.no)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ((Button) dialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity) context).finish();
+            }
+        });
+    }
+
+    // Used to get Dialog
     public Dialog getDialog() {
         return dialog;
     }

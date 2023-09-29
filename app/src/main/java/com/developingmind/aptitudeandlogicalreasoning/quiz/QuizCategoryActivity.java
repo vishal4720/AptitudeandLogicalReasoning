@@ -55,6 +55,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismissDialog();
                 finish();
             }
         });
@@ -104,6 +105,6 @@ public class QuizCategoryActivity extends AppCompatActivity {
     }
 
     private void dismissDialog(){
-        progressdialog.getDialog().hide();
+        progressdialog.getDialog().dismiss();
     }
 }
