@@ -1,8 +1,12 @@
 package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
+import android.widget.Button;
+
 public class QuestionModal {
 
     private String question,optionA,optionB,optionC,optionD,correctAns,id,explanation,categoryId;
+    private Boolean isAnswered = false;
+    private Button givenAns= null;
     public QuestionModal(){
 
     }
@@ -81,5 +85,29 @@ public class QuestionModal {
 
     public void setExplanation(String explanation) {
         this.explanation = explanation;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Boolean getAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(Boolean answered) {
+        isAnswered = answered;
+    }
+
+    public Button getGivenAns() {
+        return givenAns;
+    }
+
+    public void setGivenAns(Button givenAns) {
+        this.givenAns = givenAns;
     }
 }

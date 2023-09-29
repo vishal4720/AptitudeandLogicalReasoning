@@ -45,8 +45,6 @@
                 android:background="@drawable/category_bg"
                 android:fontFamily="serif"
                 android:padding="20dp"
-                android:scrollbars="vertical"
-                android:maxLines="8"
                 android:text="Question"
                 android:textColor="@color/black" />
 
@@ -146,14 +144,13 @@
             app:layout_constraintTop_toBottomOf="@+id/scrollView5">
 
             <Button
-                android:id="@+id/previous_btn"
+                android:id="@+id/share_btn"
                 android:layout_width="0dp"
-                android:enabled="false"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/button"
-                android:text="Previous"
+                android:text="Share"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/next_btn"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -171,22 +168,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/previous_btn"
+                app:layout_constraintStart_toEndOf="@+id/share_btn"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/share_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_share"
-        android:translationY="24dp"
-        android:layout_marginStart="15dp"
-        app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout7"
-        app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/bookmark_btn"
@@ -199,7 +183,8 @@
             android:layout_marginEnd="15dp"
             android:src="@drawable/bookmark_border"
             app:backgroundTint="@color/white"
-            android:translationY="24dp" />
+            android:translationY="24dp"
+            android:contentDescription="Bookmark" />
 
 
 

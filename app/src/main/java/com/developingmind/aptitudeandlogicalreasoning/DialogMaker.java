@@ -4,18 +4,23 @@ import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -123,6 +128,28 @@ public class DialogMaker extends Dialog {
         });
     }
 
+    public DialogMaker(@NonNull Context context, Boolean isTest){
+        super(context);
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.test_dialog);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(true);
+        ((CardView)dialog.findViewById(R.id.test)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+        ((CardView)dialog.findViewById(R.id.competitive_test)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                context.startActivity(new Intent(context, CompetitiveQuestionsActivity.class));
+            }
+        });
+    }
 
     public Dialog getDialog() {
         return dialog;

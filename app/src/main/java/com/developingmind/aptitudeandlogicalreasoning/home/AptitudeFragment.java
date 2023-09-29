@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
+import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.bookmark.BookmarkActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
@@ -107,7 +108,8 @@ public class AptitudeFragment extends Fragment {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DialogMaker dialogMaker = new DialogMaker(getContext(),true);
+                dialogMaker.getDialog().show();
             }
         });
 

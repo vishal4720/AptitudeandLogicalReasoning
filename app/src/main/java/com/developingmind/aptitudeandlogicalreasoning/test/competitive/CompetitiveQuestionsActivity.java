@@ -1,8 +1,4 @@
-package com.developingmind.aptitudeandlogicalreasoning.quiz;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+package com.developingmind.aptitudeandlogicalreasoning.test.competitive;
 
 import android.animation.Animator;
 import android.app.Dialog;
@@ -12,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,10 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,12 +48,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class QuestionsActivity extends AppCompatActivity {
+public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     TextView question,question_no;
-    FloatingActionButton bookmark,share;
+    FloatingActionButton bookmark;
     LinearLayout options;
-    Button previous,next;
+    Button share,next;
     int count =0;
     List<QuestionModal> list = new ArrayList<>();
     int position = 0;
@@ -79,7 +79,7 @@ public class QuestionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_questions);
+        setContentView(R.layout.activity_questions_competitive);
 
         question = findViewById(R.id.question);
         question_no = findViewById(R.id.question_no);
@@ -87,10 +87,8 @@ public class QuestionsActivity extends AppCompatActivity {
         options = findViewById(R.id.options_container);
         share = findViewById(R.id.share_btn);
         next = findViewById(R.id.next_btn);
-        previous = findViewById(R.id.previous_btn);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        question.setMovementMethod(new ScrollingMovementMethod());
 
         sharedialog = new Dialog(this);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -140,7 +138,7 @@ public class QuestionsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(!task.isSuccessful()){
-                            Toast.makeText(QuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CompetitiveQuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
                             dismissLoader();
                             finish();
                         }
@@ -182,10 +180,9 @@ public class QuestionsActivity extends AppCompatActivity {
                             next.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-//                                    next.setAlpha((float) 0.7);
+                                    next.setAlpha((float) 0.7);
                                     enabledoption(true);
                                     position++;
-                                    previous.setEnabled(true);
                                     if (position == limitQuestions){
                                         Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
                                         intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
@@ -201,29 +198,11 @@ public class QuestionsActivity extends AppCompatActivity {
                                     playanim(question,0,list.get(position).getQuestion());
                                 }
                             });
-
-                            previous.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-//                                    enabledoption(true);
-                                    enabledoption(true);
-                                    if (position != 0){
-                                        position--;
-                                        if(position==0){
-                                            previous.setEnabled(false);
-                                        }
-                                        count = 0;
-                                        playanim(question,0,list.get(position).getQuestion());
-                                    }
-
-                                    Log.d("Position",String.valueOf( position));
-                                }
-                            });
                             dismissLoader();
 
                         }else {
                             dismissLoader();
-                            Toast.makeText(QuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CompetitiveQuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }
@@ -231,17 +210,11 @@ public class QuestionsActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(QuestionsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CompetitiveQuestionsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         dismissLoader();
                     }
                 });
     }
-
-//    private void clearOptions(){
-//        for (int i = 0; i < 4; i++) {
-//            options.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(options.getChildAt(i).getBackgroundTintList().getDefaultColor()));
-//        }
-//    }
 
     private void getBookmark(){
         String json = sharedPreferences.getString("bookmark","");
@@ -263,7 +236,7 @@ public class QuestionsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_info){
-            DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getExplanation());
+            DialogMaker dialogMaker = new DialogMaker(CompetitiveQuestionsActivity.this,"Explanation",list.get(position).getExplanation());
             dialogMaker.getDialog().show();
         }
         return super.onOptionsItemSelected(item);
@@ -297,24 +270,6 @@ public class QuestionsActivity extends AppCompatActivity {
             i++;
         }
         return matched;
-    }
-
-    private void isQuestionAnswered(){
-        Log.d("Position Answered",String.valueOf(position));
-        if(list.get(position).getAnswered() && list.get(position).getGivenAns()!=null){
-            enabledoption(false);
-            Button selectedoption = list.get(position).getGivenAns();
-            if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
-                selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
-                score++;
-            } else {
-                Log.d("Correct",list.get(position).getCorrectAns());
-                Log.d("Correct",((Button) options.getChildAt(1)).getText().toString());
-                selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
-                Button correctoption = (Button) options.findViewWithTag(list.get(position).getCorrectAns());
-                correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
-            }
-        }
     }
 
     private void playanim(final View view, final int value, final String data){
@@ -362,10 +317,6 @@ public class QuestionsActivity extends AppCompatActivity {
                             }
                             view.setTag(data);
                             playanim(view,1,data);
-                        }else{
-                            if(list.get(position).getAnswered()){
-                                isQuestionAnswered();
-                            }
                         }
                     }
 
@@ -382,17 +333,14 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(Button selectedoption){
-        Log.d("Button",selectedoption.getText().toString());
         enabledoption(false);
-//      next.setEnabled(true);
+//        next.setEnabled(true);
         next.setText("Next");
-//      next.setAlpha(1);
-        list.get(position).setGivenAns(selectedoption);
-        list.get(position).setAnswered(true);
-        if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
+        next.setAlpha(1);
+        if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())){
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
             score++;
-        } else {
+        }else{
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
             Button correctoption = (Button) options.findViewWithTag(list.get(position).getCorrectAns());
             correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));

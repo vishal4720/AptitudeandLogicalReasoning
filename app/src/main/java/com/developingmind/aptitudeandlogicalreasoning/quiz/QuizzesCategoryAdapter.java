@@ -78,10 +78,8 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
 
         }
         private void setData(final String title, final int position){
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                byte[] decodedBytes = Base64.getDecoder().decode(icons);
-                icon.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
-            }
+//            byte[] decodedBytes = Base64.getDecoder().decode(icons);
+//            icon.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
 
 //            if (position>=0 && position<=2){
 //                cardView.setCardBackgroundColor(itemView.getResources().getColor(R.color.pop));
