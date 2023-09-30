@@ -16,6 +16,7 @@
         app:title="Solved Problem"
         android:textAlignment="center"
         android:background="#00008577"
+        app:navigationIcon="@drawable/ic_arrow_back"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"/>
 

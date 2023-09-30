@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="4dp"
         android:paddingHorizontal="4dp"
+        android:textColor="#E551FF"
         android:text="TextView" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

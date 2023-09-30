@@ -137,7 +137,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/constraintLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -147,33 +147,33 @@
 
             <Button
                 android:id="@+id/previous_btn"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:enabled="false"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="10dp"
                 android:background="@drawable/button"
-                android:text="Previous"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/next_btn"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="Previous" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_grid"
+                app:backgroundTint="@color/white" />
 
             <Button
                 android:id="@+id/next_btn"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="10dp"
                 android:background="@drawable/button"
-                android:text="Skip"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/previous_btn"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:text="Skip" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/share_btn"

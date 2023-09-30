@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,14 @@ public class SolvedProblemActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(categoryId);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissLoader();
+                finish();
+            }
+        });
+
         progressdialog = new DialogMaker(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -69,7 +78,7 @@ public class SolvedProblemActivity extends AppCompatActivity {
 
     private void dismissLoader(){
         if(progressdialog.getDialog().isShowing())
-            progressdialog.getDialog().hide();
+            progressdialog.getDialog().dismiss();
     }
 
     private void getData(){
@@ -99,7 +108,6 @@ public class SolvedProblemActivity extends AppCompatActivity {
                                 }
                                 adapter = new SolvedProblemAdapter(scoreModal, SolvedProblemActivity.this);
                                 recyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
                             }else{
                                 Toast.makeText(SolvedProblemActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
 

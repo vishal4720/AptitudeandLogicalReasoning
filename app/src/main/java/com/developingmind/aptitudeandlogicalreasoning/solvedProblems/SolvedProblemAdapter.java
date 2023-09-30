@@ -70,7 +70,8 @@ public class SolvedProblemAdapter extends RecyclerView.Adapter<SolvedProblemAdap
         private void setData(final String question,final String answer,final String explanation, final int position, Color color){
             this.question.setText(Html.fromHtml( ("<html><font color="+ color +"><b>Q"+(position+1)+ ". "+ question + "</b></font></html>"),Html.FROM_HTML_MODE_LEGACY));
             this.answer.setText(Html.fromHtml( ("<html><font color=#C36A0A><b> Answer : </b>"+ answer + "</font></html>"),Html.FROM_HTML_MODE_LEGACY));
-            this.explanation.setText(Html.fromHtml( ("<html><font color=#E551FF><b>" + "Explanation : </b><br>"+ explanation + "</font></html>"),Html.FROM_HTML_MODE_LEGACY));
+            this.explanation.setText("Explanation : "+ explanation);
+
         }
     }
 

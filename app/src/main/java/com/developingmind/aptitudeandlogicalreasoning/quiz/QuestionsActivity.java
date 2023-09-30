@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ import java.util.Map;
 public class QuestionsActivity extends AppCompatActivity {
 
     TextView question,question_no;
-    FloatingActionButton bookmark,share;
+    FloatingActionButton bookmark,share,grid;
     LinearLayout options;
     Button previous,next;
     int count =0;
@@ -76,6 +77,11 @@ public class QuestionsActivity extends AppCompatActivity {
 
     DialogMaker exitDialog;
 
+    GridView questionsGridView;
+    Dialog questionsDialog;
+    QuestionsGridAdapter gridAdapter;
+
+
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     @Override
@@ -91,6 +97,7 @@ public class QuestionsActivity extends AppCompatActivity {
         next = findViewById(R.id.next_btn);
         previous = findViewById(R.id.previous_btn);
         toolbar = findViewById(R.id.toolbar);
+        grid = findViewById(R.id.grid);
         setSupportActionBar(toolbar);
         question.setMovementMethod(new ScrollingMovementMethod());
 
@@ -109,6 +116,14 @@ public class QuestionsActivity extends AppCompatActivity {
         getBookmark();
 
 
+        grid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGrid();
+            }
+        });
+
+
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +131,9 @@ public class QuestionsActivity extends AppCompatActivity {
                     bookmarklist.remove(matchedQuestionPosition);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark_border));
                 }else{
-                    bookmarklist.add(list.get(position));
+                    QuestionModal q = list.get(position);
+                    q.setGivenAns(null);
+                    bookmarklist.add(q);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark));
                 }
             }
@@ -128,6 +145,22 @@ public class QuestionsActivity extends AppCompatActivity {
 
         getData();
 
+    }
+
+    private void createQuestionsGrid(){
+        questionsDialog = new Dialog(this);
+        questionsDialog.setContentView(R.layout.questions_grid);
+        questionsGridView = questionsDialog.findViewById(R.id.questions_grid_view);
+        questionsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        questionsDialog.setCancelable(true);
+
+        gridAdapter = new QuestionsGridAdapter(this,list,limitQuestions);
+        questionsGridView.setAdapter(gridAdapter);
+
+    }
+
+    private void showGrid(){
+        questionsDialog.show();
     }
 
     @Override
@@ -179,7 +212,6 @@ public class QuestionsActivity extends AppCompatActivity {
                             }
                             Collections.shuffle(list);
 
-
                             playanim(question,0,list.get(position).getQuestion());
                             for (int i=0;i<4;i++){
                                 options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -190,6 +222,8 @@ public class QuestionsActivity extends AppCompatActivity {
                                 });
                             }
 
+                            createQuestionsGrid();
+
                             next.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -197,6 +231,9 @@ public class QuestionsActivity extends AppCompatActivity {
                                     enabledoption(true);
                                     position++;
                                     previous.setEnabled(true);
+                                    if(position == (limitQuestions-1)){
+                                        next.setText("Submit");
+                                    }
                                     if (position == limitQuestions){
                                         Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
                                         intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
@@ -249,6 +286,21 @@ public class QuestionsActivity extends AppCompatActivity {
                         dismissLoader();
                     }
                 });
+    }
+
+    public void jumpTo(int pos){
+        enabledoption(true);
+        position=pos;
+        previous.setEnabled(true);
+        if(!list.get(position).getAnswered()){
+            next.setText("Skip");
+        }
+        if(position == (limitQuestions-1)){
+            next.setText("Submit");
+        }
+        count = 0;
+        playanim(question,0,list.get(position).getQuestion());
+        questionsDialog.hide();
     }
 
     private void getBookmark(){
@@ -377,6 +429,11 @@ public class QuestionsActivity extends AppCompatActivity {
                             if(list.get(position).getAnswered()){
                                 isQuestionAnswered();
                             }
+                            if(!list.get(position).getVisited()){
+                                list.get(position).setVisited(true);
+                                Log.d("Animation Question Visited",String.valueOf(list.get(position).getVisited()));
+                                gridAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
 
@@ -407,6 +464,7 @@ public class QuestionsActivity extends AppCompatActivity {
             correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
         }
         totalAttempted++;
+        gridAdapter.notifyDataSetChanged();
     }
 
     private void enabledoption(boolean enable){

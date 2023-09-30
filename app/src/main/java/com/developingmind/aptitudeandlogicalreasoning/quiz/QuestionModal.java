@@ -6,7 +6,8 @@ public class QuestionModal {
 
     private String question,optionA,optionB,optionC,optionD,correctAns,id,explanation,categoryId;
     private Boolean isAnswered = false;
-    private Button givenAns= null;
+    private Boolean isVisited = false;
+    private Button givenAns = null;
     public QuestionModal(){
 
     }
@@ -109,5 +110,13 @@ public class QuestionModal {
 
     public void setGivenAns(Button givenAns) {
         this.givenAns = givenAns;
+    }
+
+    public Boolean getVisited() {
+        return isVisited;
+    }
+
+    public void setVisited(Boolean visited) {
+        isVisited = visited;
     }
 }
