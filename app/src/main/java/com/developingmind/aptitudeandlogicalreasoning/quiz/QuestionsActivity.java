@@ -266,6 +266,11 @@ public class QuestionsActivity extends AppCompatActivity {
                                         count = 0;
                                         playanim(question,0,list.get(position).getQuestion());
                                     }
+                                    if(position != (limitQuestions-1) && list.get(position).getAnswered()){
+                                        next.setText("Next");
+                                    }else if(position!= (limitQuestions-1) && !list.get(position).getAnswered()){
+                                        next.setText("Skip");
+                                    }
 
                                     Log.d("Position",String.valueOf( position));
                                 }
@@ -452,7 +457,8 @@ public class QuestionsActivity extends AppCompatActivity {
     private void checkAnswer(Button selectedoption){
         Log.d("Button",selectedoption.getText().toString());
         enabledoption(false);
-        next.setText("Next");
+        if(position!=(limitQuestions-1))
+            next.setText("Next");
         list.get(position).setGivenAns(selectedoption);
         list.get(position).setAnswered(true);
         if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {

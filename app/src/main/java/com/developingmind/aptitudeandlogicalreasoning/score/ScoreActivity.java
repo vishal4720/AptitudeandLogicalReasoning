@@ -45,6 +45,7 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
+
         total = findViewById(R.id.score_total);
         correct = findViewById(R.id.score_correct);
         attempted = findViewById(R.id.score_attempted);
@@ -85,8 +86,8 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         pieChart.setTransparentCircleColor(Color.WHITE);
         pieChart.setTransparentCircleAlpha(110);
 
-        pieChart.setHoleRadius(58f);
-        pieChart.setTransparentCircleRadius(61f);
+        pieChart.setHoleRadius(50f);
+        pieChart.setTransparentCircleRadius(50f);
 
         pieChart.setDrawCenterText(true);
 
@@ -103,6 +104,9 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         pieChart.setEntryLabelColor(Color.WHITE);
 //        pieChart.setEntryLabelTypeface(tfRegular);
         pieChart.setEntryLabelTextSize(12f);
+
+        pieChart.getLegend().setTextColor(getColor(R.color.black));
+        pieChart.getLegend().setTextSize(13);
 
         setData(4,10);
 
@@ -121,7 +125,6 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-
         dataSet.setDrawIcons(false);
 
         dataSet.setSliceSpace(3f);
