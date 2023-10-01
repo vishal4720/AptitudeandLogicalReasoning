@@ -35,7 +35,7 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
 
     private PieChart pieChart;
 
-    protected final String[] parties = new String[] {
+    String[] parties = new String[] {
             "Correct", "Attempted", "Wrong", "Skipped"
     };
     private ArrayList<Integer> s = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         pieChart = findViewById(R.id.pieChart);
 
         totalQuestions = getIntent().getIntExtra(ScoreEnum.totalQuestions.toString(),0);
-        correctQuestions = getIntent().getIntExtra(ScoreEnum.correctQuestions.toString(),6);
+        correctQuestions = getIntent().getIntExtra(ScoreEnum.correctQuestions.toString(),0);
         attemptedQuestions = getIntent().getIntExtra(ScoreEnum.totalAttempted.toString(),0);
         wrongQuestions = getIntent().getIntExtra(ScoreEnum.totalWrong.toString(),0);
         skippedQuestions = getIntent().getIntExtra(ScoreEnum.totalSkipped.toString(),0);
@@ -63,6 +63,7 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
         s.add(attemptedQuestions);
         s.add(wrongQuestions);
         s.add(skippedQuestions);
+
 
         // Setting Values to Text View
         setScoreText(total,totalQuestions);
@@ -150,10 +151,18 @@ public class ScoreActivity extends AppCompatActivity implements OnChartValueSele
 //        for (int c : ColorTemplate.PASTEL_COLORS)
 //            colors.add(c);
 
-        colors.add(Color.GREEN);
-        colors.add(Color.BLUE);
-        colors.add(Color.RED);
-        colors.add(Color.MAGENTA);
+        if(correctQuestions!=0){
+            colors.add(Color.GREEN);
+        }
+        if(attemptedQuestions!=0){
+            colors.add(Color.BLUE);
+        }
+        if(wrongQuestions!=0){
+            colors.add(Color.RED);
+        }
+        if(skippedQuestions!=0){
+            colors.add(Color.MAGENTA);
+        }
 
         colors.add(ColorTemplate.getHoloBlue());
 

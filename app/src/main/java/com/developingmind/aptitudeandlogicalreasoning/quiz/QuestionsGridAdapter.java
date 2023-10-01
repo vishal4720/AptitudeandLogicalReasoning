@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
+import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 
 import java.util.List;
 
@@ -58,7 +59,10 @@ public class QuestionsGridAdapter extends ArrayAdapter<QuestionModal> {
         questionItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((QuestionsActivity) context).jumpTo(position);
+                if(context instanceof QuestionsActivity)
+                    ((QuestionsActivity) context).jumpTo(position);
+                else if(context instanceof CompetitiveQuestionsActivity)
+                    ((CompetitiveQuestionsActivity) context).jumpTo(position);
             }
         });
 

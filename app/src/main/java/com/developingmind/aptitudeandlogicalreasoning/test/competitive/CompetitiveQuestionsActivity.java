@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsGridAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +38,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -51,9 +55,9 @@ import java.util.Map;
 public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     TextView question,question_no;
-    FloatingActionButton bookmark;
+    FloatingActionButton bookmark,share,grid;
     LinearLayout options;
-    Button share,next;
+    Button previous,next;
     int count =0;
     List<QuestionModal> list = new ArrayList<>();
     int position = 0;
@@ -62,7 +66,6 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     Dialog sharedialog;
     DialogMaker progressdialog;
     int matchedQuestionPosition;
-    private String categoryId;
 
     List<QuestionModal> bookmarklist = new ArrayList<QuestionModal>();
     SharedPreferences sharedPreferences;
@@ -73,6 +76,13 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     Gson gson;
+
+    DialogMaker exitDialog;
+
+    GridView questionsGridView;
+    Dialog questionsDialog;
+    QuestionsGridAdapter gridAdapter;
+
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -87,20 +97,31 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         options = findViewById(R.id.options_container);
         share = findViewById(R.id.share_btn);
         next = findViewById(R.id.next_btn);
+        previous = findViewById(R.id.previous_btn);
         toolbar = findViewById(R.id.toolbar);
+        grid = findViewById(R.id.grid);
         setSupportActionBar(toolbar);
+        question.setMovementMethod(new ScrollingMovementMethod());
+
+        exitDialog = new DialogMaker(this,"Are you sure you want to Quit ?");
 
         sharedialog = new Dialog(this);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        categoryId = getIntent().getStringExtra("title");
         progressdialog = new DialogMaker(this);
-        Log.d("ID",categoryId);
 
         sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
         editor = sharedPreferences.edit();
         gson = new Gson();
         getBookmark();
+
+
+        grid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGrid();
+            }
+        });
 
 
         bookmark.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +131,9 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                     bookmarklist.remove(matchedQuestionPosition);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark_border));
                 }else{
-                    bookmarklist.add(list.get(position));
+                    QuestionModal q = list.get(position);
+                    q.setGivenAns(null);
+                    bookmarklist.add(q);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark));
                 }
             }
@@ -124,15 +147,38 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     }
 
+    private void createQuestionsGrid(){
+        questionsDialog = new Dialog(this);
+        questionsDialog.setContentView(R.layout.questions_grid);
+        questionsGridView = questionsDialog.findViewById(R.id.questions_grid_view);
+        questionsDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        questionsDialog.setCancelable(true);
+
+        gridAdapter = new QuestionsGridAdapter(this,list,limitQuestions);
+        questionsGridView.setAdapter(gridAdapter);
+
+    }
+
+    private void showGrid(){
+        questionsDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        exitDialog.getDialog().show();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         storeBookmarks();
+        progressdialog.getDialog().dismiss();
+        exitDialog.getDialog().dismiss();
     }
 
     private void getData(){
-        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
-                .document(categoryId)
+        firebaseFirestore.collection(DatabaseEnum.competitive.toString())
+                .document("questions")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -144,7 +190,6 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                         }
                         DocumentSnapshot documentSnapshot = task.getResult();
                         Map<String,Object> que = documentSnapshot.getData();
-                        Log.d("",documentSnapshot.toString());
                         if (que!=null) {
                             Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
                             while (iterator.hasNext()) {
@@ -158,14 +203,13 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                                             object.getString("optionD"),
                                             object.getString("correctAns"),
                                             object.getString("explanation"),
-                                            categoryId,
+                                            "CategoryId",
                                             documentSnapshot.getId()));
                                 } catch (JSONException e) {
                                     Log.d("", e.getMessage());
                                 }
                             }
                             Collections.shuffle(list);
-
 
                             playanim(question,0,list.get(position).getQuestion());
                             for (int i=0;i<4;i++){
@@ -177,12 +221,18 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                                 });
                             }
 
+                            createQuestionsGrid();
+
                             next.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    next.setAlpha((float) 0.7);
+//                                    next.setAlpha((float) 0.7);
                                     enabledoption(true);
                                     position++;
+                                    previous.setEnabled(true);
+                                    if(position == (limitQuestions-1)){
+                                        next.setText("Submit");
+                                    }
                                     if (position == limitQuestions){
                                         Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
                                         intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
@@ -194,16 +244,38 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                                         finish();
                                         return;
                                     }
+                                    if(!list.get(position).getAnswered()){
+                                        next.setText("Skip");
+                                    }
                                     count = 0;
                                     playanim(question,0,list.get(position).getQuestion());
                                 }
                             });
+
+                            previous.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+//                                    enabledoption(true);
+                                    enabledoption(true);
+                                    if (position != 0){
+                                        position--;
+                                        if(position==0){
+                                            previous.setEnabled(false);
+                                        }
+                                        count = 0;
+                                        playanim(question,0,list.get(position).getQuestion());
+                                    }
+                                    if(position != (limitQuestions-1) && list.get(position).getAnswered()){
+                                        next.setText("Next");
+                                    }else if(position!= (limitQuestions-1) && !list.get(position).getAnswered()){
+                                        next.setText("Skip");
+                                    }
+
+                                    Log.d("Position",String.valueOf( position));
+                                }
+                            });
                             dismissLoader();
 
-                        }else {
-                            dismissLoader();
-                            Toast.makeText(CompetitiveQuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
-                            finish();
                         }
                     }
                 })
@@ -214,6 +286,21 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                         dismissLoader();
                     }
                 });
+    }
+
+    public void jumpTo(int pos){
+        enabledoption(true);
+        position=pos;
+        previous.setEnabled(true);
+        if(!list.get(position).getAnswered()){
+            next.setText("Skip");
+        }
+        if(position == (limitQuestions-1)){
+            next.setText("Submit");
+        }
+        count = 0;
+        playanim(question,0,list.get(position).getQuestion());
+        questionsDialog.hide();
     }
 
     private void getBookmark(){
@@ -235,9 +322,11 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_info){
+        if(item.getItemId() == R.id.menu_info && list.get(position).getAnswered()){
             DialogMaker dialogMaker = new DialogMaker(CompetitiveQuestionsActivity.this,"Explanation",list.get(position).getExplanation());
             dialogMaker.getDialog().show();
+        }else{
+            Toast.makeText(this, "Question not answered !!", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -250,7 +339,8 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     private void showDialog(){
-        progressdialog.getDialog().show();
+        if(!progressdialog.getDialog().isShowing())
+            progressdialog.getDialog().show();
     }
 
     private void dismissLoader(){
@@ -270,6 +360,24 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
             i++;
         }
         return matched;
+    }
+
+    private void isQuestionAnswered(){
+        Log.d("Position Answered",String.valueOf(position));
+        if(list.get(position).getAnswered() && list.get(position).getGivenAns()!=null){
+            enabledoption(false);
+            Button selectedoption = list.get(position).getGivenAns();
+            if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
+                selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+                score++;
+            } else {
+                Log.d("Correct",list.get(position).getCorrectAns());
+                Log.d("Correct",((Button) options.getChildAt(1)).getText().toString());
+                selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
+                Button correctoption = (Button) options.findViewWithTag(list.get(position).getCorrectAns());
+                correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+            }
+        }
     }
 
     private void playanim(final View view, final int value, final String data){
@@ -317,6 +425,15 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                             }
                             view.setTag(data);
                             playanim(view,1,data);
+                        }else{
+                            if(list.get(position).getAnswered()){
+                                isQuestionAnswered();
+                            }
+                            if(!list.get(position).getVisited()){
+                                list.get(position).setVisited(true);
+                                Log.d("Animation Question Visited",String.valueOf(list.get(position).getVisited()));
+                                gridAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
 
@@ -333,19 +450,22 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(Button selectedoption){
+        Log.d("Button",selectedoption.getText().toString());
         enabledoption(false);
-//        next.setEnabled(true);
-        next.setText("Next");
-        next.setAlpha(1);
-        if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())){
+        if(position!=(limitQuestions-1))
+            next.setText("Next");
+        list.get(position).setGivenAns(selectedoption);
+        list.get(position).setAnswered(true);
+        if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
             score++;
-        }else{
+        } else {
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
             Button correctoption = (Button) options.findViewWithTag(list.get(position).getCorrectAns());
             correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
         }
         totalAttempted++;
+        gridAdapter.notifyDataSetChanged();
     }
 
     private void enabledoption(boolean enable){
