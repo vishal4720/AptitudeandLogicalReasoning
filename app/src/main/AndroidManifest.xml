@@ -27,6 +27,9 @@
             android:name=".test.competitive.CompetitiveQuestionsActivity"
             android:exported="false" />
         <activity
+            android:name=".test.test.TopicSelectionActivity"
+            android:exported="false" />
+        <activity
             android:name=".score.ScoreActivity"
             android:exported="false" />
         <activity

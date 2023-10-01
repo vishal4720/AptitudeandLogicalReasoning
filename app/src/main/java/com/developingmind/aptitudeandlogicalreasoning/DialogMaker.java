@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
+import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -126,7 +127,7 @@ public class DialogMaker extends Dialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-
+                context.startActivity(new Intent(context, TopicSelectionActivity.class));
             }
         });
 
