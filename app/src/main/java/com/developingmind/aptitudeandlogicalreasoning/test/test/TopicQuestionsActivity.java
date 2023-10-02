@@ -229,88 +229,90 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                                     }
                                 }
                                 Collections.shuffle(list);
+
+                                if(topic.equals(topicData.get(topicData.size()-1))){
+                                    // checking is questions are enough else taking from competitive
+                                    if(limitQuestions>list.size()){
+
+                                    }
+
+
+                                    playanim(question, 0, list.get(position).getQuestion());
+                                    for (int i = 0; i < 4; i++) {
+                                        options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                checkAnswer(((Button) v));
+                                            }
+                                        });
+                                    }
+
+                                    createQuestionsGrid();
+
+                                    next.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+//                                    next.setAlpha((float) 0.7);
+                                            enabledoption(true);
+                                            position++;
+                                            previous.setEnabled(true);
+                                            if (position == (limitQuestions - 1)) {
+                                                next.setText("Submit");
+                                            }
+                                            if (position == limitQuestions) {
+                                                Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
+                                                intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
+                                                intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
+                                                intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
+                                                intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
+                                                intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
+                                                startActivity(intent);
+                                                finish();
+                                                return;
+                                            }
+                                            if (!list.get(position).getAnswered()) {
+                                                next.setText("Skip");
+                                            }
+                                            count = 0;
+                                            playanim(question, 0, list.get(position).getQuestion());
+                                        }
+                                    });
+
+                                    previous.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+//                                    enabledoption(true);
+                                            enabledoption(true);
+                                            if (position != 0) {
+                                                position--;
+                                                if (position == 0) {
+                                                    previous.setEnabled(false);
+                                                }
+                                                count = 0;
+                                                playanim(question, 0, list.get(position).getQuestion());
+                                            }
+                                            if (position != (limitQuestions - 1) && list.get(position).getAnswered()) {
+                                                next.setText("Next");
+                                            } else if (position != (limitQuestions - 1) && !list.get(position).getAnswered()) {
+                                                next.setText("Skip");
+                                            }
+
+                                            Log.d("Position", String.valueOf(position));
+                                        }
+                                    });
+                                    dismissLoader();
+                                }
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            if(topic.equals(topicData.get(-1)))
+                            if(topic.equals(topicData.get(topicData.size()-1)))
                                 dismissLoader();
                         }
                     });
         }
-
-        // checking is questions are enough else taking from competitive
-        if(limitQuestions>list.size()){
-
-        }
-
-
-        playanim(question, 0, list.get(position).getQuestion());
-        for (int i = 0; i < 4; i++) {
-            options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    checkAnswer(((Button) v));
-                }
-            });
-        }
-
-        createQuestionsGrid();
-
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                                    next.setAlpha((float) 0.7);
-                enabledoption(true);
-                position++;
-                previous.setEnabled(true);
-                if (position == (limitQuestions - 1)) {
-                    next.setText("Submit");
-                }
-                if (position == limitQuestions) {
-                    Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                    intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
-                    intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
-                    intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
-                    intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
-                    intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
-                if (!list.get(position).getAnswered()) {
-                    next.setText("Skip");
-                }
-                count = 0;
-                playanim(question, 0, list.get(position).getQuestion());
-            }
-        });
-
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                                    enabledoption(true);
-                enabledoption(true);
-                if (position != 0) {
-                    position--;
-                    if (position == 0) {
-                        previous.setEnabled(false);
-                    }
-                    count = 0;
-                    playanim(question, 0, list.get(position).getQuestion());
-                }
-                if (position != (limitQuestions - 1) && list.get(position).getAnswered()) {
-                    next.setText("Next");
-                } else if (position != (limitQuestions - 1) && !list.get(position).getAnswered()) {
-                    next.setText("Skip");
-                }
-
-                Log.d("Position", String.valueOf(position));
-            }
-        });
-        dismissLoader();
     }
 
     public void jumpTo(int pos){
