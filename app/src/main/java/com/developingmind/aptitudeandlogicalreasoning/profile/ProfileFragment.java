@@ -143,7 +143,7 @@ public class ProfileFragment extends Fragment {
                 map.put(ProfileEnum.gender.toString(),gender.getEditText().getText().toString());
                 firebaseFirestore.collection(DatabaseEnum.users.toString())
                         .document(getFirebaseUser().getUid().toString())
-                        .set(map)
+                        .update(map)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
