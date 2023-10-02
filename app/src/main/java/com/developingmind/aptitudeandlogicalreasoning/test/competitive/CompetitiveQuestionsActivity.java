@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -411,7 +412,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
                         if (value == 0){
                             try {
-                                ((TextView)view).setText(data);
+                                ((TextView)view).setText(Html.fromHtml(data, Html.FROM_HTML_MODE_LEGACY));
                                 question_no.setText(String.valueOf(position+1)+"/"+String.valueOf(limitQuestions));
 
                                 if (modelMatch()){

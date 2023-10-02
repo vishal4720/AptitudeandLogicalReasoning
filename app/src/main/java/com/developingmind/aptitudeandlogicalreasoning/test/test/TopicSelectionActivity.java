@@ -1,12 +1,23 @@
 package com.developingmind.aptitudeandlogicalreasoning.test.test;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +34,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +47,16 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
     Button submit;
 
+    Dialog questionCountDialog;
+
     DialogMaker progressdialog;
+    List<String> items = new ArrayList<>();
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     private Toolbar toolbar;
+    private TopicSelectionAdapter topicSelectionAdapter;
+
+    Boolean isAptitude = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +69,8 @@ public class TopicSelectionActivity extends AppCompatActivity {
         submit = findViewById(R.id.submit_btn);
 
         setSupportActionBar(toolbar);
+
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,16 +88,22 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        final TopicSelectionAdapter topicSelectionAdapter = new TopicSelectionAdapter(list,this);
+        topicSelectionAdapter = new TopicSelectionAdapter(list,this);
         recyclerView.setAdapter(topicSelectionAdapter);
 
         showDialog();
-
+        createDialog();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("List", topicSelectionAdapter.getSelectedList().toString());
+
+                if(topicSelectionAdapter.getSelectedList().size()>0) {
+                    showquestionDialog();
+                }
+                else
+                    Toast.makeText(TopicSelectionActivity.this, "Select Topic", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,6 +134,72 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        questionCountDialog.dismiss();
+        progressdialog.dismiss();
+
+    }
+
+    private void createDialog(){
+        questionCountDialog = new Dialog(this);
+        questionCountDialog.setContentView(R.layout.select_question_dialog);
+        questionCountDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.ic_loader));
+        questionCountDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        questionCountDialog.setCancelable(true);
+        Spinner spinner = questionCountDialog.findViewById(R.id.spinner);
+        items.add("15");
+        items.add("30");
+        items.add("45");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        spinner.setAdapter(adapter);
+
+
+        TextView count = questionCountDialog.findViewById(R.id.time_allotted);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                count.setText(String.valueOf(Integer.parseInt(items.get(position))+5)+" mins");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        questionCountDialog.findViewById(R.id.start_quiz).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TopicSelectionActivity.this,TopicQuestionsActivity.class);
+                intent.putExtra(Constants.isAptitude,isAptitude);
+                Bundle b = new Bundle();
+                ArrayList<String> arrayList = new ArrayList<>();
+                for (int i = 0; i < topicSelectionAdapter.getSelectedList().size(); i++) {
+                    arrayList.add(topicSelectionAdapter.getSelectedList().get(i).getTopic());
+                }
+                b.putStringArrayList("data",arrayList);
+                intent.putExtras(b);
+                intent.putExtra("count",topicSelectionAdapter.getTotalCount());
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    public List<TopicSelectionModal> getTopicSelectedList(){
+        return topicSelectionAdapter.getSelectedList();
+    }
+
+    private void showquestionDialog(){
+        questionCountDialog.show();
+    }
+
+    private void hideQuestionDialog(){
+        questionCountDialog.hide();
     }
 
     private void showDialog(){

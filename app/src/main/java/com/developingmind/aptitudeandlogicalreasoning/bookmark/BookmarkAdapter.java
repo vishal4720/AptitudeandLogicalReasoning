@@ -1,6 +1,7 @@
 package com.developingmind.aptitudeandlogicalreasoning.bookmark;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +45,11 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        question.setText("Q."+(position+1)+") "+list.get(position).getQuestion());
-        optionA.setText("A - "+list.get(position).getOptionA());
-        optionB.setText("B - "+list.get(position).getOptionB());
-        optionC.setText("C - "+list.get(position).getOptionC());
-        optionD.setText("D - "+list.get(position).getOptionD());
+        question.setText(Html.fromHtml("Q."+(position+1)+") "+list.get(position).getQuestion(),Html.FROM_HTML_MODE_LEGACY));
+        optionA.setText(Html.fromHtml("A - "+list.get(position).getOptionA(),Html.FROM_HTML_MODE_LEGACY));
+        optionB.setText(Html.fromHtml("B - "+list.get(position).getOptionB(),Html.FROM_HTML_MODE_LEGACY));
+        optionC.setText(Html.fromHtml("C - "+list.get(position).getOptionC(),Html.FROM_HTML_MODE_LEGACY));
+        optionD.setText(Html.fromHtml("D - "+list.get(position).getOptionD(),Html.FROM_HTML_MODE_LEGACY));
 //        answer.setVisibility(View.GONE);
 //        explanation.setVisibility(View.GONE);
     }

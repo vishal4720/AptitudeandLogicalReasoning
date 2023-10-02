@@ -24,10 +24,11 @@ import java.util.List;
 
 public class TopicSelectionAdapter extends RecyclerView.Adapter<TopicSelectionAdapter.ViewHolder> {
     private List<TopicSelectionModal> list;
-    private List<String> selectedList = new ArrayList<String>();
-    Context context;
-    CardView cardView;
-    ImageView icon;
+    private List<TopicSelectionModal> selectedList = new ArrayList<TopicSelectionModal>();
+    private Integer totalCount =0;
+    private Context context;
+    private CardView cardView;
+    private ImageView icon;
 
     public TopicSelectionAdapter(List<TopicSelectionModal> list, Context context){
         this.list = list;
@@ -60,8 +61,12 @@ public class TopicSelectionAdapter extends RecyclerView.Adapter<TopicSelectionAd
         return list.size();
     }
 
-    public List<String> getSelectedList(){
+    public List<TopicSelectionModal> getSelectedList(){
         return selectedList;
+    }
+
+    public Integer getTotalCount(){
+        return totalCount;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -69,6 +74,8 @@ public class TopicSelectionAdapter extends RecyclerView.Adapter<TopicSelectionAd
         TextView title,questionCount;
         ImageView icon;
         CheckBox checkBox;
+
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,19 +89,21 @@ public class TopicSelectionAdapter extends RecyclerView.Adapter<TopicSelectionAd
         }
         private void setData(final TopicSelectionModal modal, final int position){
             this.title.setText(modal.getTopic());
-            if(modal.getQuestionCount()>15){
-                this.questionCount.setText("Total Questions : 15");
-            }else{
+//            if(modal.getQuestionCount()>15){
+//                this.questionCount.setText("Total Questions : 15");
+//            }else{
                 this.questionCount.setText("Total Questions : "+modal.getQuestionCount());
-            }
+//            }
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     checkBox.setChecked(!checkBox.isChecked());
-                    if(!checkBox.isChecked() && selectedList.contains(list.get(position).getTopic())){
-                        selectedList.remove(modal.getTopic());
+                    if(!checkBox.isChecked() && selectedList.contains(list.get(position))){
+                        selectedList.remove(modal);
+                        totalCount-=modal.getQuestionCount();
                     }else{
-                        selectedList.add(modal.getTopic());
+                        totalCount+=modal.getQuestionCount();
+                        selectedList.add(modal);
                     }
                 }
             });

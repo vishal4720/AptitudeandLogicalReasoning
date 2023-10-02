@@ -1,8 +1,4 @@
-package com.developingmind.aptitudeandlogicalreasoning.quiz;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+package com.developingmind.aptitudeandlogicalreasoning.test.test;
 
 import android.animation.Animator;
 import android.app.Dialog;
@@ -26,10 +22,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsGridAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,12 +48,13 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class QuestionsActivity extends AppCompatActivity {
+public class TopicQuestionsActivity extends AppCompatActivity {
 
     TextView question,question_no;
     FloatingActionButton bookmark,share,grid;
@@ -64,7 +68,6 @@ public class QuestionsActivity extends AppCompatActivity {
     Dialog sharedialog;
     DialogMaker progressdialog;
     int matchedQuestionPosition;
-    private String categoryId;
 
     List<QuestionModal> bookmarklist = new ArrayList<QuestionModal>();
     SharedPreferences sharedPreferences;
@@ -81,6 +84,8 @@ public class QuestionsActivity extends AppCompatActivity {
     GridView questionsGridView;
     Dialog questionsDialog;
     QuestionsGridAdapter gridAdapter;
+    ArrayList<String> topicData;
+    Boolean isAptitude;
 
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -88,7 +93,13 @@ public class QuestionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_questions);
+        setContentView(R.layout.activity_questions_competitive);
+
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
+        limitQuestions = getIntent().getIntExtra("count",15);
+        Bundle extrasBundle = getIntent().getExtras();
+        topicData = extrasBundle.getStringArrayList("data");
+        Log.d("Topic Data", topicData.toString());
 
         question = findViewById(R.id.question);
         question_no = findViewById(R.id.question_no);
@@ -107,9 +118,7 @@ public class QuestionsActivity extends AppCompatActivity {
         sharedialog = new Dialog(this);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        categoryId = getIntent().getStringExtra("title");
         progressdialog = new DialogMaker(this);
-        Log.d("ID",categoryId);
 
         sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -178,120 +187,130 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void getData(){
-        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
-                .document(categoryId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(QuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
-                            dismissLoader();
-                            finish();
-                        }
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        Map<String,Object> que = documentSnapshot.getData();
-                        Log.d("",documentSnapshot.toString());
-                        if (que!=null) {
-                            Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
-                            while (iterator.hasNext()) {
-                                Map.Entry<String, Object> x = iterator.next();
-                                JSONObject object = new JSONObject((Map) x.getValue());
-                                try {
-                                    list.add(new QuestionModal(object.getString("question"),
-                                            object.getString("optionA"),
-                                            object.getString("optionB"),
-                                            object.getString("optionC"),
-                                            object.getString("optionD"),
-                                            object.getString("correctAns"),
-                                            object.getString("explanation"),
-                                            categoryId,
-                                            documentSnapshot.getId()));
-                                } catch (JSONException e) {
-                                    Log.d("", e.getMessage());
-                                }
+        list.clear();
+        String key;
+        if(isAptitude){
+            key = DatabaseEnum.aptitude.toString();
+        }else {
+            key = DatabaseEnum.logical.toString();
+        }
+        for (String topic:
+             topicData) {
+            firebaseFirestore.collection(key)
+                    .document(topic)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(TopicQuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
+                                dismissLoader();
+                                finish();
                             }
-                            Collections.shuffle(list);
-
-                            playanim(question,0,list.get(position).getQuestion());
-                            for (int i=0;i<4;i++){
-                                options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        checkAnswer(((Button)v));
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            Map<String, Object> que = documentSnapshot.getData();
+                            if (que != null) {
+                                Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
+                                while (iterator.hasNext()) {
+                                    Map.Entry<String, Object> x = iterator.next();
+                                    JSONObject object = new JSONObject((Map) x.getValue());
+                                    try {
+                                        list.add(new QuestionModal(object.getString("question"),
+                                                object.getString("optionA"),
+                                                object.getString("optionB"),
+                                                object.getString("optionC"),
+                                                object.getString("optionD"),
+                                                object.getString("correctAns"),
+                                                object.getString("explanation"),
+                                                "CategoryId",
+                                                documentSnapshot.getId()));
+                                    } catch (JSONException e) {
+                                        Log.d("", e.getMessage());
                                     }
-                                });
+                                }
+                                Collections.shuffle(list);
                             }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if(topic.equals(topicData.get(-1)))
+                                dismissLoader();
+                        }
+                    });
+        }
 
-                            createQuestionsGrid();
+        // checking is questions are enough else taking from competitive
+        if(limitQuestions>list.size()){
 
-                            next.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
+        }
+
+
+        playanim(question, 0, list.get(position).getQuestion());
+        for (int i = 0; i < 4; i++) {
+            options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    checkAnswer(((Button) v));
+                }
+            });
+        }
+
+        createQuestionsGrid();
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                                    next.setAlpha((float) 0.7);
-                                    enabledoption(true);
-                                    position++;
-                                    previous.setEnabled(true);
-                                    if(position == (limitQuestions-1)){
-                                        next.setText("Submit");
-                                    }
-                                    if (position == limitQuestions){
-                                        Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                                        intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
-                                        intent.putExtra(ScoreEnum.totalQuestions.toString(),limitQuestions);
-                                        intent.putExtra(ScoreEnum.totalAttempted.toString(),totalAttempted);
-                                        intent.putExtra(ScoreEnum.totalWrong.toString(),totalAttempted-score);
-                                        intent.putExtra(ScoreEnum.totalSkipped.toString(),limitQuestions-totalAttempted);
-                                        startActivity(intent);
-                                        finish();
-                                        return;
-                                    }
-                                    if(!list.get(position).getAnswered()){
-                                        next.setText("Skip");
-                                    }
-                                    count = 0;
-                                    playanim(question,0,list.get(position).getQuestion());
-                                }
-                            });
+                enabledoption(true);
+                position++;
+                previous.setEnabled(true);
+                if (position == (limitQuestions - 1)) {
+                    next.setText("Submit");
+                }
+                if (position == limitQuestions) {
+                    Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
+                    intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
+                    intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
+                    intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
+                    intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
+                    intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
+                if (!list.get(position).getAnswered()) {
+                    next.setText("Skip");
+                }
+                count = 0;
+                playanim(question, 0, list.get(position).getQuestion());
+            }
+        });
 
-                            previous.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                                    enabledoption(true);
-                                    enabledoption(true);
-                                    if (position != 0){
-                                        position--;
-                                        if(position==0){
-                                            previous.setEnabled(false);
-                                        }
-                                        count = 0;
-                                        playanim(question,0,list.get(position).getQuestion());
-                                    }
-                                    if(position != (limitQuestions-1) && list.get(position).getAnswered()){
-                                        next.setText("Next");
-                                    }else if(position!= (limitQuestions-1) && !list.get(position).getAnswered()){
-                                        next.setText("Skip");
-                                    }
-
-                                    Log.d("Position",String.valueOf( position));
-                                }
-                            });
-                            dismissLoader();
-
-                        }else {
-                            dismissLoader();
-                            Toast.makeText(QuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
+                enabledoption(true);
+                if (position != 0) {
+                    position--;
+                    if (position == 0) {
+                        previous.setEnabled(false);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(QuestionsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        dismissLoader();
-                    }
-                });
+                    count = 0;
+                    playanim(question, 0, list.get(position).getQuestion());
+                }
+                if (position != (limitQuestions - 1) && list.get(position).getAnswered()) {
+                    next.setText("Next");
+                } else if (position != (limitQuestions - 1) && !list.get(position).getAnswered()) {
+                    next.setText("Skip");
+                }
+
+                Log.d("Position", String.valueOf(position));
+            }
+        });
+        dismissLoader();
     }
 
     public void jumpTo(int pos){
@@ -329,7 +348,7 @@ public class QuestionsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_info && list.get(position).getAnswered()){
-            DialogMaker dialogMaker = new DialogMaker(QuestionsActivity.this,"Explanation",list.get(position).getExplanation());
+            DialogMaker dialogMaker = new DialogMaker(TopicQuestionsActivity.this,"Explanation",list.get(position).getExplanation());
             dialogMaker.getDialog().show();
         }else{
             Toast.makeText(this, "Question not answered !!", Toast.LENGTH_SHORT).show();
@@ -417,8 +436,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
                         if (value == 0){
                             try {
-                                ((TextView)view).setText(Html.fromHtml(data,Html.FROM_HTML_MODE_LEGACY));
-                                Log.d("Data",data);
+                                ((TextView)view).setText(Html.fromHtml(data, Html.FROM_HTML_MODE_LEGACY));
                                 question_no.setText(String.valueOf(position+1)+"/"+String.valueOf(limitQuestions));
 
                                 if (modelMatch()){
