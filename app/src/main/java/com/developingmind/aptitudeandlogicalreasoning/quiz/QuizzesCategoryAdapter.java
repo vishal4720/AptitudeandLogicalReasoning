@@ -1,6 +1,5 @@
 package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
-import static com.developingmind.aptitudeandlogicalreasoning.HomeActivity.icons;
 
 import android.content.Context;
 import android.content.Intent;

@@ -137,28 +137,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public static String icons;
-
-//    private Bitmap getBitmapFromVectorDrawable(Context context, int d){
-//        Log.d("Bitmap","Bitmap Start");
-//        Drawable drawable = ContextCompat.getDrawable(context, d);
-//        Bitmap bitmap = Bitmap.createBitmap(
-//                drawable.getIntrinsicWidth(),
-//                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888
-//        );
-//        Canvas canvas = new Canvas(bitmap);
-//
-//        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-//        drawable.draw(canvas);
-//        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-//        byte[] byteArray = byteStream.toByteArray();
-//        icons = Base64.getEncoder().encodeToString(byteArray);
-//        Log.d("Bitmap",icons);
-//
-//        Log.d("Bitmap",bitmap.toString());
-//        return bitmap;
-//    }
 
     public void getMaintenanceStatus(@NonNull Context context){
         firebaseFirestore.collection(DatabaseEnum.system.toString())
@@ -275,6 +253,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.nav_notification){
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.nav_remove_ads) {
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
