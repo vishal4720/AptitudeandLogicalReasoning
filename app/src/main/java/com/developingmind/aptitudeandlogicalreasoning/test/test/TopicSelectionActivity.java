@@ -143,6 +143,7 @@ public class TopicSelectionActivity extends AppCompatActivity {
         progressdialog.dismiss();
 
     }
+    private Integer questionCount =0;
 
     private void createDialog(){
         questionCountDialog = new Dialog(this);
@@ -159,10 +160,12 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
 
         TextView count = questionCountDialog.findViewById(R.id.time_allotted);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                count.setText(String.valueOf(Integer.parseInt(items.get(position))+5)+" mins");
+                questionCount = Integer.parseInt(items.get(position));
+                count.setText(String.valueOf(questionCount+5)+" mins");
             }
 
             @Override
@@ -183,7 +186,7 @@ public class TopicSelectionActivity extends AppCompatActivity {
                 }
                 b.putStringArrayList("data",arrayList);
                 intent.putExtras(b);
-                intent.putExtra("count",topicSelectionAdapter.getTotalCount());
+                intent.putExtra("count",questionCount);
                 startActivity(intent);
             }
         });

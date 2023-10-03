@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
+import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicQuestionsActivity;
 
 import java.util.List;
 
@@ -63,6 +64,9 @@ public class QuestionsGridAdapter extends ArrayAdapter<QuestionModal> {
                     ((QuestionsActivity) context).jumpTo(position);
                 else if(context instanceof CompetitiveQuestionsActivity)
                     ((CompetitiveQuestionsActivity) context).jumpTo(position);
+                else if (context instanceof TopicQuestionsActivity) {
+                    ((TopicQuestionsActivity) context).jumpTo(position);
+                }
             }
         });
 

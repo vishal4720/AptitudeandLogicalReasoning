@@ -7,5 +7,6 @@ public enum DatabaseEnum {
     competitive,
     feedback,
     system,
-    maintenance
+    maintenance,
+    advertisment,
 }

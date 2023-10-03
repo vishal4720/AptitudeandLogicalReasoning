@@ -433,7 +433,7 @@ public class QuestionsActivity extends AppCompatActivity {
                             view.setTag(data);
                             playanim(view,1,data);
                         }else{
-                            if(list.get(position).getAnswered()){
+                            if(count == 4 && list.get(position).getAnswered()){
                                 isQuestionAnswered();
                             }
                             if(!list.get(position).getVisited()){

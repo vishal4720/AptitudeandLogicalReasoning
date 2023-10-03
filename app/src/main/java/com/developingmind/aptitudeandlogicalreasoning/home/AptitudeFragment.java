@@ -3,19 +3,43 @@ package com.developingmind.aptitudeandlogicalreasoning.home;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
+import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
+import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.bookmark.BookmarkActivity;
+import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentAdapter;
+import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentModal;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
-import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +58,9 @@ public class AptitudeFragment extends Fragment {
     private String mParam2;
 
     private LinearLayoutCompat study,solvedProblems,practice,test,tip,bookmark;
+    private RecyclerView recyclerView;
+    AdvertismentAdapter adapter;
+    private List<AdvertismentModal> advertismentModalList = new ArrayList<>();
 
     public AptitudeFragment() {
         // Required empty public constructor
@@ -68,6 +95,9 @@ public class AptitudeFragment extends Fragment {
         test = view.findViewById(R.id.test);
         tip = view.findViewById(R.id.tips);
         bookmark = view.findViewById(R.id.bookmark);
+        recyclerView = view.findViewById(R.id.recycler_view);
+
+        setHorizontalAdvertisment();
 
         study.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,5 +151,65 @@ public class AptitudeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setHorizontalAdvertisment(){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),RecyclerView.HORIZONTAL,false);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new AdvertismentAdapter(getContext(),advertismentModalList);
+        recyclerView.setAdapter(adapter);
+
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerView);
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(layoutManager.findLastCompletelyVisibleItemPosition() < (adapter.getItemCount()-1)){
+                    layoutManager.smoothScrollToPosition(recyclerView,new RecyclerView.State(),layoutManager.findLastCompletelyVisibleItemPosition()+1);
+                }else{
+                    layoutManager.smoothScrollToPosition(recyclerView,new RecyclerView.State(),0);
+                }
+            }
+        },0,3000);
+
+        getAdvertismentData();
+    }
+
+    private void getAdvertismentData(){
+        ((HomeActivity)getActivity()).getFirebaseFirestore().collection(DatabaseEnum.system.toString())
+                .document(DatabaseEnum.advertisment.toString())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            Map<String, Object> map = documentSnapshot.getData();
+                            if(map!=null){
+                                Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator();
+                                while (iterator.hasNext()) {
+                                    Map.Entry<String, Object> x = iterator.next();
+                                    JSONObject object = new JSONObject((Map) x.getValue());
+                                    try {
+                                        advertismentModalList.add(new AdvertismentModal(object.getString("image"),object.getString("redirect")));
+                                    } catch (JSONException e) {
+                                        Log.d("", e.getMessage());
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }else{
+                            recyclerView.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        recyclerView.setVisibility(View.GONE);
+                    }
+                });
     }
 }
