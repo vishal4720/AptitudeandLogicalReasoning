@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -211,71 +212,93 @@ public class QuestionsActivity extends AppCompatActivity {
                                     Log.d("", e.getMessage());
                                 }
                             }
-                            Collections.shuffle(list);
+                            if(list.size()>0) {
 
-                            playanim(question,0,list.get(position).getQuestion());
-                            for (int i=0;i<4;i++){
-                                options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                                Collections.shuffle(list);
+
+                                playanim(question, 0, list.get(position).getQuestion());
+                                for (int i = 0; i < 4; i++) {
+                                    options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            checkAnswer(((Button) v));
+                                        }
+                                    });
+                                }
+
+                                createQuestionsGrid();
+
+                                next.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        checkAnswer(((Button)v));
-                                    }
-                                });
-                            }
-
-                            createQuestionsGrid();
-
-                            next.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
 //                                    next.setAlpha((float) 0.7);
-                                    enabledoption(true);
-                                    position++;
-                                    previous.setEnabled(true);
-                                    if(position == (limitQuestions-1)){
-                                        next.setText("Submit");
-                                    }
-                                    if (position == limitQuestions){
-                                        Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                                        intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
-                                        intent.putExtra(ScoreEnum.totalQuestions.toString(),limitQuestions);
-                                        intent.putExtra(ScoreEnum.totalAttempted.toString(),totalAttempted);
-                                        intent.putExtra(ScoreEnum.totalWrong.toString(),totalAttempted-score);
-                                        intent.putExtra(ScoreEnum.totalSkipped.toString(),limitQuestions-totalAttempted);
-                                        startActivity(intent);
-                                        finish();
-                                        return;
-                                    }
-                                    if(!list.get(position).getAnswered()){
-                                        next.setText("Skip");
-                                    }
-                                    count = 0;
-                                    playanim(question,0,list.get(position).getQuestion());
-                                }
-                            });
-
-                            previous.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-//                                    enabledoption(true);
-                                    enabledoption(true);
-                                    if (position != 0){
-                                        position--;
-                                        if(position==0){
-                                            previous.setEnabled(false);
+                                        enabledoption(true);
+                                        position++;
+                                        previous.setEnabled(true);
+                                        if (position == (limitQuestions - 1)) {
+                                            next.setText("Submit");
+                                        }
+                                        if (position == limitQuestions) {
+                                            Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
+                                            intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
+                                            intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
+                                            intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
+                                            intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
+                                            intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
+                                            startActivity(intent);
+                                            finish();
+                                            return;
+                                        }
+                                        if (!list.get(position).getAnswered()) {
+                                            next.setText("Skip");
                                         }
                                         count = 0;
-                                        playanim(question,0,list.get(position).getQuestion());
+                                        playanim(question, 0, list.get(position).getQuestion());
                                     }
-                                    if(position != (limitQuestions-1) && list.get(position).getAnswered()){
-                                        next.setText("Next");
-                                    }else if(position!= (limitQuestions-1) && !list.get(position).getAnswered()){
-                                        next.setText("Skip");
-                                    }
+                                });
 
-                                    Log.d("Position",String.valueOf( position));
-                                }
-                            });
+                                previous.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+//                                    enabledoption(true);
+                                        enabledoption(true);
+                                        if (position != 0) {
+                                            position--;
+                                            if (position == 0) {
+                                                previous.setEnabled(false);
+                                            }
+                                            count = 0;
+                                            playanim(question, 0, list.get(position).getQuestion());
+                                        }
+                                        if (position != (limitQuestions - 1) && list.get(position).getAnswered()) {
+                                            next.setText("Next");
+                                        } else if (position != (limitQuestions - 1) && !list.get(position).getAnswered()) {
+                                            next.setText("Skip");
+                                        }
+
+                                        Log.d("Position", String.valueOf(position));
+                                    }
+                                });
+                            }else{
+                                firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
+                                        .document(categoryId)
+                                                .collection("formula")
+                                                        .get()
+                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        Log.d("Data",task.getResult().getDocuments().toString());
+                                                                    }
+                                                                })
+                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                Log.d("Exception",e.getMessage());
+                                                                            }
+                                                                        });
+                                Toast.makeText(QuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                             dismissLoader();
 
                         }else {

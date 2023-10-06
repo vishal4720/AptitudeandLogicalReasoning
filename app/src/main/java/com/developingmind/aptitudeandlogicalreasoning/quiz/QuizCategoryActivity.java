@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -36,8 +37,9 @@ public class QuizCategoryActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     private Toolbar toolbar;
+    private int formulaCount = 0;
 
-    private boolean isAptitude,isPractice;
+    private boolean isAptitude,isLogical,isPractice,isStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,18 @@ public class QuizCategoryActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
-        isPractice = getIntent().getBooleanExtra(Constants.isPractice,true);
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude, true);
+        isLogical = getIntent().getBooleanExtra(Constants.isLogical, false);
+        isPractice = getIntent().getBooleanExtra(Constants.isPractice, true);
+        isStudy = getIntent().getBooleanExtra(Constants.isStudy, false);
+
+        if (isPractice) {
+            toolbar.setTitle("Practice");
+        } else if (isStudy){
+            toolbar.setTitle("Formulas");
+        }else{
+            toolbar.setTitle("Solved Problems");
+        }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +79,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        final QuizzesCategoryAdapter quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice);
+        final QuizzesCategoryAdapter quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice,isStudy);
         recyclerView.setAdapter(quizzesCategoryAdapter);
 
         showDialog();
@@ -79,6 +91,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
             key = DatabaseEnum.logical.toString();
 
         firebaseFirestore.collection(key)
+
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -86,7 +99,6 @@ public class QuizCategoryActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                            QuerySnapshot queryDocumentSnapshots = task.getResult();
                            List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-
                             for (DocumentSnapshot doc:
                                  documentSnapshots) {
                                 list.add(doc.getId());

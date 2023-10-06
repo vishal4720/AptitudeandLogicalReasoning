@@ -102,7 +102,11 @@ public class AptitudeFragment extends Fragment {
         study.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra(Constants.isAptitude,true);
+                intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isStudy,true);
+                startActivity(intent);
             }
         });
 

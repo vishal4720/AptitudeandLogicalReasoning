@@ -16,6 +16,7 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="Back"
         app:title="Select Topics" />
 
     <androidx.recyclerview.widget.RecyclerView

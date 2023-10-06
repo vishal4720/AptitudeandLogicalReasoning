@@ -188,6 +188,7 @@ public class TopicSelectionActivity extends AppCompatActivity {
                 intent.putExtras(b);
                 intent.putExtra("count",questionCount);
                 startActivity(intent);
+                finish();
             }
         });
 

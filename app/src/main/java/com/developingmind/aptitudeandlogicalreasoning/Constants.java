@@ -3,6 +3,7 @@ package com.developingmind.aptitudeandlogicalreasoning;
 public interface Constants {
     // Identifier for Bool Value
     String isAptitude = "isAptitude";
+    String isLogical = "isLogical";
     String isStudy = "isStudy";
     String isSolvedProblems = "isSolvedProblems";
     String isPractice = "isPractice";

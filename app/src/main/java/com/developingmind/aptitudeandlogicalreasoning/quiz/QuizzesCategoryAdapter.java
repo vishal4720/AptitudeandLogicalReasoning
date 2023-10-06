@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
@@ -27,14 +28,15 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     private List<String> quizzesModalList;
     Context context;
     CardView cardView;
-    Boolean isAptitude,isPractice;
+    Boolean isAptitude,isPractice,isStudy;
     ImageView icon;
 
-    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice){
+    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice,Boolean isStudy){
         this.quizzesModalList = quizzesModalList;
         this.context = context;
         this.isAptitude = isAptitude;
         this.isPractice = isPractice;
+        this.isStudy = isStudy;
     }
 
     private int lastPosition = -1;
@@ -93,7 +95,12 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                             intent = new Intent(itemView.getContext(), QuestionsActivity.class);
                             intent.putExtra("title",title);
                             intent.putExtra("position",position);
-                        }else{
+                        } else if (isStudy) {
+                            intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                            intent.putExtra("title",title);
+                            intent.putExtra("position",position);
+                            intent.putExtra(Constants.isSolvedProblems,false);
+                        } else{
                             intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
                             intent.putExtra("title",title);
                             intent.putExtra("position",position);

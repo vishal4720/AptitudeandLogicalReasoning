@@ -12,22 +12,29 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizzesCategoryAdapter;
+import com.developingmind.aptitudeandlogicalreasoning.study.StudyAdapter;
+import com.developingmind.aptitudeandlogicalreasoning.study.StudyModal;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +43,13 @@ public class SolvedProblemActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     SolvedProblemAdapter adapter;
+    StudyAdapter studyAdapter;
     List<ScoreModal> scoreModal = new ArrayList<>();
+    List<StudyModal> studyModal = new ArrayList<>();
     String categoryId;
     DialogMaker progressdialog;
     Toolbar toolbar;
+    Boolean isSolved = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class SolvedProblemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_solved_problem);
 
         categoryId = getIntent().getStringExtra("title");
+        isSolved = getIntent().getBooleanExtra(Constants.isSolvedProblems,true);
         recyclerView = findViewById(R.id.recycler_view);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,6 +82,11 @@ public class SolvedProblemActivity extends AppCompatActivity {
         getData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressdialog.dismiss();
+    }
 
     private void showDialog(){
         progressdialog.getDialog().show();
@@ -83,46 +99,87 @@ public class SolvedProblemActivity extends AppCompatActivity {
 
     private void getData(){
         showDialog();
-        FirebaseFirestore.getInstance().collection(DatabaseEnum.aptitude.toString())
-                .document(categoryId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            Map<String,Object> que = documentSnapshot.getData();
-                            if (que!=null) {
-                                Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
-                                scoreModal.clear();
-                                while (iterator.hasNext()){
-                                    Map.Entry<String, Object> x = iterator.next();
-                                    JSONObject object = new JSONObject((Map) x.getValue());
-                                    try {
-                                        scoreModal.add(new ScoreModal(object.getString("question").toString(),
-                                                object.getString("correctAns").toString(),
-                                                object.getString("explanation").toString()));
-                                    } catch (JSONException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                                adapter = new SolvedProblemAdapter(scoreModal, SolvedProblemActivity.this);
-                                recyclerView.setAdapter(adapter);
-                            }else{
-                                Toast.makeText(SolvedProblemActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
+        DocumentReference collectionReference = FirebaseFirestore.getInstance().collection(DatabaseEnum.aptitude.toString())
+                .document(categoryId);
 
+        if(isSolved) {
+            collectionReference
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot documentSnapshot = task.getResult();
+                                Map<String, Object> que = documentSnapshot.getData();
+                                if (que != null) {
+                                    Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
+                                    scoreModal.clear();
+                                    while (iterator.hasNext()) {
+                                        Map.Entry<String, Object> x = iterator.next();
+                                        JSONObject object = new JSONObject((Map) x.getValue());
+                                        try {
+                                            scoreModal.add(new ScoreModal(object.getString("question").toString(),
+                                                    object.getString("correctAns").toString(),
+                                                    object.getString("explanation").toString()));
+                                        } catch (JSONException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                    adapter = new SolvedProblemAdapter(scoreModal, SolvedProblemActivity.this);
+                                    recyclerView.setAdapter(adapter);
+                                } else {
+                                    Toast.makeText(SolvedProblemActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
+
+                                }
                             }
+                            dismissLoader();
                         }
-                        dismissLoader();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dismissLoader();
-                        Toast.makeText(SolvedProblemActivity.this, "Something went wrong. Try after some time !!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dismissLoader();
+                            Toast.makeText(SolvedProblemActivity.this, "Something went wrong. Try after some time !!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+        }else{
+            collectionReference
+                    .collection("formulas")
+                    .orderBy("no", Query.Direction.ASCENDING)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()) {
+                                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                                if (documentSnapshots.size()==0){
+                                    Toast.makeText(SolvedProblemActivity.this, "No Formulas. Come Back after some time !!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }else {
+                                    for (DocumentSnapshot d :
+                                            documentSnapshots) {
+                                        studyModal.add(new StudyModal(d.getString("image").toString(),
+                                                d.getString("title").toString(),
+                                                d.getString("description").toString()));
+                                        studyAdapter = new StudyAdapter(studyModal, SolvedProblemActivity.this);
+                                        recyclerView.setAdapter(studyAdapter);
+
+                                    }
+                                    Log.d("", studyModal.get(1).getDescription());
+                                }
+                            }
+                            dismissLoader();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dismissLoader();
+                            Toast.makeText(SolvedProblemActivity.this, "Something went wrong. Try after some time !!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+        }
     }
 }

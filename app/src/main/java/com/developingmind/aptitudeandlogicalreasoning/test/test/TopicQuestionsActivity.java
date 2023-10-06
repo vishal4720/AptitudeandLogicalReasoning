@@ -157,6 +157,13 @@ public class TopicQuestionsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        exitDialog.dismiss();
+        questionsDialog.dismiss();
+    }
+
     private void createQuestionsGrid(){
         questionsDialog = new Dialog(this);
         questionsDialog.setContentView(R.layout.questions_grid);
