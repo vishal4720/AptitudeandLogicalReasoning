@@ -85,8 +85,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         else
             notificationModal = (new NotificationModal(title,desc,imageUrl,"","","",""));
 
-
-        storeNotification(notificationModal);
+        if(title!=null && desc!=null)
+            storeNotification(notificationModal);
     }
 
 //    @Override
