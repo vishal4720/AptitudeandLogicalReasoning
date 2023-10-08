@@ -280,22 +280,22 @@ public class QuestionsActivity extends AppCompatActivity {
                                     }
                                 });
                             }else{
-                                firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
-                                        .document(categoryId)
-                                                .collection("formula")
-                                                        .get()
-                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                        Log.d("Data",task.getResult().getDocuments().toString());
-                                                                    }
-                                                                })
-                                                                        .addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                Log.d("Exception",e.getMessage());
-                                                                            }
-                                                                        });
+//                                firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
+//                                        .document(categoryId)
+//                                                .collection("formula")
+//                                                        .get()
+//                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                                                    @Override
+//                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                                                        Log.d("Data",task.getResult().getDocuments().toString());
+//                                                                    }
+//                                                                })
+//                                                                        .addOnFailureListener(new OnFailureListener() {
+//                                                                            @Override
+//                                                                            public void onFailure(@NonNull Exception e) {
+//                                                                                Log.d("Exception",e.getMessage());
+//                                                                            }
+//                                                                        });
                                 Toast.makeText(QuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -345,6 +345,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private void storeBookmarks(){
         String json = gson.toJson(bookmarklist);
+        Log.d("",json);
         editor.putString("bookmark",json);
         editor.apply();
     }

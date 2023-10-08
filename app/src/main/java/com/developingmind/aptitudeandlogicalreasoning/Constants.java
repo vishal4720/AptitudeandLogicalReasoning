@@ -11,6 +11,7 @@ public interface Constants {
     String profile = "profile";
     String isTest = "isTest";
     String isTips = "isTips";
+    String categoryNoti = "categoryNoti";
     int study = 0;
     int solvedProblems = 1;
     int practice = 2;
