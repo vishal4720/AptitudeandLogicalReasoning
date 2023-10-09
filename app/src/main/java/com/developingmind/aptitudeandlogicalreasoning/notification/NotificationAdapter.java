@@ -2,6 +2,7 @@ package com.developingmind.aptitudeandlogicalreasoning.notification;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsActivity;
+import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizzesCategoryAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 import com.squareup.picasso.Picasso;
@@ -106,21 +108,32 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         }
                     }else if(!notificationModal.getCategoryId().isEmpty() && !notificationModal.getDivision().isEmpty()){
                         // Open category (Aptitude or Logical) and highlight
+                        Intent intent = null;
                         switch (notificationModal.getDivision()){
-                            case Constants.isLogical:
-                                break;
-                            case Constants.isStudy:
-                                break;
+                            case Constants.isPractice:
                             case Constants.isSolvedProblems:
+                            case Constants.isStudy:
+                                intent = new Intent(context, QuizCategoryActivity.class);
+                                intent.putExtra(Constants.isAptitude, notificationModal.getCategoryId().trim().equals(Constants.isAptitude));
+                                intent.putExtra(Constants.isPractice,notificationModal.getDivision().trim().equals(Constants.isPractice));
+                                intent.putExtra(Constants.isStudy,notificationModal.getDivision().trim().equals(Constants.isStudy));
                                 break;
                             case Constants.isTips:
                                 break;
                         }
+                        try {
+                            context.startActivity(intent);
+                        }catch (Exception ignored) {
+
+                        }
                     }
                     else if(!notificationModal.getCategoryId().isEmpty()){
                         // Open Category Only Aptitude or Logical
-                    } else if (!notificationModal.getUrl().isEmpty()) {
 
+                    } else if (!notificationModal.getUrl().isEmpty()) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(notificationModal.getUrl()));
+                        context.startActivity(i);
                     }
                 }
             });

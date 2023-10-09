@@ -117,7 +117,7 @@ public class DialogMaker extends Dialog {
         });
     }
 
-    public DialogMaker(@NonNull Context context, Boolean isTest){
+    public DialogMaker(@NonNull Context context, Boolean isAptitude){
         super(context);
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.test_dialog);
@@ -127,7 +127,9 @@ public class DialogMaker extends Dialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                context.startActivity(new Intent(context, TopicSelectionActivity.class));
+                Intent intent = new Intent(context, TopicSelectionActivity.class);
+                intent.putExtra(Constants.isAptitude,isAptitude);
+                context.startActivity(intent);
             }
         });
 
@@ -135,7 +137,9 @@ public class DialogMaker extends Dialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                context.startActivity(new Intent(context, CompetitiveQuestionsActivity.class));
+                Intent intent = new Intent(context, CompetitiveQuestionsActivity.class);
+                intent.putExtra(Constants.isAptitude,isAptitude);
+                context.startActivity(intent);
             }
         });
     }

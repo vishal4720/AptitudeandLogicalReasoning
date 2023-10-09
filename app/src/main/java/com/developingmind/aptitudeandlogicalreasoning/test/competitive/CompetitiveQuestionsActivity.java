@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
@@ -84,6 +85,8 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     Dialog questionsDialog;
     QuestionsGridAdapter gridAdapter;
 
+    Boolean isAptitude;
+
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -110,6 +113,8 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         progressdialog = new DialogMaker(this);
+
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
 
         sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
         editor = sharedPreferences.edit();

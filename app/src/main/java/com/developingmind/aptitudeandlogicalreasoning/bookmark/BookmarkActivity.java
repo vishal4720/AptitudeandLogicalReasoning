@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
 import com.google.gson.Gson;
@@ -29,6 +31,7 @@ public class BookmarkActivity extends AppCompatActivity {
     Gson gson;
 
     BookmarkAdapter bookmarkAdapter;
+    Boolean isAptitude;
 
     RecyclerView recyclerView;
     @Override
@@ -37,6 +40,8 @@ public class BookmarkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bookmark);
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recycler_view);
+
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -61,14 +66,18 @@ public class BookmarkActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmark","");
+
+        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
 
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
         bookmarklist = gson.fromJson(json,type);
-        if (bookmarklist == null){
+        if (bookmarklist == null || bookmarklist.isEmpty()){
             bookmarklist = new ArrayList<>();
+            Toast.makeText(this, "No Questions Bookmarked", Toast.LENGTH_SHORT).show();
+            finish();
         }
+        Log.d("Bookmark",bookmarklist.toString());
         bookmarkAdapter = new BookmarkAdapter(this,bookmarklist);
         recyclerView.setAdapter(bookmarkAdapter);
     }

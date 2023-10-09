@@ -95,6 +95,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                             intent = new Intent(itemView.getContext(), QuestionsActivity.class);
                             intent.putExtra("title",title);
                             intent.putExtra("position",position);
+                            intent.putExtra(Constants.isAptitude,isAptitude);
                         } else if (isStudy) {
                             intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
                             intent.putExtra("title",title);

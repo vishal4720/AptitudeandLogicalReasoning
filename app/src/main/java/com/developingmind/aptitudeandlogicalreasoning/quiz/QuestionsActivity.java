@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
@@ -83,6 +84,8 @@ public class QuestionsActivity extends AppCompatActivity {
     Dialog questionsDialog;
     QuestionsGridAdapter gridAdapter;
 
+    Boolean isAptitude;
+
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -109,6 +112,7 @@ public class QuestionsActivity extends AppCompatActivity {
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         categoryId = getIntent().getStringExtra("title");
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
         progressdialog = new DialogMaker(this);
         Log.d("ID",categoryId);
 
@@ -346,7 +350,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private void storeBookmarks(){
         String json = gson.toJson(bookmarklist);
         Log.d("",json);
-        editor.putString("bookmark",json);
+        editor.putString("bookmark"+isAptitude,json);
         editor.apply();
     }
 

@@ -39,7 +39,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private int formulaCount = 0;
 
-    private boolean isAptitude,isLogical,isPractice,isStudy;
+    private boolean isAptitude,isPractice,isStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,6 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         isAptitude = getIntent().getBooleanExtra(Constants.isAptitude, true);
-        isLogical = getIntent().getBooleanExtra(Constants.isLogical, false);
         isPractice = getIntent().getBooleanExtra(Constants.isPractice, true);
         isStudy = getIntent().getBooleanExtra(Constants.isStudy, false);
 
