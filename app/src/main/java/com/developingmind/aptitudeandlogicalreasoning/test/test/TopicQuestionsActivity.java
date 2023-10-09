@@ -337,7 +337,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmark","");
+        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
 
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
@@ -349,7 +349,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
 
     private void storeBookmarks(){
         String json = gson.toJson(bookmarklist);
-        editor.putString("bookmark",json);
+        editor.putString("bookmark"+isAptitude,json);
         editor.apply();
     }
 

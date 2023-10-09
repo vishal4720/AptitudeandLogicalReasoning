@@ -107,8 +107,14 @@ public class TopicSelectionActivity extends AppCompatActivity {
             }
         });
 
+        String key;
+        if (isAptitude){
+            key = DatabaseEnum.aptitude.toString();
+        }else{
+            key = DatabaseEnum.logical.toString();
+        }
 
-        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
+        firebaseFirestore.collection(key)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

@@ -94,7 +94,11 @@ public class LogicalFragment extends Fragment {
         study.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra(Constants.isAptitude,false);
+                intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isStudy,true);
+                startActivity(intent);
             }
         });
 
@@ -102,7 +106,7 @@ public class LogicalFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), BookmarkActivity.class);
-                intent.putExtra(Constants.isAptitude,true);
+                intent.putExtra(Constants.isAptitude,false);
                 startActivity(intent);
             }
         });
@@ -130,7 +134,7 @@ public class LogicalFragment extends Fragment {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogMaker dialogMaker = new DialogMaker(getContext(),true);
+                DialogMaker dialogMaker = new DialogMaker(getContext(),false);
                 dialogMaker.getDialog().show();
             }
         });

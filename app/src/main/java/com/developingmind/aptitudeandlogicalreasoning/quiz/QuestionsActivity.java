@@ -337,7 +337,7 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmark","");
+        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
 
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
