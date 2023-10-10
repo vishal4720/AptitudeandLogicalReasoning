@@ -38,6 +38,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private int formulaCount = 0;
+    private QuizzesCategoryAdapter quizzesCategoryAdapter;
 
     private boolean isAptitude,isPractice,isStudy;
 
@@ -78,7 +79,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        final QuizzesCategoryAdapter quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice,isStudy);
+        quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice,isStudy);
         recyclerView.setAdapter(quizzesCategoryAdapter);
 
         showDialog();

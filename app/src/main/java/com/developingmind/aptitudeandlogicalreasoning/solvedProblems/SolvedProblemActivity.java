@@ -50,6 +50,7 @@ public class SolvedProblemActivity extends AppCompatActivity {
     DialogMaker progressdialog;
     Toolbar toolbar;
     Boolean isSolved = true;
+    Boolean isAptitude=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class SolvedProblemActivity extends AppCompatActivity {
 
         categoryId = getIntent().getStringExtra("title");
         isSolved = getIntent().getBooleanExtra(Constants.isSolvedProblems,true);
+        isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
         recyclerView = findViewById(R.id.recycler_view);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -99,7 +101,12 @@ public class SolvedProblemActivity extends AppCompatActivity {
 
     private void getData(){
         showDialog();
-        DocumentReference collectionReference = FirebaseFirestore.getInstance().collection(DatabaseEnum.aptitude.toString())
+        String key;
+        if (isAptitude)
+            key = DatabaseEnum.aptitude.toString();
+        else
+            key = DatabaseEnum.logical.toString();
+        DocumentReference collectionReference = FirebaseFirestore.getInstance().collection(key)
                 .document(categoryId);
 
         if(isSolved) {

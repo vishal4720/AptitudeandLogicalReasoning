@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
             icon = itemView.findViewById(R.id.category_icon);
 
         }
-        private void setData(final String title, final int position){
+        private void setData(String title, int position){
 //            byte[] decodedBytes = Base64.getDecoder().decode(icons);
 //            icon.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
 
@@ -90,24 +91,28 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                 @Override
                 public void onClick(View v) {
                     Intent intent = null;
-                    if(isAptitude){
-                        if(isPractice){
-                            intent = new Intent(itemView.getContext(), QuestionsActivity.class);
-                            intent.putExtra("title",title);
-                            intent.putExtra("position",position);
-                            intent.putExtra(Constants.isAptitude,isAptitude);
-                        } else if (isStudy) {
-                            intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
-                            intent.putExtra("title",title);
-                            intent.putExtra("position",position);
-                            intent.putExtra(Constants.isSolvedProblems,false);
-                        } else{
-                            intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
-                            intent.putExtra("title",title);
-                            intent.putExtra("position",position);
-                        }
+                    Log.d("On Click",String.valueOf(isAptitude));
+                    Log.d("On Click",String.valueOf(isPractice));
+                    Log.d("On Click",String.valueOf(isStudy));
+                    if(isPractice){
+                        intent = new Intent(itemView.getContext(), QuestionsActivity.class);
+                        intent.putExtra("title",title);
+                        intent.putExtra("position",position);
+                        intent.putExtra(Constants.isAptitude,isAptitude);
+                    } else if (isStudy) {
+                        intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                        intent.putExtra("title",title);
+                        intent.putExtra("position",position);
+                        intent.putExtra(Constants.isSolvedProblems,false);
+                        intent.putExtra(Constants.isAptitude,isAptitude);
+                    } else{
+                        intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                        intent.putExtra("title",title);
+                        intent.putExtra("position",position);
+                        intent.putExtra(Constants.isAptitude,isAptitude);
                     }
-                    itemView.getContext().startActivity(intent);
+
+                    context.startActivity(intent);
                 }
             });
         }

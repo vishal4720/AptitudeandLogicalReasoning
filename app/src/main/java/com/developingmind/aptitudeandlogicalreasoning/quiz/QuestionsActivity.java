@@ -183,7 +183,13 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void getData(){
-        firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
+        String key;
+        if(isAptitude){
+            key = DatabaseEnum.aptitude.toString();
+        }else{
+            key = DatabaseEnum.logical.toString();
+        }
+        firebaseFirestore.collection(key)
                 .document(categoryId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
