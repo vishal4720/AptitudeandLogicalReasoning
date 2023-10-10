@@ -23,7 +23,6 @@ import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.bookmark.BookmarkActivity;
 import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentModal;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,7 +86,7 @@ public class AptitudeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_aptitude, container, false);
         practice = view.findViewById(R.id.practice);
         study = view.findViewById(R.id.study);
         solvedProblems = view.findViewById(R.id.solved_problems);

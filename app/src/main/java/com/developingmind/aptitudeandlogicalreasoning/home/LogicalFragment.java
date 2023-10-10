@@ -23,6 +23,8 @@ import com.developingmind.aptitudeandlogicalreasoning.bookmark.BookmarkActivity;
 import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentModal;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
+import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
+import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +51,7 @@ public class LogicalFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private LinearLayoutCompat study,solvedProblems,practice,test,tip,bookmark;
+    private LinearLayoutCompat solvedProblems,practice,test,competitiveTest,tip,bookmark;
     private RecyclerView recyclerView;
     AdvertismentAdapter adapter;
     private List<AdvertismentModal> advertismentModalList = new ArrayList<>();
@@ -80,9 +82,9 @@ public class LogicalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_logical, container, false);
         practice = view.findViewById(R.id.practice);
-        study = view.findViewById(R.id.study);
+        competitiveTest = view.findViewById(R.id.competitive_test);
         solvedProblems = view.findViewById(R.id.solved_problems);
         test = view.findViewById(R.id.test);
         tip = view.findViewById(R.id.tips);
@@ -91,16 +93,6 @@ public class LogicalFragment extends Fragment {
 
         setHorizontalAdvertisment();
 
-        study.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
-                intent.putExtra(Constants.isAptitude,false);
-                intent.putExtra(Constants.isPractice,false);
-                intent.putExtra(Constants.isStudy,true);
-                startActivity(intent);
-            }
-        });
 
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,8 +126,18 @@ public class LogicalFragment extends Fragment {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogMaker dialogMaker = new DialogMaker(getContext(),false);
-                dialogMaker.getDialog().show();
+                Intent intent = new Intent(getContext(), TopicSelectionActivity.class);
+                intent.putExtra(Constants.isAptitude,false);
+                startActivity(intent);
+            }
+        });
+
+        competitiveTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CompetitiveQuestionsActivity.class);
+                intent.putExtra(Constants.isAptitude,false);
+                startActivity(intent);
             }
         });
 

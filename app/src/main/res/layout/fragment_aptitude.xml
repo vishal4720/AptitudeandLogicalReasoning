@@ -117,7 +117,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:paddingVertical="5dp"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/test"
@@ -168,11 +168,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 app:shapeAppearance="@style/Circular"
+                android:layout_weight="2"
                 android:src="@drawable/ic_tip">
             </androidx.appcompat.widget.AppCompatImageView>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Tips &amp; Tricks">

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    tools:context=".home.AptitudeFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/category_bg"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:paddingVertical="10dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/solved_problems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:shapeAppearance="@style/Circular"
+                android:layout_weight="1"
+                android:src="@drawable/ic_solved">
+
+            </com.google.android.material.imageview.ShapeableImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="2"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Solved\nProblems">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:shapeAppearance="@style/Circular"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_tip">
+
+                </com.google.android.material.imageview.ShapeableImageView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:text="Tips &amp; Tricks">
+
+                </TextView>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/practice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:shapeAppearance="@style/Circular"
+                android:layout_weight="1"
+                android:src="@drawable/ic_practice">
+            </com.google.android.material.imageview.ShapeableImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="2"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Practice">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:paddingVertical="5dp"
+        android:layout_height="100dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="10dp"
+            android:elevation="10dp"
+            android:gravity="center"
+            android:background="@drawable/category_bg">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:shapeAppearance="@style/Circular"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="2"
+                android:src="@drawable/ic_test">
+            </androidx.appcompat.widget.AppCompatImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Take a Test">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/competitive_test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="10dp"
+            android:layout_marginEnd="10dp"
+            android:paddingVertical="10dp"
+            android:gravity="center"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/category_bg"
+            android:layout_weight="1">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                app:shapeAppearance="@style/Circular"
+                android:layout_weight="2"
+                android:src="@drawable/ic_exam">
+            </androidx.appcompat.widget.AppCompatImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Competitive Exam">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/bookmark"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:paddingVertical="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:elevation="10dp"
+            android:gravity="center"
+            android:background="@drawable/category_bg">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:shapeAppearance="@style/Circular"
+                android:layout_weight="2"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_bookmark">
+            </androidx.appcompat.widget.AppCompatImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bookmarked Questions">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/advertisment_background"
+            android:layout_marginVertical="10dp"
+            android:visibility="gone"
+            tools:listitem="@layout/home_advertisment_item"
+            android:layout_marginHorizontal="10dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>
