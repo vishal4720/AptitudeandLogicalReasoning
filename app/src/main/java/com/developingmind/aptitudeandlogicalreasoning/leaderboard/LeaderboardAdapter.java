@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
@@ -46,12 +47,15 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         ImageView medal;
         ShapeableImageView profileIcon;
 
+        LinearLayoutCompat layoutCompat;
+
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             name = itemView.findViewById(R.id.leaderboard_name);
             score = itemView.findViewById(R.id.leaderboard_Score);
             medal = itemView.findViewById(R.id.leaderboard_medal);
             profileIcon = itemView.findViewById(R.id.profile_icon);
+            layoutCompat = itemView.findViewById(R.id.leaderboard_item_layout);
         }
 
         private void setData(LeaderboardModal leaderboardModal,int pos){
@@ -69,10 +73,16 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             }
 
             if((pos+1) == 1){
+                layoutCompat.getLayoutParams().height = layoutCompat.getLayoutParams().height + 40;
+                profileIcon.getLayoutParams().width = profileIcon.getLayoutParams().width + 40;
                 medal.setImageDrawable(context.getDrawable(R.drawable.ic_gold_medal));
             }else if((pos+1) == 2){
+                layoutCompat.getLayoutParams().height = layoutCompat.getLayoutParams().height + 30;
+                profileIcon.getLayoutParams().width = profileIcon.getLayoutParams().width + 30;
                 medal.setImageDrawable(context.getDrawable(R.drawable.ic_silver_medal));
             }else if ((pos+1) == 3){
+                layoutCompat.getLayoutParams().height = layoutCompat.getLayoutParams().height + 20;
+                profileIcon.getLayoutParams().width = profileIcon.getLayoutParams().width + 20;
                 medal.setImageDrawable(context.getDrawable(R.drawable.ic_bronze_medal));
             }else{
                 medal.setVisibility(View.GONE);

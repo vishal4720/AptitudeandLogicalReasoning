@@ -196,6 +196,7 @@ public class LogicalFragment extends Fragment {
                                         Log.d("", e.getMessage());
                                     }
                                 }
+                                recyclerView.setVisibility(View.VISIBLE);
                                 adapter.notifyDataSetChanged();
                             }
                         }else{

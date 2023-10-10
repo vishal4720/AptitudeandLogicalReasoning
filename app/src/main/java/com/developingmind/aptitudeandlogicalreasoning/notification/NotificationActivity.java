@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.R;
@@ -71,8 +72,10 @@ public class NotificationActivity extends AppCompatActivity {
         Type type = new TypeToken<List<NotificationModal>>(){}.getType();
 
         notificationModalList = gson.fromJson(json,type);
-        if (notificationModalList == null){
+        if (notificationModalList == null || notificationModalList.isEmpty()){
             notificationModalList = new ArrayList<NotificationModal>();
+            Toast.makeText(this, "No Notification Right Now !!", Toast.LENGTH_SHORT).show();
+            finish();
         }else{
             List<NotificationModal> noti = new ArrayList<>();
             for (NotificationModal n:

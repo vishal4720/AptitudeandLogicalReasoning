@@ -380,6 +380,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        int itemId = navigationView.getCheckedItem().getItemId();
+        if (itemId == R.id.nav_aptitude) {
+            setTitle("Aptitude");
+        }else if(itemId == R.id.nav_logical){
+            setTitle("Logical Reasoning");
+        }else if (itemId == R.id.nav_profile) {
+            setTitle("Profile");
+        } else if (itemId == R.id.nav_leaderboard) {
+            setTitle("Leaderboard");
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.nav_notification){
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
@@ -417,7 +432,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment frag = null; // create a Fragment Object
         int itemId = item.getItemId(); // get selected menu item's id
-// check selected menu item's id and replace a Fragment Accordingly
+        // check selected menu item's id and replace a Fragment Accordingly
         if (itemId == R.id.nav_aptitude) {
             setTitle("Aptitude");
             frag = new AptitudeFragment();
