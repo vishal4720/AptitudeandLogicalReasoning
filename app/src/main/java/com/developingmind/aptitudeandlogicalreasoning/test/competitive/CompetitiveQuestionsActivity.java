@@ -170,6 +170,14 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        questionsDialog.dismiss();
+        exitDialog.dismiss();
+        sharedialog.dismiss();
+    }
+
+    @Override
     public void onBackPressed() {
         exitDialog.getDialog().show();
     }

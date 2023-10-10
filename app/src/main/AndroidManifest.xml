@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AptitudeAndLogicalReasoning"
         tools:targetApi="31">
         <activity
+            android:name=".purchase.Subscription"
+            android:exported="false" />
+        <activity
             android:name=".bookmark.BookmarkActivity"
             android:exported="false" />
         <activity
@@ -70,10 +73,9 @@
  Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
         -->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_color"-->
-<!--            android:resource="@color/colorAccent" />-->
-
+        <!-- <meta-data -->
+        <!-- android:name="com.google.firebase.messaging.default_notification_color" -->
+        <!-- android:resource="@color/colorAccent" /> -->
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

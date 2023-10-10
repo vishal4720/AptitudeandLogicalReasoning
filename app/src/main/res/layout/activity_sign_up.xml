@@ -128,44 +128,42 @@
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_layout_signup"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/password_layout_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_password"
-        app:endIconDrawable="@drawable/ic_check_mark"
-        app:errorIconDrawable="@drawable/ic_check_mark_error"
-        app:endIconMode="custom"
+        app:passwordToggleEnabled="true"
         app:errorEnabled="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_signup"
             android:layout_width="match_parent"
+            android:inputType="textPassword"
             android:layout_height="wrap_content"
             android:hint="@string/enter_password" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/repassword_layout_signup"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/repassword_layout_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_password"
-        app:endIconDrawable="@drawable/ic_check_mark"
-        app:errorIconDrawable="@drawable/ic_check_mark_error"
-        app:endIconMode="custom"
+        app:passwordToggleEnabled="true"
         app:errorEnabled="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/repassword_signup"
             android:layout_width="match_parent"
+            android:inputType="textPassword"
             android:layout_height="wrap_content"
-            android:hint="@string/reenter_password" />
+            android:hint="@string/enter_password" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

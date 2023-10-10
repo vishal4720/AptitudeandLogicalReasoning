@@ -242,18 +242,33 @@ public class SignUpActivity extends AppCompatActivity {
     public boolean isPasswordValid(TextInputLayout passwordLayout ,TextInputLayout repassLayout ){
         Boolean isValid = true;
         if(TextUtils.isEmpty(passwordLayout.getEditText().getText())){
-            passwordLayout.setError("Enter Password");
+            passwordLayout.setError("Password cannot be empty");
             isValid=false;
         } else if (passwordLayout.getEditText().getText().toString().length()<6) {
             passwordLayout.setError("Password should be minimum of 6 digits");
             isValid=false;
-        } else if (!repassLayout.getEditText().getText().toString().equals(passwordLayout.getEditText().getText().toString())) {
+        }else{
+            passwordLayout.setError(null);
+            isValid=false;
+        }
+        if(TextUtils.isEmpty(repassLayout.getEditText().getText())){
+            repassLayout.setError("Password cannot be empty");
+            isValid=false;
+        } else if (repassLayout.getEditText().getText().toString().length()<6) {
+            repassLayout.setError("Password should be minimum of 6 digits");
+            isValid=false;
+        }else{
+            repassLayout.setError(null);
+            isValid=false;
+        }
+        if (!repassLayout.getEditText().getText().toString().equals(passwordLayout.getEditText().getText().toString())) {
             repassLayout.setError("Password does not match");
             isValid=false;
 
         } else{
             passwordLayout.getEndIconDrawable().setColorFilter(new LightingColorFilter(Color.GREEN,Color.GREEN));
             passwordLayout.setError(null);
+            isValid = true;
         }
         return isValid;
     }

@@ -40,6 +40,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.ProductDetailsResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.SkuDetails;
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
@@ -54,6 +64,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.common.collect.ImmutableList;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +82,10 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -86,6 +100,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     Uri profileUrl;
 
     Dialog logOutDialog;
+
+    private BillingClient billingClient;
+
+
+    private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
+        @Override
+        public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
+            // To be implemented in a later section.
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
+                    && purchases != null) {
+                for (Purchase purchase : purchases) {
+//                    handlePurchase(purchase);
+                    Log.d("Billing Success",purchase.toString());
+                }
+            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+                // Handle an error caused by a user cancelling the purchase flow.
+                Log.d("Billing Cancel","User Cancelled");
+            } else {
+                // Handle any other error codes.
+                Log.d("Billing Error",billingResult.getDebugMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +142,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
 //        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
+
+
+        // Billing Start
+
+        billingClient = BillingClient.newBuilder(this)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build();
+
+        // Billing End
 
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -137,6 +184,89 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void startBilling(){
+        billingClient.startConnection(new BillingClientStateListener() {
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                Log.d("Billing Disconnected","Billing Disconnected");
+            }
+
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                Log.d("Billing Result",billingResult.getDebugMessage());
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            QueryProductDetailsParams queryProductDetailsParams =
+                                    QueryProductDetailsParams.newBuilder()
+                                            .setProductList(
+                                                    ImmutableList.of(
+                                                            QueryProductDetailsParams.Product.newBuilder()
+                                                                    .setProductId("remove_ads")
+                                                                    .setProductType(BillingClient.ProductType.SUBS)
+                                                                    .build()))
+                                            .build();
+
+                            billingClient.queryProductDetailsAsync(queryProductDetailsParams, new ProductDetailsResponseListener() {
+                                @Override
+                                public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
+                                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                        for (ProductDetails product:
+                                                list) {
+                                            Log.d("Billing Products",product.toString());
+                                            productDetails = product;
+                                        }
+                                    }
+                                }
+                            });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+//                                        throw new RuntimeException(e);
+                                    }
+                                    ImmutableList productDetailsParamsList =
+                                            ImmutableList.of(
+                                                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                                                            // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
+                                                            .setProductDetails(productDetails)
+                                                            // to get an offer token, call ProductDetails.getSubscriptionOfferDetails()
+                                                            // for a list of offers that are available to the user
+                                                            .setOfferToken(productDetails.getSubscriptionOfferDetails().get(0).getOfferToken())
+                                                            .build()
+                                            );
+
+                                    Log.d("ProductDetails",productDetails.toString());
+
+                                    BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                                            .setProductDetailsParamsList(productDetailsParamsList)
+                                            .build();
+
+
+                                    // Launch the billing flow
+                                    BillingResult billingResult1 = billingClient.launchBillingFlow(HomeActivity.this, billingFlowParams);
+                                    if (billingResult1.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                                        Log.d("Billing Success",billingResult1.toString());
+                                    }else {
+                                        Log.d("Error","Error");
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    Toast.makeText(HomeActivity.this, "Google Play not Installed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    ProductDetails productDetails;
 
     public void getMaintenanceStatus(@NonNull Context context){
         firebaseFirestore.collection(DatabaseEnum.system.toString())
@@ -255,7 +385,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
             return true;
         } else if (item.getItemId() == R.id.nav_remove_ads) {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+            startBilling();
             return true;
         }
         return super.onOptionsItemSelected(item);

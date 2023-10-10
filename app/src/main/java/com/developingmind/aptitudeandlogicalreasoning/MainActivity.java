@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        getFirebaseMessagingTokken();
+//        getFirebaseMessagingTokken();
 
         if(firebaseAuth.getCurrentUser() == null)
             startActivity(new Intent(this, LoginActivity.class));

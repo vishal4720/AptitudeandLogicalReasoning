@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
     public static boolean isEmailValid(EditText email,TextInputLayout emailLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(email.getText())) {
-            emailLayout.setError("Enter Email");
+            emailLayout.setError("Email cannot be empty");
             isValid = false;
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
@@ -308,7 +308,7 @@ public class LoginActivity extends AppCompatActivity {
     public static boolean isPasswordValid(EditText password,TextInputLayout passwordLayout){
         Boolean isValid = true;
         if(TextUtils.isEmpty(password.getText())){
-            passwordLayout.setError("Enter Password");
+            passwordLayout.setError("Password cannot be empty");
             isValid=false;
         } else if (password.getText().toString().length()<6) {
             passwordLayout.setError("Password should be minimum of 6 digits");
