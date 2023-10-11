@@ -52,6 +52,7 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.SkuDetails;
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
+import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentModal;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.login.SignUpActivity;
@@ -73,15 +74,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.type.DateTime;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -102,6 +108,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     Dialog logOutDialog;
 
     private BillingClient billingClient;
+
 
 
     private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
@@ -289,8 +296,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 });
     }
 
-
-
     private void setVersionCode(){
         String version = "";
         try {
@@ -421,30 +426,35 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if(navigationView.getCheckedItem().getItemId() != R.id.nav_aptitude && navigationView.getCheckedItem().getItemId() != R.id.nav_logical){
                  navigationView.setCheckedItem(R.id.nav_aptitude);
                 setTitle("Aptitude");
-                changeFragment(new AptitudeFragment());
+                changeFragment(new AptitudeFragment(),"Aptitude");
             }else {
                 super.onBackPressed();
             }
         }
     }
 
+    Fragment frag = null;
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment frag = null; // create a Fragment Object
+        String id=null;
         int itemId = item.getItemId(); // get selected menu item's id
         // check selected menu item's id and replace a Fragment Accordingly
         if (itemId == R.id.nav_aptitude) {
             setTitle("Aptitude");
             frag = new AptitudeFragment();
+            id="Aptitude";
         }else if(itemId == R.id.nav_logical){
             setTitle("Logical Reasoning");
             frag = new LogicalFragment();
+            id="Logical Reasoning";
         }else if (itemId == R.id.nav_profile) {
             setTitle("Profile");
             frag = new ProfileFragment();
+            id="Profile";
         } else if (itemId == R.id.nav_leaderboard) {
             setTitle("Leaderboard");
             frag = new LeaderboardFragment();
+            id="Leaderboard";
         } else if (itemId == R.id.nav_rate) {
             String url = getResources().getString(R.string.play_store_link);
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -459,8 +469,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_logout) {
             createDialog();
         }
-        if (frag != null) {
-            changeFragment(frag);
+        if (frag != null && id!=null) {
+            changeFragment(frag,id);
             return true;
         }
         return false;
@@ -491,9 +501,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         logOutDialog.show();
     }
 
-    private void changeFragment(Fragment frag){
+    private void changeFragment(Fragment frag,String id){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, frag); // replace a Fragment with Frame Layout
+        transaction.replace(R.id.frame, frag,id); // replace a Fragment with Frame Layout
         transaction.commit(); // commit the changes
         drawerLayout.closeDrawers(); // close the all open Drawer Views
     }

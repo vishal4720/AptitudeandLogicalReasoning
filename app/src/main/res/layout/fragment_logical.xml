@@ -215,7 +215,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/advertisment_background"
             android:layout_marginVertical="10dp"
             android:visibility="gone"
             tools:listitem="@layout/home_advertisment_item"

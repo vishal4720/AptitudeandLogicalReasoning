@@ -184,6 +184,7 @@ public class TopicSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TopicSelectionActivity.this,TopicQuestionsActivity.class);
+
                 intent.putExtra(Constants.isAptitude,isAptitude);
                 Bundle b = new Bundle();
                 ArrayList<String> arrayList = new ArrayList<>();
@@ -193,6 +194,8 @@ public class TopicSelectionActivity extends AppCompatActivity {
                 b.putStringArrayList("data",arrayList);
                 intent.putExtras(b);
                 intent.putExtra("count",questionCount);
+                intent.putExtra("time",questionCount+5);
+
                 startActivity(intent);
                 finish();
             }

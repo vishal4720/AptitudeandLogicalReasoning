@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,6 +51,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -64,6 +69,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     List<QuestionModal> list = new ArrayList<>();
     int position = 0;
     private int score = 0;
+    private int totalMarks = 0;
     private int totalAttempted = 0;
     Dialog sharedialog;
     DialogMaker progressdialog;
@@ -87,6 +93,9 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     Boolean isAptitude;
 
+    private CountDownTimer countDownTimer;
+    private int time;
+    private TextView timerText;
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -95,7 +104,10 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions_competitive);
 
+        time = getIntent().getIntExtra("time",20);
+
         question = findViewById(R.id.question);
+        timerText = findViewById(R.id.timer_text);
         question_no = findViewById(R.id.question_no);
         bookmark = findViewById(R.id.bookmark_btn);
         options = findViewById(R.id.options_container);
@@ -175,6 +187,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         questionsDialog.dismiss();
         exitDialog.dismiss();
         sharedialog.dismiss();
+        countDownTimer.cancel();
     }
 
     @Override
@@ -188,6 +201,24 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         storeBookmarks();
         progressdialog.getDialog().dismiss();
         exitDialog.getDialog().dismiss();
+    }
+
+    private void setCountDownTimer(){
+        countDownTimer = new CountDownTimer((1000*60)*time,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                NumberFormat f = new DecimalFormat("00");
+                long min = (millisUntilFinished / 60000) % 60;
+                long sec = (millisUntilFinished / 1000) % 60;
+                Log.d("Timer",f.format(min) + ":" + f.format(sec));
+                timerText.setText(f.format(min) + ":" + f.format(sec));
+            }
+
+            @Override
+            public void onFinish() {
+                nextActivity();
+            }
+        }.start();
     }
 
     private void getData(){
@@ -248,14 +279,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                                         next.setText("Submit");
                                     }
                                     if (position == limitQuestions){
-                                        Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                                        intent.putExtra(ScoreEnum.correctQuestions.toString(),score);
-                                        intent.putExtra(ScoreEnum.totalQuestions.toString(),limitQuestions);
-                                        intent.putExtra(ScoreEnum.totalAttempted.toString(),totalAttempted);
-                                        intent.putExtra(ScoreEnum.totalWrong.toString(),totalAttempted-score);
-                                        intent.putExtra(ScoreEnum.totalSkipped.toString(),limitQuestions-totalAttempted);
-                                        startActivity(intent);
-                                        finish();
+                                        nextActivity();
                                         return;
                                     }
                                     if(!list.get(position).getAnswered()){
@@ -290,6 +314,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                             });
                             dismissLoader();
 
+                            setCountDownTimer();
                         }
                     }
                 })
@@ -298,6 +323,56 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(CompetitiveQuestionsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         dismissLoader();
+                    }
+                });
+    }
+
+    private void nextActivity(){
+
+        DocumentReference documentReference = firebaseFirestore.collection(DatabaseEnum.users.toString())
+                .document(FirebaseAuth.getInstance().getUid());
+
+
+        documentReference.get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            int databaseScore = 0;
+                            try {
+                                databaseScore = Integer.parseInt(task.getResult().get("total_score").toString());
+                            }catch (Exception ignored){}
+                            Log.d("Database Score",String.valueOf(databaseScore));
+                            Log.d("My Score",String.valueOf(totalMarks));
+
+                            documentReference.update("total_score", databaseScore+totalMarks)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
+                                            intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
+                                            intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
+                                            intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
+                                            intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
+                                            intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
                 });
     }
@@ -383,7 +458,6 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
             Button selectedoption = list.get(position).getGivenAns();
             if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
                 selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
-                score++;
             } else {
                 Log.d("Correct",list.get(position).getCorrectAns());
                 Log.d("Correct",((Button) options.getChildAt(1)).getText().toString());
@@ -473,10 +547,12 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
             score++;
+            totalMarks+=2;
         } else {
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
             Button correctoption = (Button) options.findViewWithTag(list.get(position).getCorrectAns());
             correctoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+            totalMarks-=1;
         }
         totalAttempted++;
         gridAdapter.notifyDataSetChanged();

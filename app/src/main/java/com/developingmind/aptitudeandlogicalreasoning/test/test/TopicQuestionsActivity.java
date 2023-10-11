@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -47,6 +50,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,8 +92,13 @@ public class TopicQuestionsActivity extends AppCompatActivity {
     ArrayList<String> topicData;
     Boolean isAptitude;
 
+    private CountDownTimer countDownTimer;
+
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+    private int time;
+    private TextView timerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +110,10 @@ public class TopicQuestionsActivity extends AppCompatActivity {
         Bundle extrasBundle = getIntent().getExtras();
         topicData = extrasBundle.getStringArrayList("data");
         Log.d("Topic Data", topicData.toString());
+        time = getIntent().getIntExtra("time",20);
 
         question = findViewById(R.id.question);
+        timerText = findViewById(R.id.timer_text);
         question_no = findViewById(R.id.question_no);
         bookmark = findViewById(R.id.bookmark_btn);
         options = findViewById(R.id.options_container);
@@ -157,6 +169,35 @@ public class TopicQuestionsActivity extends AppCompatActivity {
 
     }
 
+    private void setCountDownTimer(){
+        countDownTimer = new CountDownTimer((1000*60)*time,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                NumberFormat f = new DecimalFormat("00");
+                long min = (millisUntilFinished / 60000) % 60;
+                long sec = (millisUntilFinished / 1000) % 60;
+                Log.d("Timer",f.format(min) + ":" + f.format(sec));
+                timerText.setText(f.format(min) + ":" + f.format(sec));
+            }
+
+            @Override
+            public void onFinish() {
+                nextActivity();
+            }
+        }.start();
+    }
+
+    private void nextActivity(){
+        Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
+        intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
+        intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
+        intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
+        intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
+        intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -196,11 +237,12 @@ public class TopicQuestionsActivity extends AppCompatActivity {
     private void getData(){
         list.clear();
         String key;
-        if(isAptitude){
+        if (isAptitude){
             key = DatabaseEnum.aptitude.toString();
         }else {
             key = DatabaseEnum.logical.toString();
         }
+
         for (String topic:
              topicData) {
             firebaseFirestore.collection(key)
@@ -245,6 +287,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
 
 
                                 playanim(question, 0, list.get(position).getQuestion());
+
                                 for (int i = 0; i < 4; i++) {
                                     options.getChildAt(i).setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -267,14 +310,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                                             next.setText("Submit");
                                         }
                                         if (position == limitQuestions) {
-                                            Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
-                                            intent.putExtra(ScoreEnum.correctQuestions.toString(), score);
-                                            intent.putExtra(ScoreEnum.totalQuestions.toString(), limitQuestions);
-                                            intent.putExtra(ScoreEnum.totalAttempted.toString(), totalAttempted);
-                                            intent.putExtra(ScoreEnum.totalWrong.toString(), totalAttempted - score);
-                                            intent.putExtra(ScoreEnum.totalSkipped.toString(), limitQuestions - totalAttempted);
-                                            startActivity(intent);
-                                            finish();
+                                            nextActivity();
                                             return;
                                         }
                                         if (!list.get(position).getAnswered()) {
@@ -308,6 +344,8 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                                     }
                                 });
                                 dismissLoader();
+
+                                setCountDownTimer();
                             }
                         }
                     })
@@ -319,6 +357,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                         }
                     });
         }
+
     }
 
     public void jumpTo(int pos){

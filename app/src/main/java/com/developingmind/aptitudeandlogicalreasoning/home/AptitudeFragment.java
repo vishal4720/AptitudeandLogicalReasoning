@@ -64,6 +64,7 @@ public class AptitudeFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     public static AptitudeFragment newInstance(String param1, String param2) {
         AptitudeFragment fragment = new AptitudeFragment();
         Bundle args = new Bundle();

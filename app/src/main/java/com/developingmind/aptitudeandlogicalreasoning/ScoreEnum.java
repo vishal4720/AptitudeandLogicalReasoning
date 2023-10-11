@@ -5,5 +5,6 @@ public enum ScoreEnum {
     correctQuestions,
     totalAttempted,
     totalWrong,
-    totalSkipped
+    totalSkipped,
+    totalMarks,
 }
