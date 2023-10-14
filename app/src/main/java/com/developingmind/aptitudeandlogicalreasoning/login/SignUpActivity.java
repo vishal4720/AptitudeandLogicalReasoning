@@ -46,14 +46,12 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private Button register;
 
-    RadioGroup genderGroup;
-    RadioButton gender;
-
-
+    private RadioGroup genderGroup;
+    private RadioButton gender;
     private DialogMaker dialogMaker;
 
-    Boolean isLogin = false;
-    String profilrUri;
+    private Boolean isLogin = false;
+    private String profilrUri;
 
 
     @Override
@@ -226,7 +224,7 @@ public class SignUpActivity extends AppCompatActivity {
     public boolean isEmailValid(TextInputLayout emailLayout) {
         Boolean isValid = true;
         if (TextUtils.isEmpty(emailLayout.getEditText().getText())) {
-            emailLayout.setError("Enter Email");
+            emailLayout.setError("Email cannot be empty");
             isValid = false;
         }
         else if(!Patterns.EMAIL_ADDRESS.matcher(emailLayout.getEditText().getText()).matches()) {

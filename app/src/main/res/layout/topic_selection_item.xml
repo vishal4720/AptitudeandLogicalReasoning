@@ -52,6 +52,7 @@
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
+            android:contentDescription="Selection"
             android:layout_height="wrap_content"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

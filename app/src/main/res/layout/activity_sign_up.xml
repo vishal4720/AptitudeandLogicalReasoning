@@ -134,6 +134,7 @@
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_password"
         app:passwordToggleEnabled="true"
+        app:passwordToggleContentDescription="Show Password"
         app:errorEnabled="true"
         android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
@@ -155,6 +156,7 @@
         app:startIconDrawable="@drawable/ic_password"
         app:passwordToggleEnabled="true"
         app:errorEnabled="true"
+        app:passwordToggleContentDescription="Show Password"
         android:layout_marginTop="@dimen/login_margin_vertical"
         android:layout_marginHorizontal="@dimen/login_margin_horizontal">
 
@@ -163,7 +165,7 @@
             android:layout_width="match_parent"
             android:inputType="textPassword"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_password" />
+            android:hint="@string/reenter_password" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

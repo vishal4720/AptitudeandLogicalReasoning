@@ -355,7 +355,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private void storeBookmarks(){
         String json = gson.toJson(bookmarklist);
-        Log.d("",json);
+        Log.d("Bookmark Json",json);
         editor.putString("bookmark"+isAptitude,json);
         editor.apply();
     }
@@ -493,10 +493,18 @@ public class QuestionsActivity extends AppCompatActivity {
     private void checkAnswer(Button selectedoption){
         Log.d("Button",selectedoption.getText().toString());
         enabledoption(false);
+
         if(position!=(limitQuestions-1))
             next.setText("Next");
+        if (bookmark.getDrawable().getCurrent() == getDrawable(R.drawable.bookmark)){
+            int index = bookmarklist.indexOf(list.get(position));
+            bookmarklist.get(index).setGivenAns(selectedoption);
+            bookmarklist.get(index).setAnswered(true);
+            Log.d("Bookmark Update",String.valueOf(bookmarklist.get(position).getAnswered()));
+        }
         list.get(position).setGivenAns(selectedoption);
         list.get(position).setAnswered(true);
+
         if (selectedoption.getText().toString().equals(list.get(position).getCorrectAns())) {
             selectedoption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
             score++;
