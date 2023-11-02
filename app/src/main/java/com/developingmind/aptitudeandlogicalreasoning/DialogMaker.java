@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
+import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +55,25 @@ public class DialogMaker extends Dialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+            }
+        });
+    }
+
+    // Purchase Dialog
+    public DialogMaker(@NonNull Context context,String title, String des,String price){
+        super(context);
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.purchase_dialog);
+        dialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.ic_loader));
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(true);
+        ((TextView)dialog.findViewById(R.id.purchase_title)).setText(title);
+        ((TextView)dialog.findViewById(R.id.purchase_description)).setText(des);
+        ((TextView)dialog.findViewById(R.id.purchase_price)).setText("MRP : "+price);
+        ((Button)dialog.findViewById(R.id.purchase_now)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((HomeActivity)context).startBilling();
             }
         });
     }

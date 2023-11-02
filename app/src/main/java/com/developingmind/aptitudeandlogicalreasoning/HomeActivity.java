@@ -60,6 +60,7 @@ import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationA
 import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
+import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -107,29 +108,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     Dialog logOutDialog;
 
-    private BillingClient billingClient;
+//    private BillingClient billingClient;
+    Subscription subscription;
 
-
-
-    private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
-        @Override
-        public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
-            // To be implemented in a later section.
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
-                    && purchases != null) {
-                for (Purchase purchase : purchases) {
-//                    handlePurchase(purchase);
-                    Log.d("Billing Success",purchase.toString());
-                }
-            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
-                Log.d("Billing Cancel","User Cancelled");
-            } else {
-                // Handle any other error codes.
-                Log.d("Billing Error",billingResult.getDebugMessage());
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,14 +132,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
 
 
-        // Billing Start
-
-        billingClient = BillingClient.newBuilder(this)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
-
-        // Billing End
 
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -189,91 +162,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
 
+
+        // Billing Start
+        subscription = new Subscription(this,this);
+
+        subscription.create();
+
+        // Billing End
+
     }
 
-    private void startBilling(){
-        billingClient.startConnection(new BillingClientStateListener() {
-
-            @Override
-            public void onBillingServiceDisconnected() {
-                Log.d("Billing Disconnected","Billing Disconnected");
-            }
-
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                Log.d("Billing Result",billingResult.getDebugMessage());
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
-                    ExecutorService executorService = Executors.newSingleThreadExecutor();
-                    executorService.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            QueryProductDetailsParams queryProductDetailsParams =
-                                    QueryProductDetailsParams.newBuilder()
-                                            .setProductList(
-                                                    ImmutableList.of(
-                                                            QueryProductDetailsParams.Product.newBuilder()
-                                                                    .setProductId("remove_ads")
-                                                                    .setProductType(BillingClient.ProductType.SUBS)
-                                                                    .build()))
-                                            .build();
-
-                            billingClient.queryProductDetailsAsync(queryProductDetailsParams, new ProductDetailsResponseListener() {
-                                @Override
-                                public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
-                                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                        for (ProductDetails product:
-                                                list) {
-                                            Log.d("Billing Products",product.toString());
-                                            productDetails = product;
-                                        }
-                                    }
-                                }
-                            });
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-//                                        throw new RuntimeException(e);
-                                    }
-                                    ImmutableList productDetailsParamsList =
-                                            ImmutableList.of(
-                                                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                                                            // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
-                                                            .setProductDetails(productDetails)
-                                                            // to get an offer token, call ProductDetails.getSubscriptionOfferDetails()
-                                                            // for a list of offers that are available to the user
-                                                            .setOfferToken(productDetails.getSubscriptionOfferDetails().get(0).getOfferToken())
-                                                            .build()
-                                            );
-
-                                    Log.d("ProductDetails",productDetails.toString());
-
-                                    BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                                            .setProductDetailsParamsList(productDetailsParamsList)
-                                            .build();
-
-
-                                    // Launch the billing flow
-                                    BillingResult billingResult1 = billingClient.launchBillingFlow(HomeActivity.this, billingFlowParams);
-                                    if (billingResult1.getResponseCode() == BillingClient.BillingResponseCode.OK){
-                                        Log.d("Billing Success",billingResult1.toString());
-                                    }else {
-                                        Log.d("Error","Error");
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }else{
-                    Toast.makeText(HomeActivity.this, "Google Play not Installed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    private void getSubscription(){
+        subscription.getSubscription();
     }
 
-    ProductDetails productDetails;
+    public void startBilling(){
+        subscription.startBilling();
+    }
 
     public void getMaintenanceStatus(@NonNull Context context){
         firebaseFirestore.collection(DatabaseEnum.system.toString())
@@ -405,7 +310,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
             return true;
         } else if (item.getItemId() == R.id.nav_remove_ads) {
-            startBilling();
+            getSubscription();
             return true;
         }
         return super.onOptionsItemSelected(item);
