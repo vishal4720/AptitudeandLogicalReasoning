@@ -61,6 +61,7 @@ import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileEnum;
 import com.developingmind.aptitudeandlogicalreasoning.profile.ProfileFragment;
 import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -110,6 +111,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 //    private BillingClient billingClient;
     Subscription subscription;
+    
+    AdManager adManager;
+    AdView adView;
 
 
     @Override
@@ -133,6 +137,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+        adManager = new AdManager(this);
+        adView = findViewById(R.id.bannerAdView);
+        
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -170,6 +177,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // Billing End
 
+        loadBannerAd();
+
+    }
+
+    public void loadBannerAd(){
+        adManager.loadBannerAd(adView);
     }
 
     private void getSubscription(){

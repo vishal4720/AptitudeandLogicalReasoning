@@ -54,9 +54,6 @@ public class Subscription {
                 .enablePendingPurchases()
                 .build();
 
-
-//        getSubscription();
-
     }
 
     public BillingClient getBillingClient(){

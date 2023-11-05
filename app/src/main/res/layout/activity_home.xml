@@ -34,12 +34,19 @@
             android:layout_width="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
+            android:orientation="vertical"
             android:layout_height="match_parent">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/frame"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/banner_ad"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
