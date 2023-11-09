@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -289,6 +290,54 @@ public class QuestionsActivity extends AppCompatActivity {
                                         Log.d("Position", String.valueOf(position));
                                     }
                                 });
+
+                                share.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        ImageButton share_final,rewarded;
+                                        final TextView credits;
+
+                                        sharedialog.setContentView(R.layout.share_pop);
+                                        share_final = sharedialog.findViewById(R.id.share_final_btn);
+                                        rewarded = sharedialog.findViewById(R.id.rewarded_ad_btn);
+                                        credits = sharedialog.findViewById(R.id.credits_txt);
+                                        setCountText(credits);
+                                        share_final.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (sharedPreferences.getInt("share_count",0)>0){
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    editor.putInt("share_count",sharedPreferences.getInt("share_count",0)-1);
+                                                    editor.apply();
+                                                    String body = "Q. " + list.get(position).getQuestion() + "\n" +
+                                                            list.get(position).getOptionA() +"\n" +
+                                                            list.get(position).getOptionB() +"\n" +
+                                                            list.get(position).getOptionC() +"\n" +
+                                                            list.get(position).getOptionD() + "\n\n\n" +
+                                                            "Test your own knowledge now !!" + "\n" +
+                                                            getResources().getString(R.string.play_store_link);
+
+                                                    Intent intent = new Intent(Intent.ACTION_SEND);
+                                                    intent.setType("text/plain");
+                                                    intent.putExtra(Intent.EXTRA_TEXT,body);
+                                                    startActivity(Intent.createChooser(intent,"Share via"));
+                                                    setCountText(credits);
+                                                }else{
+                                                    Toast.makeText(getApplication(),"Don't have enough points",Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+
+                                        rewarded.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                
+                                            }
+                                        });
+                                        sharedialog.show();
+
+                                    }
+                                });
                             }else{
 //                                firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
 //                                        .document(categoryId)
@@ -325,6 +374,12 @@ public class QuestionsActivity extends AppCompatActivity {
                         dismissLoader();
                     }
                 });
+    }
+
+    public void setCountText(TextView text){
+        String share = getResources().getString(R.string.share_text);
+        share = share.concat(String.valueOf(sharedPreferences.getInt("share_count",0)));
+        text.setText(share);
     }
 
     public void jumpTo(int pos){

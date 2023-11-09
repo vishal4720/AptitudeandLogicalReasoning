@@ -25,6 +25,7 @@
     <string name="getting_you_back">Getting you back.......</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="share_text">Share Credits Left : </string>
 
 
     <string name="sha_key">304263100288-pvarumqvmc8kff5u04ib3ahksnsh5917.apps.googleusercontent.com</string>

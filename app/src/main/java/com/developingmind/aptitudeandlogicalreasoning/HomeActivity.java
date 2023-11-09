@@ -178,11 +178,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Billing End
 
         loadBannerAd();
+        loadInterstitialAd();
 
     }
 
     public void loadBannerAd(){
         adManager.loadBannerAd(adView);
+    }
+    public void loadInterstitialAd(){
+        adManager.loadInterstitialAd();
+    }
+    public Boolean showInterstitialAd(){
+        return adManager.showInterstitialAd(HomeActivity.this);
     }
 
     private void getSubscription(){

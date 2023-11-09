@@ -135,7 +135,8 @@ public class ProfileFragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                if (!((HomeActivity)getContext()).showInterstitialAd())
+                    showDialog();
                 HashMap<String,Object> map = new HashMap<>();
                 map.put(ProfileEnum.fname.toString(),fname.getEditText().getText().toString());
                 map.put(ProfileEnum.lname.toString(),lname.getEditText().getText().toString());
@@ -151,7 +152,6 @@ public class ProfileFragment extends Fragment {
                                     ((HomeActivity)getActivity()).setHeaderTitle(fname.getEditText().getText().toString() + " " + lname.getEditText().getText().toString());
                                     Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_SHORT).show();
                                 }
-                                hideDialog();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -159,9 +159,10 @@ public class ProfileFragment extends Fragment {
                             public void onFailure(@NonNull Exception e) {
                                 Log.d("Profile Exception",e.getMessage());
                                 Toast.makeText(getContext(), "Something went wrong !!", Toast.LENGTH_SHORT).show();
-                                hideDialog();
                             }
                         });
+                if (!((HomeActivity)getContext()).showInterstitialAd())
+                    hideDialog();
             }
         });
 
@@ -184,7 +185,7 @@ public class ProfileFragment extends Fragment {
     }
     private void hideDialog(){
         if(dialogMaker.getDialog().isShowing()){
-            dialogMaker.getDialog().hide();
+            dialogMaker.getDialog().dismiss();
         }
     }
 

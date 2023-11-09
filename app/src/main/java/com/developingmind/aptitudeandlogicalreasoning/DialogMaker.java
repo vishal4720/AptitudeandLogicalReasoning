@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -188,6 +189,7 @@ public class DialogMaker extends Dialog {
 
     // Used to get Dialog
     public Dialog getDialog() {
+        Log.d("Got Dialog","Meoww");
         return dialog;
     }
 }
