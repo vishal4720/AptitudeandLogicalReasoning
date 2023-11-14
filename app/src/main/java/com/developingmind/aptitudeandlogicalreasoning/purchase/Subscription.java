@@ -10,15 +10,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchaseHistoryParams;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
@@ -60,6 +67,27 @@ public class Subscription {
         return billingClient;
     }
 
+    void handlePurchase(Purchase purchase) {
+        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged()) {
+                AcknowledgePurchaseParams acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+            }
+        }
+    }
+
+    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+        @Override
+        public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+            if (billingResult.getResponseCode()== BillingClient.BillingResponseCode.OK){
+                Log.d("Acknowledge Purchase",billingResult.toString());
+            }
+        }
+    };
+
     private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
         public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
@@ -67,11 +95,12 @@ public class Subscription {
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
                     && purchases != null) {
                 for (Purchase purchase : purchases) {
-//                    handlePurchase(purchase);
+                    handlePurchase(purchase);
 
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
                 // Handle an error caused by a user cancelling the purchase flow.
+                Toast.makeText(context, "Purchase Canceled", Toast.LENGTH_SHORT).show();
             } else {
                 // Handle any other error codes.
             }
@@ -113,28 +142,24 @@ public class Subscription {
                                             Log.d("Billing Products",product.toString());
 
                                             productDetails = product;
+                                            loadingDialog.getDialog().dismiss();
+                                            activity.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    purchaseDialog = new DialogMaker(context,productDetails.getTitle(),productDetails.getDescription(),productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
+                                                    purchaseDialog.getDialog().show();
+                                                }
+                                            });
                                         }
                                     }
                                 }
                             });
                         }
                     });
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1000);
-                            }catch (Exception e){
-
-                            }
-                            purchaseDialog = new DialogMaker(context,productDetails.getTitle(),productDetails.getDescription(),productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
-                            purchaseDialog.getDialog().show();
-                        }
-                    });
                 }else{
                     Toast.makeText(context, "Google Play not Installed", Toast.LENGTH_SHORT).show();
+                    loadingDialog.getDialog().dismiss();
                 }
-                loadingDialog.getDialog().dismiss();
             }
         });
     }

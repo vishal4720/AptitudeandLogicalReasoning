@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -47,8 +48,10 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.android.billingclient.api.SkuDetails;
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
@@ -176,6 +179,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         subscription.create();
 
+        checkPastPurchase();
         // Billing End
 
         loadBannerAd();
@@ -195,6 +199,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void getSubscription(){
         subscription.getSubscription();
+    }
+
+    private void checkPastPurchase(){
+        subscription.getBillingClient().queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build(),
+                new PurchasesResponseListener() {
+                    public void onQueryPurchasesResponse(BillingResult billingResult, List purchases) {
+                        // check billingResult
+                        // process returned purchase list, e.g. display the plans user owns
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            Log.d("Purchase History", purchases.get(0).toString());
+                            adManager.setIsPurchased(true);
+                        }
+                        Log.d("Purchase History", purchases.toString());
+                    }
+                }
+        );
     }
 
     public void startBilling(){
@@ -445,6 +468,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void logOut(){
         firebaseAuth.signOut();
         logOutDialog.dismiss();
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
         Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();

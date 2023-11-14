@@ -40,6 +40,9 @@ public class AdManager extends Application{
     // To be removed after purchase
     Boolean isPurchased = false;
 
+    public void setIsPurchased(Boolean value){
+        isPurchased = value;
+    }
 
     @Override
     public void onCreate() {
