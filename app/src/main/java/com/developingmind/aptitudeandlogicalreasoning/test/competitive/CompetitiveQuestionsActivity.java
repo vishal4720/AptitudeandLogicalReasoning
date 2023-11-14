@@ -452,7 +452,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
         }
         count = 0;
         playanim(question,0,list.get(position).getQuestion());
-        questionsDialog.hide();
+        questionsDialog.dismiss();
     }
 
     private void getBookmark(){
