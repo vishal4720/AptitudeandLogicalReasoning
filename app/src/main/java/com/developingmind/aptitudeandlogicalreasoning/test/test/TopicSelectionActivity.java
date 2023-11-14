@@ -22,11 +22,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizzesCategoryAdapter;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -196,8 +200,32 @@ public class TopicSelectionActivity extends AppCompatActivity {
                 intent.putExtra("count",questionCount);
                 intent.putExtra("time",questionCount+5);
 
-                startActivity(intent);
-                finish();
+                AdManager adManager = (AdManager) getApplicationContext();
+                InterstitialAd interstitialAd = adManager.getmInterstitialAd();
+                if(interstitialAd!=null){
+                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            adManager.loadInterstitialAd();
+                            startActivity(intent);
+                            finish();
+                            super.onAdDismissedFullScreenContent();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                            adManager.loadInterstitialAd();
+                            startActivity(intent);
+                            finish();
+                            super.onAdFailedToShowFullScreenContent(adError);
+                        }
+                    });
+                    interstitialAd.show(TopicSelectionActivity.this);
+
+                }else {
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 

@@ -1,5 +1,6 @@
 package com.developingmind.aptitudeandlogicalreasoning.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
@@ -25,6 +27,9 @@ import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.Advertis
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuizCategoryActivity;
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -135,9 +140,29 @@ public class LogicalFragment extends Fragment {
         competitiveTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AdManager adManager = (AdManager)getContext().getApplicationContext();
+                InterstitialAd interstitialAd = adManager.getmInterstitialAd();
                 Intent intent = new Intent(getContext(), CompetitiveQuestionsActivity.class);
                 intent.putExtra(Constants.isAptitude,false);
-                startActivity(intent);
+                if(interstitialAd!=null){
+                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            adManager.loadInterstitialAd();
+                            startActivity(intent);
+                            super.onAdDismissedFullScreenContent();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                            startActivity(intent);
+                            super.onAdFailedToShowFullScreenContent(adError);
+                        }
+                    });
+                    interstitialAd.show((Activity) getContext());
+                }else {
+                    startActivity(intent);
+                }
             }
         });
 

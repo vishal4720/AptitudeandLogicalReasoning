@@ -27,11 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
+import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -86,6 +88,7 @@ public class QuestionsActivity extends AppCompatActivity {
     QuestionsGridAdapter gridAdapter;
 
     Boolean isAptitude;
+    private AdManager adManager;
 
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -106,6 +109,9 @@ public class QuestionsActivity extends AppCompatActivity {
         grid = findViewById(R.id.grid);
         setSupportActionBar(toolbar);
         question.setMovementMethod(new ScrollingMovementMethod());
+
+        adManager = (AdManager)getApplicationContext();
+        adManager.loadRewardedAd();
 
         exitDialog = new DialogMaker(this,"Are you sure you want to Quit ?");
 
@@ -306,7 +312,6 @@ public class QuestionsActivity extends AppCompatActivity {
                                             @Override
                                             public void onClick(View v) {
                                                 if (sharedPreferences.getInt("share_count",0)>0){
-                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
                                                     editor.putInt("share_count",sharedPreferences.getInt("share_count",0)-1);
                                                     editor.apply();
                                                     String body = "Q. " + list.get(position).getQuestion() + "\n" +
@@ -331,7 +336,10 @@ public class QuestionsActivity extends AppCompatActivity {
                                         rewarded.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                
+                                                if(!adManager.showRewardedAd(QuestionsActivity.this,sharedPreferences,credits)){
+                                                    adManager.loadRewardedAd();
+                                                    Toast.makeText(QuestionsActivity.this, "Video Not Available Yet !!", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         });
                                         sharedialog.show();

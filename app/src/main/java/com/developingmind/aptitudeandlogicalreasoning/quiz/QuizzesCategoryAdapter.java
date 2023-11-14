@@ -1,6 +1,7 @@
 package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,9 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 import java.util.Base64;
 import java.util.List;
@@ -90,31 +95,61 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = null;
                     Log.d("On Click",String.valueOf(isAptitude));
                     Log.d("On Click",String.valueOf(isPractice));
                     Log.d("On Click",String.valueOf(isStudy));
-                    if(isPractice){
-                        intent = new Intent(itemView.getContext(), QuestionsActivity.class);
-                        intent.putExtra("title",title);
-                        intent.putExtra("position",position);
-                        intent.putExtra(Constants.isAptitude,isAptitude);
-                    } else if (isStudy) {
-                        intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
-                        intent.putExtra("title",title);
-                        intent.putExtra("position",position);
-                        intent.putExtra(Constants.isSolvedProblems,false);
-                        intent.putExtra(Constants.isAptitude,isAptitude);
-                    } else{
-                        intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
-                        intent.putExtra("title",title);
-                        intent.putExtra("position",position);
-                        intent.putExtra(Constants.isAptitude,isAptitude);
-                    }
+                    AdManager adManager = (AdManager) context.getApplicationContext();
+                    InterstitialAd interstitialAd = adManager.getmInterstitialAd();
+                    if (interstitialAd!=null) {
+                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                adManager.loadInterstitialAd();
+                                super.onAdShowedFullScreenContent();
+                            }
 
-                    context.startActivity(intent);
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                jumpToNextActivity(title, position);
+                                super.onAdDismissedFullScreenContent();
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                adManager.loadInterstitialAd();
+                                jumpToNextActivity(title, position);
+                                super.onAdFailedToShowFullScreenContent(adError);
+                            }
+                        });
+                        interstitialAd.show((Activity) context);
+                    }else {
+                        jumpToNextActivity(title,position);
+                    }
                 }
             });
+        }
+
+        private void jumpToNextActivity(String title,int position){
+            Intent intent = null;
+            if (isPractice) {
+                intent = new Intent(itemView.getContext(), QuestionsActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("position", position);
+                intent.putExtra(Constants.isAptitude, isAptitude);
+            } else if (isStudy) {
+                intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("position", position);
+                intent.putExtra(Constants.isSolvedProblems, false);
+                intent.putExtra(Constants.isAptitude, isAptitude);
+            } else {
+                intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("position", position);
+                intent.putExtra(Constants.isAptitude, isAptitude);
+            }
+
+            context.startActivity(intent);
         }
     }
 }

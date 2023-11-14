@@ -18,6 +18,9 @@ import androidx.cardview.widget.CardView;
 import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -158,9 +161,34 @@ public class DialogMaker extends Dialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent intent = new Intent(context, CompetitiveQuestionsActivity.class);
-                intent.putExtra(Constants.isAptitude,isAptitude);
-                context.startActivity(intent);
+                AdManager adManager = (AdManager) context.getApplicationContext();
+                InterstitialAd interstitialAd = adManager.getmInterstitialAd();
+                if(interstitialAd!=null){
+                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            adManager.loadInterstitialAd();
+                            Intent intent = new Intent(context, CompetitiveQuestionsActivity.class);
+                            intent.putExtra(Constants.isAptitude, isAptitude);
+                            context.startActivity(intent);
+                            super.onAdDismissedFullScreenContent();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                            adManager.loadInterstitialAd();
+                            Intent intent = new Intent(context, CompetitiveQuestionsActivity.class);
+                            intent.putExtra(Constants.isAptitude, isAptitude);
+                            context.startActivity(intent);
+                            super.onAdFailedToShowFullScreenContent(adError);
+                        }
+                    });
+                    interstitialAd.show((Activity) context);
+                }else {
+                    Intent intent = new Intent(context, CompetitiveQuestionsActivity.class);
+                    intent.putExtra(Constants.isAptitude, isAptitude);
+                    context.startActivity(intent);
+                }
             }
         });
     }

@@ -137,7 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        adManager = new AdManager(this);
+        adManager = (AdManager)getApplicationContext();
+        adManager.createAdRequest();
         adView = findViewById(R.id.bannerAdView);
         
         firebaseUser = firebaseAuth.getCurrentUser();
