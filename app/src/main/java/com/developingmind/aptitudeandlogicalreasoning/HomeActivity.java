@@ -2,6 +2,8 @@ package com.developingmind.aptitudeandlogicalreasoning;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
+import static com.developingmind.aptitudeandlogicalreasoning.purchase.Security.BASE_64_ENCODED_PUBLIC_KEY;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -48,6 +50,7 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
@@ -76,6 +79,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 import com.google.type.DateTime;
 import com.squareup.picasso.Picasso;
 
@@ -117,6 +121,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     
     AdManager adManager;
     AdView adView;
+    private SharedPreferences purchaseSharedPreference;
 
 
     @Override
@@ -131,17 +136,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
              finish();
          }
 
+        // Billing Start
+        subscription = new Subscription(this,this);
+
+        subscription.create();
+
+        purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
+        // Billing End
+
         int permissionState = ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS);
         // If the permission is not granted, request it.
         if (permissionState == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
-//        getBitmapFromVectorDrawable(this,R.drawable.ic_train);
 
 
 
         adManager = (AdManager)getApplicationContext();
         adManager.createAdRequest();
+        adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",false));
         adView = findViewById(R.id.bannerAdView);
         
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -174,13 +187,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        // Billing Start
-        subscription = new Subscription(this,this);
 
-        subscription.create();
-
-        checkPastPurchase();
-        // Billing End
 
         loadBannerAd();
         loadInterstitialAd();
@@ -201,27 +208,53 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         subscription.getSubscription();
     }
 
-    private void checkPastPurchase(){
-        subscription.getBillingClient().queryPurchasesAsync(
-                QueryPurchasesParams.newBuilder()
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build(),
-                new PurchasesResponseListener() {
-                    public void onQueryPurchasesResponse(BillingResult billingResult, List purchases) {
-                        // check billingResult
-                        // process returned purchase list, e.g. display the plans user owns
-                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                            Log.d("Purchase History", purchases.get(0).toString());
-                            adManager.setIsPurchased(true);
-                        }
-                        Log.d("Purchase History", purchases.toString());
-                    }
+    public void checkPastPurchase(){
+        BillingClient billingClient = subscription.getBillingClient();
+        Log.d("Purchase History", "Start");
+
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingServiceDisconnected() {
+
+            }
+
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    billingClient.queryPurchasesAsync(
+                            QueryPurchasesParams.newBuilder()
+                                    .setProductType(BillingClient.ProductType.INAPP)
+                                    .build(),
+                            new PurchasesResponseListener() {
+                                public void onQueryPurchasesResponse(BillingResult billingResult, List purchases) {
+                                    // check billingResult
+                                    // process returned purchase list, e.g. display the plans user owns
+                                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                        Log.d("Purchase History", purchases.get(0).toString());
+                                        if (purchases.size()>0) {
+                                            adManager.setIsPurchased(true);
+                                            adView.setVisibility(View.GONE);
+                                            toolbar.getMenu().findItem(R.id.nav_remove_ads).setVisible(false);
+                                            toolbar.invalidateMenu();
+                                            purchaseSuccessful();
+                                        }
+                                    }
+                                }
+                            }
+                    );
                 }
-        );
+            }
+        });
     }
 
     public void startBilling(){
         subscription.startBilling();
+    }
+
+    public void purchaseSuccessful(){
+        SharedPreferences.Editor editor = purchaseSharedPreference.edit();
+        editor.putBoolean("purchase",true);
+        editor.apply();
     }
 
     public void getMaintenanceStatus(@NonNull Context context){
@@ -354,17 +387,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
             return true;
         } else if (item.getItemId() == R.id.nav_remove_ads) {
-            getSubscription();
+            if(!adManager.isPurchased)
+                getSubscription();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sub_main_menu,menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(!adManager.isPurchased){
+            menu.findItem(R.id.nav_remove_ads).setVisible(false);
+        }
+        Log.d("Prepare Menu","YES");
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

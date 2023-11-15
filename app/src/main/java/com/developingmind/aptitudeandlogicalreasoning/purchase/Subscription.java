@@ -26,6 +26,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchaseHistoryParams;
 import com.android.billingclient.api.QueryPurchasesParams;
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.HomeActivity;
@@ -61,6 +62,18 @@ public class Subscription {
                 .enablePendingPurchases()
                 .build();
 
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    ((HomeActivity)context).checkPastPurchase();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
     }
 
     public BillingClient getBillingClient(){
@@ -75,6 +88,9 @@ public class Subscription {
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+            }else {
+                AdManager adManager = (AdManager) context.getApplicationContext();
+                adManager.setIsPurchased(true);
             }
         }
     }
@@ -84,6 +100,9 @@ public class Subscription {
         public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
             if (billingResult.getResponseCode()== BillingClient.BillingResponseCode.OK){
                 Log.d("Acknowledge Purchase",billingResult.toString());
+                AdManager adManager = (AdManager) context.getApplicationContext();
+                adManager.setIsPurchased(true);
+                ((HomeActivity)context).purchaseSuccessful();
             }
         }
     };
@@ -96,7 +115,6 @@ public class Subscription {
                     && purchases != null) {
                 for (Purchase purchase : purchases) {
                     handlePurchase(purchase);
-
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
                 // Handle an error caused by a user cancelling the purchase flow.

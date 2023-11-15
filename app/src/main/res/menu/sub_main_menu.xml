@@ -8,6 +8,7 @@
         android:title="Notification"
         app:showAsAction="always"
         android:icon="@drawable/remove_ads_icon"/>
+
     <item
         android:id="@+id/nav_notification"
         android:title="Notification"

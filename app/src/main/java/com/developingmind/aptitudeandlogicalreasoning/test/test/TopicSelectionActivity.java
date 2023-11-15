@@ -202,7 +202,7 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
                 AdManager adManager = (AdManager) getApplicationContext();
                 InterstitialAd interstitialAd = adManager.getmInterstitialAd();
-                if(interstitialAd!=null){
+                if(interstitialAd!=null && !adManager.isPurchased){
                     interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {

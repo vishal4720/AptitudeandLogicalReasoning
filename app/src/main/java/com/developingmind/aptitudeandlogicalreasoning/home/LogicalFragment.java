@@ -144,7 +144,7 @@ public class LogicalFragment extends Fragment {
                 InterstitialAd interstitialAd = adManager.getmInterstitialAd();
                 Intent intent = new Intent(getContext(), CompetitiveQuestionsActivity.class);
                 intent.putExtra(Constants.isAptitude,false);
-                if(interstitialAd!=null){
+                if(interstitialAd!=null && !adManager.isPurchased){
                     interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {

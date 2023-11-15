@@ -100,7 +100,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                     Log.d("On Click",String.valueOf(isStudy));
                     AdManager adManager = (AdManager) context.getApplicationContext();
                     InterstitialAd interstitialAd = adManager.getmInterstitialAd();
-                    if (interstitialAd!=null) {
+                    if (interstitialAd!=null && !adManager.isPurchased) {
                         interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdShowedFullScreenContent() {

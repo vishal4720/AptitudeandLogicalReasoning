@@ -38,7 +38,7 @@ public class AdManager extends Application{
     private AdRequest adRequest;
 
     // To be removed after purchase
-    Boolean isPurchased = false;
+    public Boolean isPurchased = false;
 
     public void setIsPurchased(Boolean value){
         isPurchased = value;
@@ -102,6 +102,7 @@ public class AdManager extends Application{
     }
 
     public void loadInterstitialAd(){
+        Log.d("Interstitial Ad", String.valueOf(isPurchased));
         if (!isPurchased) {
             InterstitialAd.load(getApplicationContext(), getApplicationContext().getString(R.string.interstitialAd_ID), adRequest,
                     new InterstitialAdLoadCallback() {
@@ -125,6 +126,7 @@ public class AdManager extends Application{
     }
 
     public Boolean showInterstitialAd(Activity activity){
+        Log.d("Interstitial Ad", String.valueOf(isPurchased));
         if (mInterstitialAd!=null && !isPurchased){
             mInterstitialAd.show(activity);
             loadInterstitialAd();

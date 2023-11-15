@@ -163,7 +163,7 @@ public class DialogMaker extends Dialog {
                 dialog.dismiss();
                 AdManager adManager = (AdManager) context.getApplicationContext();
                 InterstitialAd interstitialAd = adManager.getmInterstitialAd();
-                if(interstitialAd!=null){
+                if(interstitialAd!=null && !adManager.isPurchased){
                     interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {
