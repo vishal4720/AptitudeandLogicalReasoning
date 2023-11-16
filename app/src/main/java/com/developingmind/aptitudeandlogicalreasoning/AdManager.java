@@ -58,28 +58,27 @@ public class AdManager extends Application{
     }
 
     public void loadRewardedAd(){
-        if (!isPurchased) {
-            RewardedAd.load(getApplicationContext(), getApplicationContext().getString(R.string.videoAd_ID), adRequest,
-                    new RewardedAdLoadCallback() {
-                        @Override
-                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                            mRewardedAd = null;
-                            super.onAdFailedToLoad(loadAdError);
-                        }
+        RewardedAd.load(getApplicationContext(), getApplicationContext().getString(R.string.videoAd_ID), adRequest,
+                new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mRewardedAd = null;
+                        super.onAdFailedToLoad(loadAdError);
+                    }
 
-                        @Override
-                        public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                            mRewardedAd = rewardedAd;
-                            super.onAdLoaded(rewardedAd);
-                        }
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        super.onAdLoaded(rewardedAd);
+                    }
 
-                    });
-        }
+                });
+
     }
 
 
     public Boolean showRewardedAd(Activity activity, SharedPreferences sharedPreferences, TextView credits){
-        if (mRewardedAd!=null && !isPurchased){
+        if (mRewardedAd!=null){
             mRewardedAd.show(activity, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
@@ -137,8 +136,7 @@ public class AdManager extends Application{
     }
 
     public void createAdRequest(){
-        if(!isPurchased)
-            adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder().build();
     }
 
     public void loadBannerAd(AdView mAdView){

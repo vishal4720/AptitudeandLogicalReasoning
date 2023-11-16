@@ -121,6 +121,13 @@ public class Subscription {
                 Toast.makeText(context, "Purchase Canceled", Toast.LENGTH_SHORT).show();
             } else {
                 // Handle any other error codes.
+                if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED){
+                    Toast.makeText(context, "Already Purchased !!", Toast.LENGTH_SHORT).show();
+                } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.NETWORK_ERROR) {
+                    Toast.makeText(context, "Check your network and try again !", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(context, "Something went wrong try again after some time !", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -208,23 +215,5 @@ public class Subscription {
         }else {
             Log.d("Error","Error");
         }
-    }
-
-    public ProductDetails getProductDetails(){
-        return productDetails;
-    }
-
-    private void onSubscribe(){
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingServiceDisconnected() {
-
-            }
-
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-
-            }
-        });
     }
 }

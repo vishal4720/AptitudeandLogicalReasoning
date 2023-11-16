@@ -467,6 +467,14 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     private void storeBookmarks(){
+        int i=0;
+        for (QuestionModal q:
+                bookmarklist) {
+            if (q.getGivenAns()!=null){
+                bookmarklist.get(i).setGivenAns(null);
+            }
+            i++;
+        }
         String json = gson.toJson(bookmarklist);
         editor.putString("bookmark"+isAptitude,json);
         editor.apply();
@@ -497,7 +505,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
 
     private void dismissLoader(){
         if(progressdialog.getDialog().isShowing())
-            progressdialog.getDialog().hide();
+            progressdialog.getDialog().dismiss();
     }
 
     private boolean modelMatch(){

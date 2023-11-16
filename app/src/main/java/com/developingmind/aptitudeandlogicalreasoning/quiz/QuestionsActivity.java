@@ -1,9 +1,5 @@
 package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.animation.Animator;
 import android.app.Dialog;
 import android.content.Intent;
@@ -27,13 +23,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.DatabaseEnum;
 import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.ScoreEnum;
-import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.developingmind.aptitudeandlogicalreasoning.score.ScoreActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +40,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -71,7 +69,7 @@ public class QuestionsActivity extends AppCompatActivity {
     int matchedQuestionPosition;
     private String categoryId;
 
-    List<QuestionModal> bookmarklist = new ArrayList<QuestionModal>();
+    List<QuestionModal> bookmarklist = new ArrayList<>();
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -144,9 +142,17 @@ public class QuestionsActivity extends AppCompatActivity {
                     bookmarklist.remove(matchedQuestionPosition);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark_border));
                 }else{
-                    QuestionModal q = list.get(position);
-                    q.setGivenAns(null);
-                    bookmarklist.add(q);
+                    QuestionModal questionModal = list.get(position);
+//                    BookmarkQuestionModal q = new BookmarkQuestionModal(questionModal.getQuestion(),
+//                            questionModal.getOptionA(),
+//                            questionModal.getOptionB(),
+//                            questionModal.getOptionC(),
+//                            questionModal.getOptionD(),
+//                            questionModal.getCorrectAns(),
+//                            questionModal.getExplanation(),
+//                            questionModal.getCategoryId(),
+//                            questionModal.getId());
+                    bookmarklist.add(questionModal);
                     bookmark.setImageDrawable(getDrawable(R.drawable.bookmark));
                 }
             }
@@ -417,9 +423,17 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     private void storeBookmarks(){
+        int i=0;
+        for (QuestionModal q:
+             bookmarklist) {
+            if (q.getGivenAns()!=null){
+                bookmarklist.get(i).setGivenAns(null);
+            }
+            i++;
+        }
         String json = gson.toJson(bookmarklist);
-        Log.d("Bookmark Json",json);
-        editor.putString("bookmark"+isAptitude,json);
+        Log.d("Bookmark Json", json);
+        editor.putString("bookmark" + isAptitude, json);
         editor.apply();
     }
 
@@ -448,7 +462,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private void dismissLoader(){
         if(progressdialog.getDialog().isShowing())
-            progressdialog.getDialog().hide();
+            progressdialog.getDialog().dismiss();
     }
 
     private boolean modelMatch(){
@@ -561,7 +575,7 @@ public class QuestionsActivity extends AppCompatActivity {
             next.setText("Next");
         if (bookmark.getDrawable().getCurrent() == getDrawable(R.drawable.bookmark)){
             int index = bookmarklist.indexOf(list.get(position));
-            bookmarklist.get(index).setGivenAns(selectedoption);
+            bookmarklist.get(index).setGivenAns(null);
             bookmarklist.get(index).setAnswered(true);
             Log.d("Bookmark Update",String.valueOf(bookmarklist.get(position).getAnswered()));
         }

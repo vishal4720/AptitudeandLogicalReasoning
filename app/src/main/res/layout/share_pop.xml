@@ -79,8 +79,12 @@
                 android:id="@+id/share_final_btn"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:scaleType="centerCrop"
+                android:padding="15dp"
+                android:contentDescription="@string/share"
                 android:background="@color/cyan"
-                android:src="@drawable/ic_share" />
+                android:src="@drawable/ic_share"
+                app:tint="@color/white" />
 
         </androidx.cardview.widget.CardView>
 
@@ -119,7 +123,10 @@
                 android:id="@+id/rewarded_ad_btn"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:scaleType="centerCrop"
+                android:padding="15dp"
                 android:background="@color/cyan"
+                android:contentDescription="Watch Video to Earn Share Points"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_video" />
         </androidx.cardview.widget.CardView>

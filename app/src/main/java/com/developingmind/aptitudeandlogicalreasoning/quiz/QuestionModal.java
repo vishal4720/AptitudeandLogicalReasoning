@@ -2,11 +2,16 @@ package com.developingmind.aptitudeandlogicalreasoning.quiz;
 
 import android.widget.Button;
 
+import com.google.gson.annotations.Expose;
+
 public class QuestionModal {
 
     private String question,optionA,optionB,optionC,optionD,correctAns,id,explanation,categoryId;
+    @Expose(serialize = false)
     private Boolean isAnswered = false;
+    @Expose(serialize = false)
     private Boolean isVisited = false;
+    @Expose(serialize = false)
     private Button givenAns = null;
     public QuestionModal(){
 

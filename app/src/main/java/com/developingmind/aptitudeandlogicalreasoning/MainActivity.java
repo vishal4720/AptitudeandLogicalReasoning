@@ -28,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
         AdManager adManager = (AdManager) getApplicationContext();
         adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",false));
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
+        if (sharedPreferences.getInt("share_count",-1)<0){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("share_count",3);
+            editor.apply();
+        }
 
         if(firebaseAuth.getCurrentUser() == null)
             startActivity(new Intent(this, LoginActivity.class));
