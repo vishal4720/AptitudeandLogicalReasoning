@@ -1,38 +1,13 @@
 package com.developingmind.aptitudeandlogicalreasoning;
 
-import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
-import static com.developingmind.aptitudeandlogicalreasoning.purchase.Security.BASE_64_ENCODED_PUBLIC_KEY;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,22 +18,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ProductDetails;
-import com.android.billingclient.api.ProductDetailsResponseListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchaseHistoryRecord;
 import com.android.billingclient.api.PurchasesResponseListener;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.android.billingclient.api.SkuDetails;
 import com.developingmind.aptitudeandlogicalreasoning.home.AptitudeFragment;
 import com.developingmind.aptitudeandlogicalreasoning.home.LogicalFragment;
-import com.developingmind.aptitudeandlogicalreasoning.home.advertisment.AdvertismentModal;
 import com.developingmind.aptitudeandlogicalreasoning.leaderboard.LeaderboardFragment;
 import com.developingmind.aptitudeandlogicalreasoning.login.LoginActivity;
 import com.developingmind.aptitudeandlogicalreasoning.login.SignUpActivity;
@@ -73,34 +50,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.common.collect.ImmutableList;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-import com.google.type.DateTime;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -121,7 +81,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     
     AdManager adManager;
     AdView adView;
-    private SharedPreferences purchaseSharedPreference;
 
 
     @Override
@@ -141,7 +100,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         subscription.create();
 
-        purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
         // Billing End
 
         int permissionState = ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS);
@@ -154,7 +112,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         adManager = (AdManager)getApplicationContext();
         adManager.createAdRequest();
-        adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",false));
         adView = findViewById(R.id.bannerAdView);
         
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -230,13 +187,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     // check billingResult
                                     // process returned purchase list, e.g. display the plans user owns
                                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                        Log.d("Purchase History", purchases.get(0).toString());
-                                        if (purchases.size()>0) {
+                                        Log.d("Purchase History", String.valueOf(purchases.size()));
+                                        if (purchases.size()>0){
+                                            Log.d("Purchase History", purchases.get(0).toString());
                                             adManager.setIsPurchased(true);
                                             adView.setVisibility(View.GONE);
-                                            toolbar.getMenu().findItem(R.id.nav_remove_ads).setVisible(false);
-                                            toolbar.invalidateMenu();
                                             purchaseSuccessful();
+                                            toolbar.getMenu().findItem(R.id.nav_remove_ads).setVisible(false);
+                                            Log.d("Purchase History Menu","Start");
+                                            toolbar.invalidateMenu();
                                         }
                                     }
                                 }
@@ -252,6 +211,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void purchaseSuccessful(){
+        SharedPreferences purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
         SharedPreferences.Editor editor = purchaseSharedPreference.edit();
         editor.putBoolean("purchase",true);
         editor.apply();
@@ -383,6 +343,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
         if(item.getItemId() == R.id.nav_notification){
             startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
             return true;
@@ -397,6 +358,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (adManager.isPurchased){
+            menu.removeItem(R.id.nav_remove_ads);
+        }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sub_main_menu,menu);
         return true;
@@ -404,8 +368,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(!adManager.isPurchased){
-            menu.findItem(R.id.nav_remove_ads).setVisible(false);
+        if(adManager.isPurchased){
+            menu.removeItem(R.id.nav_remove_ads);
         }
         Log.d("Prepare Menu","YES");
         return super.onPrepareOptionsMenu(menu);

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -23,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 //        getFirebaseMessagingTokken();
+
+        SharedPreferences purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
+        AdManager adManager = (AdManager) getApplicationContext();
+        adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",false));
 
         if(firebaseAuth.getCurrentUser() == null)
             startActivity(new Intent(this, LoginActivity.class));
