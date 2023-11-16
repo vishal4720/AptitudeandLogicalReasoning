@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -143,9 +145,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, new AptitudeFragment()).commit();
         }
 
-
-
-
         loadBannerAd();
         loadInterstitialAd();
 
@@ -249,6 +248,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void setPurchaseHeader(){
+        if (adManager.isPurchased){
+            headerIcon.setStrokeWidth(10);
+            headerIcon.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#FFD700")));
+        }
+    }
     public void setHeaderIcon(int drawable) {
         headerIcon.setImageDrawable(getDrawable(drawable));
     }
@@ -370,6 +375,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onPrepareOptionsMenu(Menu menu) {
         if(adManager.isPurchased){
             menu.removeItem(R.id.nav_remove_ads);
+            setPurchaseHeader();
         }
         Log.d("Prepare Menu","YES");
         return super.onPrepareOptionsMenu(menu);

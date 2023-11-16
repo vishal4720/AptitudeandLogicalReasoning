@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences purchaseSharedPreference = getSharedPreferences("PurchasePref",MODE_PRIVATE);
         AdManager adManager = (AdManager) getApplicationContext();
-        adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",false));
+        adManager.setIsPurchased(purchaseSharedPreference.getBoolean("purchase",true));
 
         if(firebaseAuth.getCurrentUser() == null)
             startActivity(new Intent(this, LoginActivity.class));
