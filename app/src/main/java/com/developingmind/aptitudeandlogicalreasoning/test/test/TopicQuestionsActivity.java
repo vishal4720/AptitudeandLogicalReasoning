@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -372,11 +373,11 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                                                 if (sharedPreferences.getInt("share_count",0)>0){
                                                     editor.putInt("share_count",sharedPreferences.getInt("share_count",0)-1);
                                                     editor.apply();
-                                                    String body = "Q. " + list.get(position).getQuestion() + "\n" +
-                                                            list.get(position).getOptionA() +"\n" +
-                                                            list.get(position).getOptionB() +"\n" +
-                                                            list.get(position).getOptionC() +"\n" +
-                                                            list.get(position).getOptionD() + "\n\n\n" +
+                                                    String body = "Q. " + convertTextfromHTML(list.get(position).getQuestion()) + "\n" +
+                                                            convertTextfromHTML(list.get(position).getOptionA()) +"\n" +
+                                                            convertTextfromHTML(list.get(position).getOptionB()) +"\n" +
+                                                            convertTextfromHTML(list.get(position).getOptionC()) +"\n" +
+                                                            convertTextfromHTML(list.get(position).getOptionD()) + "\n\n\n" +
                                                             "Test your own knowledge now !!" + "\n" +
                                                             getResources().getString(R.string.play_store_link);
 
@@ -416,6 +417,10 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                     });
         }
 
+    }
+
+    private Spanned convertTextfromHTML(String str){
+        return Html.fromHtml(str,Html.FROM_HTML_MODE_LEGACY);
     }
 
     public void setCountText(TextView text){
@@ -547,7 +552,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
 
                         if (value == 0){
                             try {
-                                ((TextView)view).setText(Html.fromHtml(data, Html.FROM_HTML_MODE_LEGACY));
+                                ((TextView)view).setText(convertTextfromHTML(data));
                                 question_no.setText(String.valueOf(position+1)+"/"+String.valueOf(limitQuestions));
 
                                 if (modelMatch()){

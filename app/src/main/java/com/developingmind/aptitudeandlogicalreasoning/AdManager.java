@@ -26,8 +26,11 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.type.DateTime;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 public class AdManager extends Application{
 //    Context mContext;
@@ -39,6 +42,8 @@ public class AdManager extends Application{
 
     // To be removed after purchase
     public Boolean isPurchased = false;
+
+    private Date date;
 
     public void setIsPurchased(Boolean value){
         isPurchased = value;
@@ -54,6 +59,8 @@ public class AdManager extends Application{
                 }
             }
         });
+        date = Calendar.getInstance().getTime();
+        Log.d("Date", String.valueOf(date));
         super.onCreate();
     }
 
@@ -121,18 +128,38 @@ public class AdManager extends Application{
     }
 
     public InterstitialAd getmInterstitialAd(){
-        return mInterstitialAd;
+        if (checkTimeDifference()) {
+            return mInterstitialAd;
+        }else {
+            return null;
+        }
     }
 
-    public Boolean showInterstitialAd(Activity activity){
-        Log.d("Interstitial Ad", String.valueOf(isPurchased));
-        if (mInterstitialAd!=null && !isPurchased){
-            mInterstitialAd.show(activity);
-            loadInterstitialAd();
+    private Boolean checkTimeDifference(){
+        Date currentDate = Calendar.getInstance().getTime();
+        long diff = currentDate.getTime() - date.getTime();
+        long seconds = diff / 1000;
+        Log.d("Date", String.valueOf(seconds/30));
+        if((seconds/30)>=1){
+            date = currentDate;
             return true;
         }else{
             return false;
         }
+
+    }
+
+    public Boolean showInterstitialAd(Activity activity){
+        if (checkTimeDifference()) {
+            if (mInterstitialAd != null && !isPurchased) {
+                mInterstitialAd.show(activity);
+                loadInterstitialAd();
+                return true;
+            } else {
+                return false;
+            }
+        }else
+            return false;
     }
 
     public void createAdRequest(){

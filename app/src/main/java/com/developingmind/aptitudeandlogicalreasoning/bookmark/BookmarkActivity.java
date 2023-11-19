@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
@@ -55,6 +57,7 @@ public class BookmarkActivity extends AppCompatActivity {
         gson = new Gson();
 
 
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +66,12 @@ public class BookmarkActivity extends AppCompatActivity {
         });
 
         getBookmark();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storeBookmarks();
     }
 
     private void getBookmark(){
@@ -77,8 +86,22 @@ public class BookmarkActivity extends AppCompatActivity {
             Toast.makeText(this, "No Questions Bookmarked", Toast.LENGTH_SHORT).show();
             finish();
         }
+        AdManager adManager = (AdManager) getApplicationContext();
         Log.d("Bookmark",bookmarklist.toString());
-        bookmarkAdapter = new BookmarkAdapter(this,bookmarklist);
+        bookmarkAdapter = new BookmarkAdapter(this,bookmarklist,sharedPreferences,adManager);
         recyclerView.setAdapter(bookmarkAdapter);
+    }
+
+    private void storeBookmarks(){
+        String json = gson.toJson(bookmarklist);
+        Log.d("Bookmark Json", json);
+        editor.putString("bookmark" + isAptitude, json);
+        editor.apply();
+    }
+
+
+    public void delete(int position){
+        bookmarklist.remove(position);
+        bookmarkAdapter.notifyItemRemoved(position);
     }
 }

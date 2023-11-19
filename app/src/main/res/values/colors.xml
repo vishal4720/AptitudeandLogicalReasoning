@@ -9,6 +9,7 @@
     <color name="off_black">#09071E</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="pop">#FFED33BD</color>
+    <color name="transparent">#00000000</color>
 
     <!--  Background Colors  -->
     <color name="background_c1">#E0FDF6</color>
