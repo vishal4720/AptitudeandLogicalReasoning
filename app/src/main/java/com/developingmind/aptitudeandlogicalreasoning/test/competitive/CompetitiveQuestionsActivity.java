@@ -59,6 +59,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -255,7 +256,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
                                             object.getString("optionD"),
                                             object.getString("correctAns"),
                                             object.getString("explanation"),
-                                            "CategoryId",
+                                            documentSnapshot.getId(),
                                             documentSnapshot.getId()));
                                 } catch (JSONException e) {
                                     Log.d("", e.getMessage());
@@ -461,8 +462,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
-
+        String json = sharedPreferences.getString("bookmarkCompetitive"+isAptitude,"");
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
         bookmarklist = gson.fromJson(json,type);
@@ -481,7 +481,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
             i++;
         }
         String json = gson.toJson(bookmarklist);
-        editor.putString("bookmark"+isAptitude,json);
+        editor.putString("bookmarkCompetitive"+isAptitude,json);
         editor.apply();
     }
 

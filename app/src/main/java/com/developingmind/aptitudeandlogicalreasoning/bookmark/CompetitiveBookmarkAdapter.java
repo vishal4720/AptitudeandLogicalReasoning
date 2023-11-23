@@ -19,27 +19,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.AdManager;
-import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsActivity;
 
 import java.util.List;
 
-public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
+public class CompetitiveBookmarkAdapter extends RecyclerView.Adapter<CompetitiveBookmarkAdapter.ViewHolder> {
     private Context context;
     private List<QuestionModal> list;
     private AdManager adManager;
     private Dialog deleteDialog;
+    private FragmentManager fragmentManager;
 
-    public BookmarkAdapter(@NonNull Context context,List<QuestionModal> list,SharedPreferences sharedPreferences, AdManager adManager){
+    public CompetitiveBookmarkAdapter(@NonNull Context context, List<QuestionModal> list, SharedPreferences sharedPreferences, AdManager adManager, FragmentManager supportFragmentManager){
         this.context = context;
         this.list = list;
         this.sharedPreferences = sharedPreferences;
+        fragmentManager = supportFragmentManager;
         editor = sharedPreferences.edit();
         this.adManager = adManager;
         sharedialog = new Dialog(context);
@@ -57,10 +57,10 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @NonNull
     @Override
-    public BookmarkAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CompetitiveBookmarkAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.bookmark_item,parent,false);
-        return new BookmarkAdapter.ViewHolder(view);
+        return new CompetitiveBookmarkAdapter.ViewHolder(view);
     }
 
     private void createDialog(){
@@ -89,6 +89,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             question = itemView.findViewById(R.id.question);
             optionA = itemView.findViewById(R.id.optionA);
             optionB = itemView.findViewById(R.id.optionB);
@@ -136,7 +137,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
         private void delete(int position){
             Log.d("Adapter Position Before", String.valueOf(position));
-//            ((BookmarkActivity)context).delete(position);
+            ((CompetitiveBookmarkFragment)fragmentManager.getFragments().get(1)).deleteCompetitiveBookmark(position);
             Log.d("Adapter Position After", String.valueOf(position));
             deleteDialog.dismiss();
         }

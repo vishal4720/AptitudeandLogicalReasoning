@@ -1,62 +1,71 @@
 package com.developingmind.aptitudeandlogicalreasoning.bookmark;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
+import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class BookmarkActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    TabLayout tabLayout;
+    ViewPager2 viewPager;
+    BookmarkPagerAdapter bookmarkPagerAdapter;
+    public Boolean isAptitude;
+    DialogMaker loadingDialog;
+    private String[] labels = new String[]{"Practice", "Competitive"};
 
-    List<QuestionModal> bookmarklist;
-    Gson gson;
-
-    BookmarkAdapter bookmarkAdapter;
-    Boolean isAptitude;
-
-    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
         toolbar = findViewById(R.id.toolbar);
-        recyclerView = findViewById(R.id.recycler_view);
-
+        loadingDialog = new DialogMaker(this);
         isAptitude = getIntent().getBooleanExtra(Constants.isAptitude,true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        tabLayout=(TabLayout)findViewById(R.id.tabLayout);
+        viewPager=(ViewPager2)findViewById(R.id.viewPager);
+        tabLayout.addTab(tabLayout.newTab().setText(labels[0]),true);
+        tabLayout.addTab(tabLayout.newTab().setText(labels[1]));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        bookmarkPagerAdapter = new BookmarkPagerAdapter(this,this,tabLayout.getTabCount());
+        viewPager.setAdapter(bookmarkPagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText(labels[position])
+        ).attach();
 
         setSupportActionBar(toolbar);
-
-        sharedPreferences = getSharedPreferences("MyPref",MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        gson = new Gson();
-
-
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,44 +73,13 @@ public class BookmarkActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        getBookmark();
     }
 
     @Override
     protected void onPause() {
+        ((PracticeBookmarkFragment)getSupportFragmentManager().getFragments().get(0)).storeBookmark();
+        ((CompetitiveBookmarkFragment)getSupportFragmentManager().getFragments().get(1)).storeCompititiveBookmarks();
         super.onPause();
-        storeBookmarks();
     }
-
-    private void getBookmark(){
-
-        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
-
-        Type type = new TypeToken<List<QuestionModal>>(){}.getType();
-
-        bookmarklist = gson.fromJson(json,type);
-        if (bookmarklist == null || bookmarklist.isEmpty()){
-            bookmarklist = new ArrayList<>();
-            Toast.makeText(this, "No Questions Bookmarked", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        AdManager adManager = (AdManager) getApplicationContext();
-        Log.d("Bookmark",bookmarklist.toString());
-        bookmarkAdapter = new BookmarkAdapter(this,bookmarklist,sharedPreferences,adManager);
-        recyclerView.setAdapter(bookmarkAdapter);
-    }
-
-    private void storeBookmarks(){
-        String json = gson.toJson(bookmarklist);
-        Log.d("Bookmark Json", json);
-        editor.putString("bookmark" + isAptitude, json);
-        editor.apply();
-    }
-
-
-    public void delete(int position){
-        bookmarklist.remove(position);
-        bookmarkAdapter.notifyItemRemoved(position);
-    }
+    
 }

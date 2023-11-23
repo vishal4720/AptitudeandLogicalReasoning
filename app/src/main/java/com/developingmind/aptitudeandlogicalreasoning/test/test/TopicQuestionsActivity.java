@@ -280,7 +280,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
                                                 object.getString("optionD"),
                                                 object.getString("correctAns"),
                                                 object.getString("explanation"),
-                                                "CategoryId",
+                                                documentSnapshot.getId(),
                                                 documentSnapshot.getId()));
                                     } catch (JSONException e) {
                                         Log.d("", e.getMessage());
@@ -445,7 +445,7 @@ public class TopicQuestionsActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmark"+isAptitude,"");
+        String json = sharedPreferences.getString("bookmarkCompetitive"+isAptitude,"");
 
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
@@ -456,8 +456,16 @@ public class TopicQuestionsActivity extends AppCompatActivity {
     }
 
     private void storeBookmarks(){
+        int i=0;
+        for (QuestionModal q:
+                bookmarklist) {
+            if (q.getGivenAns()!=null){
+                bookmarklist.get(i).setGivenAns(null);
+            }
+            i++;
+        }
         String json = gson.toJson(bookmarklist);
-        editor.putString("bookmark"+isAptitude,json);
+        editor.putString("bookmarkCompetitive"+isAptitude,json);
         editor.apply();
     }
 

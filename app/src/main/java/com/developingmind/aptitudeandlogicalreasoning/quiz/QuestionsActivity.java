@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -416,12 +417,20 @@ public class QuestionsActivity extends AppCompatActivity {
         questionsDialog.dismiss();
     }
 
+
+    private Map<String,List<QuestionModal>> oldMap = new HashMap<>();
     private void getBookmark(){
         String json = sharedPreferences.getString("bookmark"+isAptitude,"");
+        Log.d("Bookmark Json",json);
 
-        Type type = new TypeToken<List<QuestionModal>>(){}.getType();
+        oldMap = new HashMap<>();
+        Type type = new TypeToken<Map<String,List<QuestionModal>>>(){}.getType();
 
-        bookmarklist = gson.fromJson(json,type);
+        oldMap = gson.fromJson(json,type);
+        if(oldMap!=null) {
+            bookmarklist = oldMap.get(categoryId);
+            Log.d("Bookmark Json Map", String.valueOf(oldMap));
+        }
         if (bookmarklist == null){
             bookmarklist = new ArrayList<>();
         }
@@ -436,7 +445,11 @@ public class QuestionsActivity extends AppCompatActivity {
             }
             i++;
         }
-        String json = gson.toJson(bookmarklist);
+        if (oldMap==null){
+            oldMap = new HashMap<>();
+        }
+        oldMap.put(categoryId,bookmarklist);
+        String json = gson.toJson(oldMap);
         Log.d("Bookmark Json", json);
         editor.putString("bookmark" + isAptitude, json);
         editor.apply();
