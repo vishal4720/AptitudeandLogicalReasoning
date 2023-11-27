@@ -89,7 +89,13 @@ public class CompetitiveBookmarkFragment extends Fragment {
 
 
     public void deleteCompetitiveBookmark(int position){
-        bookmarklist.remove(position);
-        bookmarkAdapter.notifyItemRemoved(position);
+        if (position!=RecyclerView.NO_POSITION) {
+            bookmarklist.remove(position);
+            bookmarkAdapter.notifyItemRemoved(position);
+            if (bookmarklist.isEmpty()) {
+                competitiveRecyclerView.setVisibility(View.GONE);
+                noBookmark.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

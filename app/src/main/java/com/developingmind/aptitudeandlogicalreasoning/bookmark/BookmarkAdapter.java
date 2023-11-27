@@ -19,14 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.AdManager;
-import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsActivity;
 
 import java.util.List;
 
@@ -35,12 +33,14 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     private List<QuestionModal> list;
     private AdManager adManager;
     private Dialog deleteDialog;
+    private FragmentManager fragmentManager;
 
-    public BookmarkAdapter(@NonNull Context context,List<QuestionModal> list,SharedPreferences sharedPreferences, AdManager adManager){
+    public BookmarkAdapter(@NonNull Context context, List<QuestionModal> list, SharedPreferences sharedPreferences, AdManager adManager, FragmentManager supportFragmentManager){
         this.context = context;
         this.list = list;
         this.sharedPreferences = sharedPreferences;
         editor = sharedPreferences.edit();
+        fragmentManager = supportFragmentManager;
         this.adManager = adManager;
         sharedialog = new Dialog(context);
         sharedialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -86,7 +86,9 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         holder.setData(holder);
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
+        int position =0;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             question = itemView.findViewById(R.id.question);
@@ -125,18 +127,19 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
             ((Button) deleteDialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    delete(holder.getAdapterPosition());
+                    delete(position);
                 }
             });
         }
 
         private void showDeleteDialog(int position){
+            this.position = position;
             deleteDialog.show();
         }
 
         private void delete(int position){
             Log.d("Adapter Position Before", String.valueOf(position));
-//            ((BookmarkActivity)context).delete(position);
+            ((PracticeBookmarkFragment)fragmentManager.getFragments().get(0)).deleteBookmark(position);
             Log.d("Adapter Position After", String.valueOf(position));
             deleteDialog.dismiss();
         }

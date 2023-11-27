@@ -87,9 +87,21 @@ public class PracticeBookmarkFragment extends Fragment {
 
         AdManager adManager = (AdManager) getContext().getApplicationContext();
         Log.d("Bookmark",bookmarklist.toString());
-        bookmarkAdapter = new BookmarkAdapter(getContext(),bookmarklist,sharedPreferences,adManager);
+        bookmarkAdapter = new BookmarkAdapter(getContext(),bookmarklist,sharedPreferences,adManager,((BookmarkActivity) getContext()).getSupportFragmentManager());
         recyclerView.setAdapter(bookmarkAdapter);
 
+    }
+
+    public void deleteBookmark(int position){
+        if (position!=RecyclerView.NO_POSITION) {
+            bookmarkAdapter.notifyItemRemoved(position);
+            bookmarkAdapter.notifyItemRangeChanged(position, bookmarklist.size());
+            bookmarklist.remove(position);
+            if (bookmarklist.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                noBookmark.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public void storeBookmark(){
