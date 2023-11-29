@@ -110,30 +110,25 @@ public class SolvedProblemActivity extends AppCompatActivity {
                 .document(categoryId);
 
         if(isSolved) {
-            collectionReference
+            collectionReference.collection("questions")
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-                                Map<String, Object> que = documentSnapshot.getData();
-                                if (que != null) {
-                                    Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
-                                    scoreModal.clear();
-                                    while (iterator.hasNext()) {
-                                        Map.Entry<String, Object> x = iterator.next();
-                                        JSONObject object = new JSONObject((Map) x.getValue());
-                                        try {
-                                            scoreModal.add(new ScoreModal(object.getString("question").toString(),
-                                                    object.getString("correctAns").toString(),
-                                                    object.getString("explanation").toString()));
-                                        } catch (JSONException e) {
-                                            throw new RuntimeException(e);
+                                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+
+                                if (!documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot: documentSnapshots) {
+                                        Map<String, Object> object = documentSnapshot.getData();
+                                        if (object!=null) {
+                                            scoreModal.add(new ScoreModal(object.get("question").toString(),
+                                                    object.get("correctAns").toString(),
+                                                    object.get("explanation").toString()));
                                         }
+                                        adapter = new SolvedProblemAdapter(scoreModal, SolvedProblemActivity.this);
+                                        recyclerView.setAdapter(adapter);
                                     }
-                                    adapter = new SolvedProblemAdapter(scoreModal, SolvedProblemActivity.this);
-                                    recyclerView.setAdapter(adapter);
                                 } else {
                                     Toast.makeText(SolvedProblemActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
 

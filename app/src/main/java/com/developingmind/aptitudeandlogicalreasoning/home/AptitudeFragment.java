@@ -124,6 +124,7 @@ public class AptitudeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
                 intent.putExtra(Constants.isAptitude,true);
                 intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isSolvedProblems,true);
                 startActivity(intent);
             }
         });
@@ -149,7 +150,11 @@ public class AptitudeFragment extends Fragment {
         tip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra(Constants.isAptitude,true);
+                intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isStudy,false);
+                startActivity(intent);
             }
         });
 

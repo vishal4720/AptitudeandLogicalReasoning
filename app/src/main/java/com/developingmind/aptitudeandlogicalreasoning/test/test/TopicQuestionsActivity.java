@@ -47,6 +47,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -256,33 +257,31 @@ public class TopicQuestionsActivity extends AppCompatActivity {
              topicData) {
             firebaseFirestore.collection(key)
                     .document(topic)
+                    .collection("questions")
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(TopicQuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
                                 dismissLoader();
                                 finish();
                             }
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            Map<String, Object> que = documentSnapshot.getData();
-                            if (que != null) {
-                                Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
-                                while (iterator.hasNext()) {
-                                    Map.Entry<String, Object> x = iterator.next();
-                                    JSONObject object = new JSONObject((Map) x.getValue());
+                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                            if (!documentSnapshots.isEmpty()) {
+                                for (DocumentSnapshot documentSnapshot: documentSnapshots) {
+                                    Map<String,Object> object = documentSnapshot.getData();
                                     try {
-                                        list.add(new QuestionModal(object.getString("question"),
-                                                object.getString("optionA"),
-                                                object.getString("optionB"),
-                                                object.getString("optionC"),
-                                                object.getString("optionD"),
-                                                object.getString("correctAns"),
-                                                object.getString("explanation"),
+                                        list.add(new QuestionModal(object.get("question").toString(),
+                                                object.get("optionA").toString(),
+                                                object.get("optionB").toString(),
+                                                object.get("optionC").toString(),
+                                                object.get("optionD").toString(),
+                                                object.get("correctAns").toString(),
+                                                object.get("explanation").toString(),
                                                 documentSnapshot.getId(),
                                                 documentSnapshot.getId()));
-                                    } catch (JSONException e) {
+                                    } catch (Exception e) {
                                         Log.d("", e.getMessage());
                                     }
                                 }

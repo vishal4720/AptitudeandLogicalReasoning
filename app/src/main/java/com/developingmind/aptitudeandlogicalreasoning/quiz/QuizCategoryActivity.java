@@ -41,7 +41,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
     private int formulaCount = 0;
     private QuizzesCategoryAdapter quizzesCategoryAdapter;
 
-    private boolean isAptitude,isPractice,isStudy;
+    private boolean isAptitude,isPractice,isStudy,isSolved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +56,16 @@ public class QuizCategoryActivity extends AppCompatActivity {
         isAptitude = getIntent().getBooleanExtra(Constants.isAptitude, true);
         isPractice = getIntent().getBooleanExtra(Constants.isPractice, true);
         isStudy = getIntent().getBooleanExtra(Constants.isStudy, false);
+        isSolved = getIntent().getBooleanExtra(Constants.isSolvedProblems, false);
 
-        if (isPractice) {
+        if (isPractice){
             toolbar.setTitle("Practice");
         } else if (isStudy){
             toolbar.setTitle("Formulas");
-        }else{
+        }else if (isSolved){
             toolbar.setTitle("Solved Problems");
+        }else{
+            toolbar.setTitle("Tips & Tricks");
         }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -80,7 +83,7 @@ public class QuizCategoryActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice,isStudy);
+        quizzesCategoryAdapter = new QuizzesCategoryAdapter(list,this,isAptitude,isPractice,isStudy,isSolved);
         recyclerView.setAdapter(quizzesCategoryAdapter);
 
         showDialog();

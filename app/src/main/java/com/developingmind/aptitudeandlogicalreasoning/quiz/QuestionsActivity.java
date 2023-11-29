@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -206,34 +207,31 @@ public class QuestionsActivity extends AppCompatActivity {
         }
         firebaseFirestore.collection(key)
                 .document(categoryId)
+                .collection("questions")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(!task.isSuccessful()){
                             Toast.makeText(QuestionsActivity.this, "Please try after some time !!", Toast.LENGTH_SHORT).show();
                             dismissLoader();
                             finish();
                         }
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        Map<String,Object> que = documentSnapshot.getData();
-                        Log.d("",documentSnapshot.toString());
-                        if (que!=null) {
-                            Iterator<Map.Entry<String, Object>> iterator = que.entrySet().iterator();
-                            while (iterator.hasNext()) {
-                                Map.Entry<String, Object> x = iterator.next();
-                                JSONObject object = new JSONObject((Map) x.getValue());
+                        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                        if (!documentSnapshots.isEmpty()) {
+                            for (DocumentSnapshot document: documentSnapshots) {
+                                Map<String, Object> x = document.getData();
                                 try {
-                                    list.add(new QuestionModal(object.getString("question"),
-                                            object.getString("optionA"),
-                                            object.getString("optionB"),
-                                            object.getString("optionC"),
-                                            object.getString("optionD"),
-                                            object.getString("correctAns"),
-                                            object.getString("explanation"),
+                                    list.add(new QuestionModal(x.get("question").toString(),
+                                            x.get("optionA").toString(),
+                                            x.get("optionB").toString(),
+                                            x.get("optionC").toString(),
+                                            x.get("optionD").toString(),
+                                            x.get("correctAns").toString(),
+                                            x.get("explanation").toString(),
                                             categoryId,
-                                            documentSnapshot.getId()));
-                                } catch (JSONException e) {
+                                            document.getId()));
+                                } catch (Exception e) {
                                     Log.d("", e.getMessage());
                                 }
                             }
@@ -354,25 +352,6 @@ public class QuestionsActivity extends AppCompatActivity {
 
                                     }
                                 });
-                            }else{
-//                                firebaseFirestore.collection(DatabaseEnum.aptitude.toString())
-//                                        .document(categoryId)
-//                                                .collection("formula")
-//                                                        .get()
-//                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                    @Override
-//                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                        Log.d("Data",task.getResult().getDocuments().toString());
-//                                                                    }
-//                                                                })
-//                                                                        .addOnFailureListener(new OnFailureListener() {
-//                                                                            @Override
-//                                                                            public void onFailure(@NonNull Exception e) {
-//                                                                                Log.d("Exception",e.getMessage());
-//                                                                            }
-//                                                                        });
-                                Toast.makeText(QuestionsActivity.this, "No Question right now. Come Back Later", Toast.LENGTH_SHORT).show();
-                                finish();
                             }
                             dismissLoader();
 

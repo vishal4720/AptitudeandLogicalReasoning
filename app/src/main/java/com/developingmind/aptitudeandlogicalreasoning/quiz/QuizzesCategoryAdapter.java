@@ -23,6 +23,7 @@ import com.developingmind.aptitudeandlogicalreasoning.AdManager;
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
+import com.developingmind.aptitudeandlogicalreasoning.tips.TipsActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -34,15 +35,16 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
     private List<String> quizzesModalList;
     Context context;
     CardView cardView;
-    Boolean isAptitude,isPractice,isStudy;
+    Boolean isAptitude,isPractice,isStudy,isSolved;
     ImageView icon;
 
-    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice,Boolean isStudy){
+    public QuizzesCategoryAdapter(List<String> quizzesModalList, Context context,Boolean isAptitude,Boolean isPractice,Boolean isStudy,Boolean isSolved){
         this.quizzesModalList = quizzesModalList;
         this.context = context;
         this.isAptitude = isAptitude;
         this.isPractice = isPractice;
         this.isStudy = isStudy;
+        this.isSolved = isSolved;
     }
 
     private int lastPosition = -1;
@@ -142,8 +144,13 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                 intent.putExtra("position", position);
                 intent.putExtra(Constants.isSolvedProblems, false);
                 intent.putExtra(Constants.isAptitude, isAptitude);
-            } else {
+            } else if (isSolved){
                 intent = new Intent(itemView.getContext(), SolvedProblemActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("position", position);
+                intent.putExtra(Constants.isAptitude, isAptitude);
+            }else{
+                intent = new Intent(itemView.getContext(), TipsActivity.class);
                 intent.putExtra("title", title);
                 intent.putExtra("position", position);
                 intent.putExtra(Constants.isAptitude, isAptitude);

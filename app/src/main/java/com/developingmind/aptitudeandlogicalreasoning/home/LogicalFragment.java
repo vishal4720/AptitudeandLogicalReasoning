@@ -114,6 +114,7 @@ public class LogicalFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
                 intent.putExtra(Constants.isAptitude,false);
                 intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isSolvedProblems,true);
                 startActivity(intent);
             }
         });
@@ -133,6 +134,8 @@ public class LogicalFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TopicSelectionActivity.class);
                 intent.putExtra(Constants.isAptitude,false);
+                intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isStudy,false);
                 startActivity(intent);
             }
         });
@@ -169,7 +172,11 @@ public class LogicalFragment extends Fragment {
         tip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(),QuizCategoryActivity.class);
+                intent.putExtra(Constants.isAptitude,false);
+                intent.putExtra(Constants.isPractice,false);
+                intent.putExtra(Constants.isStudy,false);
+                startActivity(intent);
             }
         });
 
