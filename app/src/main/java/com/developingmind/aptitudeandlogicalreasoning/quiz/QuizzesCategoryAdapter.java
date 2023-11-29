@@ -4,8 +4,6 @@ package com.developingmind.aptitudeandlogicalreasoning.quiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,6 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 
-import java.util.Base64;
 import java.util.List;
 
 public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategoryAdapter.ViewHolder> {

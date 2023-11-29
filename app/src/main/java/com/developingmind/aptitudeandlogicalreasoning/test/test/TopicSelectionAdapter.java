@@ -1,7 +1,6 @@
 package com.developingmind.aptitudeandlogicalreasoning.test.test;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionsActivity;
-import com.developingmind.aptitudeandlogicalreasoning.solvedProblems.SolvedProblemActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,13 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationModal;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

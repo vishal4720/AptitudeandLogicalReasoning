@@ -1,9 +1,7 @@
 package com.developingmind.aptitudeandlogicalreasoning.solvedProblems;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;

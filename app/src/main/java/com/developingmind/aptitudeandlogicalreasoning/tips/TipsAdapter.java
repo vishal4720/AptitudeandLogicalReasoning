@@ -1,9 +1,7 @@
 package com.developingmind.aptitudeandlogicalreasoning.tips;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.study.StudyModal;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 

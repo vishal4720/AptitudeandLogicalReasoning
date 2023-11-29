@@ -12,7 +12,6 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.developingmind.aptitudeandlogicalreasoning.R;
-import com.developingmind.aptitudeandlogicalreasoning.notification.NotificationAdapter;
 import com.developingmind.aptitudeandlogicalreasoning.profile.Gender;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;

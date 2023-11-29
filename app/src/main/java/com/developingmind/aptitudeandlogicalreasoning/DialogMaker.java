@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
-import com.developingmind.aptitudeandlogicalreasoning.purchase.Subscription;
 import com.developingmind.aptitudeandlogicalreasoning.test.competitive.CompetitiveQuestionsActivity;
 import com.developingmind.aptitudeandlogicalreasoning.test.test.TopicSelectionActivity;
 import com.google.android.gms.ads.AdError;

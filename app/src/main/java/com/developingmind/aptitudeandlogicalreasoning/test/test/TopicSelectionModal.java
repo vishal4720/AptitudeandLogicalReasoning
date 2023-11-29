@@ -1,7 +1,5 @@
 package com.developingmind.aptitudeandlogicalreasoning.test.test;
 
-import android.content.Intent;
-
 public class TopicSelectionModal {
 
     private Integer questionCount;
