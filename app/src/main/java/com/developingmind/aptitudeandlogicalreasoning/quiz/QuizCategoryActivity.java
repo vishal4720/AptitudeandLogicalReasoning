@@ -115,11 +115,11 @@ public class QuizCategoryActivity extends AppCompatActivity {
                 });
     }
 
-    private void showDialog(){
+    public void showDialog(){
         progressdialog.getDialog().show();
     }
 
-    private void dismissDialog(){
+    public void dismissDialog(){
         progressdialog.getDialog().dismiss();
     }
 }

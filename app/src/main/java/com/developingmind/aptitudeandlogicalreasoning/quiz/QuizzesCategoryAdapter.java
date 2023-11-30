@@ -100,6 +100,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                     AdManager adManager = (AdManager) context.getApplicationContext();
                     InterstitialAd interstitialAd = adManager.getmInterstitialAd();
                     if (interstitialAd!=null && !adManager.isPurchased) {
+                        ((QuizCategoryActivity)context).showDialog();
                         interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdShowedFullScreenContent() {
@@ -152,7 +153,7 @@ public class QuizzesCategoryAdapter extends RecyclerView.Adapter<QuizzesCategory
                 intent.putExtra("position", position);
                 intent.putExtra(Constants.isAptitude, isAptitude);
             }
-
+            ((QuizCategoryActivity)context).dismissDialog();
             context.startActivity(intent);
         }
     }

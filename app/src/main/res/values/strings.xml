@@ -28,12 +28,15 @@
     <string name="share_text">Share Credits Left : </string>
 
 
+
+    <string name="privacy_policy_link">https://aptitudeandlogical.wordpress.com/privacy-policy/</string>
+
     <string name="sha_key">304263100288-pvarumqvmc8kff5u04ib3ahksnsh5917.apps.googleusercontent.com</string>
     <string name="play_store_link">https://play.google.com/store/apps/details?id=com.developingmind.aptitudeandlogicalreasoning</string>
 
-    <string name="bannerAd_ID">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="interstitialAd_ID">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="videoAd_ID">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="bannerAd_ID">ca-app-pub-5038792352708017/2883510176</string>
+    <string name="interstitialAd_ID">ca-app-pub-5038792352708017/2951754946</string>
+    <string name="videoAd_ID">ca-app-pub-5038792352708017/9255132392</string>
     <string name="bookmark">Bookmark</string>
     <string name="share">Share</string>
     <string name="questions_grid">Questions Grid</string>

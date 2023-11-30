@@ -84,6 +84,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     AdManager adManager;
     AdView adView;
 
+    String privacyPolicy;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +234,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 DialogMaker dialogMaker = new DialogMaker(maintenanceModal.getMessage(), dateFormat.format(date).toString(),context);
                                 dialogMaker.getDialog().show();
                             }
+                            privacyPolicy = maintenanceModal.getPrivacyPolicy();
                         }
                     }
                 });
@@ -428,7 +431,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             dialogMaker.getDialog().show();
             drawerLayout.closeDrawers();
         } else if (itemId == R.id.nav_privacy) {
-
+            String url;
+            if (privacyPolicy!=null)
+                url=privacyPolicy;
+            else
+                url = getResources().getString(R.string.privacy_policy_link);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         } else if (itemId == R.id.nav_logout) {
             createDialog();
         }

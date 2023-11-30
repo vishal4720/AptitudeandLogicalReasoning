@@ -86,8 +86,9 @@ public class CompetitiveBookmarkFragment extends Fragment {
 
     public void deleteCompetitiveBookmark(int position){
         if (position!=RecyclerView.NO_POSITION) {
-            bookmarklist.remove(position);
             bookmarkAdapter.notifyItemRemoved(position);
+            bookmarkAdapter.notifyItemRangeChanged(position, bookmarklist.size());
+            bookmarklist.remove(position);
             if (bookmarklist.isEmpty()) {
                 competitiveRecyclerView.setVisibility(View.GONE);
                 noBookmark.setVisibility(View.VISIBLE);

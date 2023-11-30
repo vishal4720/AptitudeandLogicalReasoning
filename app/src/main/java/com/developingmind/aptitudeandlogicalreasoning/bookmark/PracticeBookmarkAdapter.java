@@ -66,7 +66,7 @@ public class PracticeBookmarkAdapter extends RecyclerView.Adapter<PracticeBookma
     private void createDialog(){
         deleteDialog = new Dialog(context);
         deleteDialog.setContentView(R.layout.dialog_quit);
-        deleteDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        deleteDialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         deleteDialog.setCancelable(true);
         deleteDialog.getWindow().setBackgroundDrawable(context.getDrawable(R.drawable.category_bg));
         ((TextView) deleteDialog.findViewById(R.id.quit_title)).setText("Delete");
@@ -104,7 +104,7 @@ public class PracticeBookmarkAdapter extends RecyclerView.Adapter<PracticeBookma
         private void setData(ViewHolder holder) {
 
             QuestionModal questionModal = list.get(holder.getAdapterPosition());
-            question.setText(Html.fromHtml("Q." + (holder.getAdapterPosition() + 1) + ") " + questionModal.getQuestion(), Html.FROM_HTML_MODE_LEGACY));
+            question.setText(Html.fromHtml("Q - " + questionModal.getQuestion(), Html.FROM_HTML_MODE_LEGACY));
             optionA.setText(Html.fromHtml("A - " + questionModal.getOptionA(), Html.FROM_HTML_MODE_LEGACY));
             optionB.setText(Html.fromHtml("B - " + questionModal.getOptionB(), Html.FROM_HTML_MODE_LEGACY));
             optionC.setText(Html.fromHtml("C - " + questionModal.getOptionC(), Html.FROM_HTML_MODE_LEGACY));
