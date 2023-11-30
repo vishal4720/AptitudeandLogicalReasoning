@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -181,9 +182,9 @@ public class QuestionsActivity extends AppCompatActivity {
         questionsDialog.show();
     }
 
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         exitDialog.getDialog().show();
     }
 

@@ -123,15 +123,16 @@ public class CompetitiveBookmarkAdapter extends RecyclerView.Adapter<Competitive
                 }
             });
 
-            ((Button) deleteDialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    delete(holder.getAdapterPosition());
-                }
-            });
+
         }
 
         private void showDeleteDialog(int position){
+            ((Button) deleteDialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delete(position);
+                }
+            });
             deleteDialog.show();
         }
 

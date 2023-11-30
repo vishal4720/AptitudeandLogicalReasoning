@@ -459,7 +459,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
     }
 
     private void getBookmark(){
-        String json = sharedPreferences.getString("bookmarkCompetitive"+isAptitude,"");
+        String json = sharedPreferences.getString("bookmarkCompetitive","");
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
 
         bookmarklist = gson.fromJson(json,type);
@@ -478,7 +478,7 @@ public class CompetitiveQuestionsActivity extends AppCompatActivity {
             i++;
         }
         String json = gson.toJson(bookmarklist);
-        editor.putString("bookmarkCompetitive"+isAptitude,json);
+        editor.putString("bookmarkCompetitive",json);
         editor.apply();
     }
 

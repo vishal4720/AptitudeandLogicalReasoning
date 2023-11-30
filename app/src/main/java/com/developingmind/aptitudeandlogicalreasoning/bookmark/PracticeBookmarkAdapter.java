@@ -28,14 +28,14 @@ import com.developingmind.aptitudeandlogicalreasoning.quiz.QuestionModal;
 
 import java.util.List;
 
-public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
+public class PracticeBookmarkAdapter extends RecyclerView.Adapter<PracticeBookmarkAdapter.ViewHolder> {
     private Context context;
     private List<QuestionModal> list;
     private AdManager adManager;
     private Dialog deleteDialog;
     private FragmentManager fragmentManager;
 
-    public BookmarkAdapter(@NonNull Context context, List<QuestionModal> list, SharedPreferences sharedPreferences, AdManager adManager, FragmentManager supportFragmentManager){
+    public PracticeBookmarkAdapter(@NonNull Context context, List<QuestionModal> list, SharedPreferences sharedPreferences, AdManager adManager, FragmentManager supportFragmentManager){
         this.context = context;
         this.list = list;
         this.sharedPreferences = sharedPreferences;
@@ -57,10 +57,10 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @NonNull
     @Override
-    public BookmarkAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PracticeBookmarkAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.bookmark_item,parent,false);
-        return new BookmarkAdapter.ViewHolder(view);
+        return new PracticeBookmarkAdapter.ViewHolder(view);
     }
 
     private void createDialog(){
@@ -124,16 +124,17 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                 }
             });
 
+
+        }
+
+        private void showDeleteDialog(int pos){
             ((Button) deleteDialog.findViewById(R.id.yes)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    delete(position);
+                    Log.d("Position Item in Dialog",String.valueOf(pos));
+                    delete(pos);
                 }
             });
-        }
-
-        private void showDeleteDialog(int position){
-            this.position = position;
             deleteDialog.show();
         }
 

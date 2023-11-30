@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PracticeBookmarkFragment extends Fragment {
 
@@ -36,7 +37,7 @@ public class PracticeBookmarkFragment extends Fragment {
     SharedPreferences.Editor editor;
     Map<String,List<QuestionModal>> bookmarkMap = new HashMap<>();
     Gson gson;
-    BookmarkAdapter bookmarkAdapter;
+    PracticeBookmarkAdapter practiceBookmarkAdapter;
 
     List<QuestionModal> bookmarklist = new ArrayList<>();
     LinearLayoutCompat noBookmark;
@@ -86,15 +87,15 @@ public class PracticeBookmarkFragment extends Fragment {
 
         AdManager adManager = (AdManager) getContext().getApplicationContext();
         Log.d("Bookmark",bookmarklist.toString());
-        bookmarkAdapter = new BookmarkAdapter(getContext(),bookmarklist,sharedPreferences,adManager,((BookmarkActivity) getContext()).getSupportFragmentManager());
-        recyclerView.setAdapter(bookmarkAdapter);
+        practiceBookmarkAdapter = new PracticeBookmarkAdapter(getContext(),bookmarklist,sharedPreferences,adManager,((BookmarkActivity) getContext()).getSupportFragmentManager());
+        recyclerView.setAdapter(practiceBookmarkAdapter);
 
     }
 
     public void deleteBookmark(int position){
         if (position!=RecyclerView.NO_POSITION) {
-            bookmarkAdapter.notifyItemRemoved(position);
-            bookmarkAdapter.notifyItemRangeChanged(position, bookmarklist.size());
+            practiceBookmarkAdapter.notifyItemRemoved(position);
+            practiceBookmarkAdapter.notifyItemRangeChanged(position, bookmarklist.size());
             bookmarklist.remove(position);
             if (bookmarklist.isEmpty()) {
                 recyclerView.setVisibility(View.GONE);
@@ -104,6 +105,25 @@ public class PracticeBookmarkFragment extends Fragment {
     }
 
     public void storeBookmark(){
-        Log.d("Store Bookmark","Store Bookmark");
+        Map<String,List<QuestionModal>> map = new HashMap<>();
+        List<QuestionModal> questionModals;
+        Log.d("Bookmark Json Practice Size", String.valueOf(bookmarklist.size()));
+        for (QuestionModal bookmark: bookmarklist) {
+            questionModals = new ArrayList<>();
+            String categoryId = bookmark.getCategoryId();
+            Log.d("Bookmark Json Category Id", categoryId);
+            if(map.containsKey(categoryId)){
+                questionModals.addAll(map.get(categoryId));
+                Log.d("Bookmark Json Getting Map", String.valueOf(questionModals.size()));
+            }
+            questionModals.add(bookmark);
+            map.put(categoryId,questionModals);
+
+            Log.d("Bookmark Json Practice Map",map.toString());
+        }
+        String json = gson.toJson(map);
+        Log.d("Bookmark Json Practice", json);
+        editor.putString("bookmark" + ((BookmarkActivity)getContext()).isAptitude, json);
+        editor.apply();
     }
 }

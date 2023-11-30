@@ -58,7 +58,7 @@ public class CompetitiveBookmarkFragment extends Fragment {
     }
 
     private void getCompetitiveBookmark(){
-        String json = sharedPreferences.getString("bookmarkCompetitive"+((BookmarkActivity)getContext()).isAptitude,"");
+        String json = sharedPreferences.getString("bookmarkCompetitive","");
 //        Log.d("Bookmark Json Activity",sharedPreferences.getString("bookmarkCompetitive"+isAptitude,""));
         Log.d("Bookmark Json",json);
         Type type = new TypeToken<List<QuestionModal>>(){}.getType();
@@ -79,7 +79,7 @@ public class CompetitiveBookmarkFragment extends Fragment {
 
     public void storeCompititiveBookmarks(){
         String json = gson.toJson(bookmarklist);
-        editor.putString("bookmarkCompetitive"+((BookmarkActivity)getContext()).isAptitude,json);
+        editor.putString("bookmarkCompetitive",json);
         editor.apply();
     }
 

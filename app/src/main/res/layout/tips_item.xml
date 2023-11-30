@@ -32,9 +32,10 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/tips_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
         android:scaleType="fitXY"
         app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"/>
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.developingmind.aptitudeandlogicalreasoning.Constants;
@@ -12,6 +13,8 @@ import com.developingmind.aptitudeandlogicalreasoning.DialogMaker;
 import com.developingmind.aptitudeandlogicalreasoning.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.concurrent.Executors;
 
 public class BookmarkActivity extends AppCompatActivity {
 
@@ -56,8 +59,14 @@ public class BookmarkActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        ((PracticeBookmarkFragment)getSupportFragmentManager().getFragments().get(0)).storeBookmark();
-        ((CompetitiveBookmarkFragment)getSupportFragmentManager().getFragments().get(1)).storeCompititiveBookmarks();
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                ((PracticeBookmarkFragment)getSupportFragmentManager().getFragments().get(0)).storeBookmark();
+                if (getSupportFragmentManager().getFragments().size()>1)
+                    ((CompetitiveBookmarkFragment)getSupportFragmentManager().getFragments().get(1)).storeCompititiveBookmarks();
+            }
+        });
         super.onPause();
     }
     

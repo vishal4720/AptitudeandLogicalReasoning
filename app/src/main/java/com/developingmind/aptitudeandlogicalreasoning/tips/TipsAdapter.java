@@ -1,5 +1,6 @@
 package com.developingmind.aptitudeandlogicalreasoning.tips;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -23,7 +24,6 @@ public class TipsAdapter extends RecyclerView.Adapter<TipsAdapter.ViewHolder>{
 
     private List<TipsModal> list;
     Context context;
-
 
     public TipsAdapter(List<TipsModal> String, Context context){
         this.list = String;
@@ -57,7 +57,7 @@ public class TipsAdapter extends RecyclerView.Adapter<TipsAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView title,desc,explanation;
+        TextView title,desc;
         ShapeableImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -77,6 +77,8 @@ public class TipsAdapter extends RecyclerView.Adapter<TipsAdapter.ViewHolder>{
                 Picasso.get().load(tipsModal.getImg()).into(this.imageView);
                 imageView.setVisibility(View.VISIBLE);
             }
+
+
 
         }
     }
