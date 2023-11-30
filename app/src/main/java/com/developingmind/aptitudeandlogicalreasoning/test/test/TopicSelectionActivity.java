@@ -30,11 +30,16 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +60,8 @@ public class TopicSelectionActivity extends AppCompatActivity {
     private TopicSelectionAdapter topicSelectionAdapter;
 
     Boolean isAptitude = true;
+
+    private ArrayAdapter<String> spinnerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +105,19 @@ public class TopicSelectionActivity extends AppCompatActivity {
                 Log.d("List", topicSelectionAdapter.getSelectedList().toString());
 
                 if(topicSelectionAdapter.getSelectedList().size()>0) {
-                    showquestionDialog();
+                    int questionCount = topicSelectionAdapter.getTotalCount();
+                    spinnerAdapter.clear();
+                    if (questionCount>=15) {
+                        spinnerAdapter.add("15");
+                        if (questionCount>=30) {
+                            spinnerAdapter.add("30");
+                            if (questionCount>=45)
+                                spinnerAdapter.add("45");
+                        }
+                        spinnerAdapter.notifyDataSetChanged();
+                        showquestionDialog();
+                    }else
+                        Toast.makeText(TopicSelectionActivity.this, "Select More Topics", Toast.LENGTH_SHORT).show();
                 }
                 else
                     Toast.makeText(TopicSelectionActivity.this, "Select Topic", Toast.LENGTH_SHORT).show();
@@ -123,12 +142,21 @@ public class TopicSelectionActivity extends AppCompatActivity {
 
                             for (DocumentSnapshot doc:
                                  documentSnapshots) {
-                                Map<String,Object> map = doc.getData();
-                                list.add(new TopicSelectionModal(map.size(),doc.getId()));
+                                Log.d("Topic Data ",doc.getData().toString());
+                                int count=0;
+                                try {
+                                    count = Integer.parseInt(doc.getData().get("question_count").toString());
+                                }catch (Exception e){
+                                    count =0;
+                                }
+                                list.add(new TopicSelectionModal(count, doc.getId()));
+
                             }
                             topicSelectionAdapter.notifyDataSetChanged();
 
                            dismissDialog();
+
+
                         }
                     }
                 })
@@ -159,8 +187,9 @@ public class TopicSelectionActivity extends AppCompatActivity {
         items.add("15");
         items.add("30");
         items.add("45");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        spinner.setAdapter(adapter);
+        spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        spinner.setAdapter(spinnerAdapter);
+
 
 
         TextView count = questionCountDialog.findViewById(R.id.time_allotted);
