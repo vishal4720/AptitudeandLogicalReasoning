@@ -3,6 +3,7 @@ package com.developingmind.aptitudeandlogicalreasoning.tips;
 import android.animation.Animator;
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,11 +70,12 @@ public class TipsAdapter extends RecyclerView.Adapter<TipsAdapter.ViewHolder>{
         }
         private void setData(TipsModal tipsModal, final int position){
             this.title.setText(Html.fromHtml( ("<html><b>"+(position+1)+ ". "+ tipsModal.getTitle() + "</b></html>"),Html.FROM_HTML_MODE_LEGACY));
-            if(tipsModal.getDescription()!=null && tipsModal.getDescription()!="") {
-                this.desc.setText(Html.fromHtml(("<html>" + tipsModal.getDescription() + "</html>"), Html.FROM_HTML_MODE_LEGACY));
+            if(tipsModal.getDescription()!=null && !tipsModal.getDescription().isEmpty()) {
                 this.desc.setVisibility(View.VISIBLE);
+                this.desc.setText(Html.fromHtml(("<html>" + tipsModal.getDescription() + "</html>"), Html.FROM_HTML_MODE_LEGACY));
+                Log.d("Desc",tipsModal.getDescription());
             }
-            if (tipsModal.getImg()!=null && tipsModal.getImg()!=""){
+            if (tipsModal.getImg()!=null && !tipsModal.getImg().isEmpty()){
                 Picasso.get().load(tipsModal.getImg()).into(this.imageView);
                 imageView.setVisibility(View.VISIBLE);
             }
